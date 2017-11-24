@@ -9,24 +9,31 @@ using namespace std;
 
 const double eleMass = 0.5109989461e-3;
 
+double acop(double dphi) {
+   return 1.-fabs(TVector2::Phi_mpi_pi(dphi))/TMath::Pi(); 
+};
+
 class clHist {
    public:
       TH1F *hpt;
       TH1F *hmass;
       TH1F *hrap;
+      TH1F *haco;
       TH1F *hint;
 
       clHist(const char* name) {
          hpt = new TH1F(Form("hpt_%s",name),"",20,0,2);
          hmass = new TH1F(Form("hmass_%s",name),"",20,0,20);
          hrap = new TH1F(Form("hrap_%s",name),"",30,-3,3);
+         haco = new TH1F(Form("haco_%s",name),"",30,0,0.06);
          hint = new TH1F(Form("hint_%s",name),"",1,0,1);
       };
 
-      void fill(double pt, double rap, double mass, double weight=1.) {
+      void fill(double pt, double rap, double mass, double dphi, double weight=1.) {
          hpt->Fill(pt,weight);
          hrap->Fill(rap,weight);
          hmass->Fill(mass,weight);
+         haco->Fill(acop(dphi),weight);
          hint->Fill(0.5,weight);
       };
 };
@@ -72,9 +79,9 @@ void mainData() {
    evtR.fChain->SetBranchStatus("elePt",1);
    evtR.fChain->SetBranchStatus("eleEta",1);
    evtR.fChain->SetBranchStatus("elePhi",1);
-   evtR.fChain->SetBranchStatus("eleSCEn",1);
+   // evtR.fChain->SetBranchStatus("eleSCEn",1);
    evtR.fChain->SetBranchStatus("eleSCEta",1);
-   evtR.fChain->SetBranchStatus("eleSCPhi",1);
+   // evtR.fChain->SetBranchStatus("eleSCPhi",1);
 
    // HM
    evtR.fChain->SetBranchStatus("ngsfEle",1);
@@ -135,8 +142,8 @@ void mainData() {
 
       bool recoGEDok, recoGEDok_noaco;
       bool recoHMok, recoHMok_noaco;
-      double recoGEDpt, recoGEDrap, recoGEDmass;
-      double recoHMpt, recoHMrap, recoHMmass;
+      double recoGEDpt, recoGEDrap, recoGEDmass, recoGEDdphi;
+      double recoHMpt, recoHMrap, recoHMmass, recoHMdphi;
       bool exclOK   =  false;
       bool SingleEG5ok = hltR.HLT_HIUPCL1SingleEG5NotHF2_v1;
       bool DoubleEG2ok = hltR.HLT_HIUPCL1DoubleEG2NotHF2_v1;
@@ -147,10 +154,14 @@ void mainData() {
       bool hovere    =  ele_two ? (evtR.eleHoverE->at(0) < 0.02 && evtR.eleHoverE->at(1) < 0.02) : false;
       bool track_iso =  ele_two ? ((evtR.eleTrackIso->at(0)/evtR.elePt->at(0)) < 0.05 && (evtR.eleTrackIso->at(1)/evtR.elePt->at(1)) < 0.05) : false;
       bool ecal_iso  =  ele_two ? ((evtR.eleECalIso->at(0)/evtR.elePt->at(0))  < 0.3 && (evtR.eleECalIso->at(1)/evtR.elePt->at(1))  < 0.3) : false;
-      bool hcal_iso  =  ele_two ? ((evtR.eleHCalIso->at(0)/evtR.elePt->at(0))  < 0.3 && (evtR.eleHCalIso->at(1)/evtR.elePt->at(1))  < 0.3) : false;
+      bool hcal_iso  =  ele_two ? ((evtR.eleHCalIso->at(0)/evtR.elePt->at(0))  < 0.2 && (evtR.eleHCalIso->at(1)/evtR.elePt->at(1))  < 0.2) : false;
       bool miss_hit  =  ele_two ? (evtR.eleMissHits->at(0) <= 1 && evtR.eleMissHits->at(0) <= 1) : false;
       bool opp_chrg  =  ele_two ? (evtR.eleCharge->at(0) != evtR.eleCharge->at(1) ) : false;
-      bool ele_pt    =  ele_two ? (evtR.elePt->at(0) > 2 && evtR.elePt->at(1) > 2 && fabs(evtR.eleEta->at(0))<2.5 && fabs(evtR.eleEta->at(1))<2.5 ) : false;
+      bool ele_pt    =  ele_two ? (evtR.elePt->at(0) > 2 && evtR.elePt->at(1) > 2 ) : false;
+      bool ele_eta   =  ele_two ? (fabs(evtR.eleEta->at(0))<2.5 && fabs(evtR.eleEta->at(1))<2.5 ) : false;
+      bool ele_SCeta   =  ele_two ? (fabs(evtR.eleSCEta->at(0))<2.5 && fabs(evtR.eleSCEta->at(1))<2.5
+            && (fabs(evtR.eleSCEta->at(0)) < 1.4442 || fabs(evtR.eleSCEta->at(0)) > 1.566)
+            && (fabs(evtR.eleSCEta->at(1)) < 1.4442 || fabs(evtR.eleSCEta->at(1)) > 1.566)) : false;
       bool iso       =  (hovere && track_iso && ecal_iso && hcal_iso);
       TLorentzVector ele0, ele1, diele;
       if (ele_two) {
@@ -160,6 +171,7 @@ void mainData() {
          recoGEDpt = diele.Pt();
          recoGEDrap = diele.Rapidity();
          recoGEDmass = diele.M();
+         recoGEDdphi = ele0.DeltaPhi(ele1);
 
          double EmEnergy_EB = 0;
          double EmEnergy_EE = 0;
@@ -189,15 +201,16 @@ void mainData() {
 
          exclOK = exclOK && (nextra_track==0);
       }
-      recoGEDok_noaco    =  ele_pt && (recoGEDmass>4) && miss_hit && iso 
+      recoGEDok_noaco    =  ele_pt && ele_eta && ele_SCeta && (recoGEDmass>4) && miss_hit && iso 
          && (recoGEDpt < 2.0) && (fabs(recoGEDrap)<2.5);
-      recoGEDok_noaco = recoGEDok && exclOK;
-      recoGEDok = recoGEDok_noaco && (fabs(TMath::Pi()-ele0.DeltaPhi(ele1)) < 0.01);
+      recoGEDok_noaco = recoGEDok_noaco && exclOK;
+      recoGEDok = recoGEDok_noaco && (acop(ele0.DeltaPhi(ele1)) < 0.01);
 
       // --- HM cuts ---
       bool eleHM_two   =  (evtR.ngsfEle==2 );
       bool no_HMpho    =  (evtR.nHyPho==0);
       bool ele_gsf_pt  =  eleHM_two ? ( evtR.elegsfTrkPt->at(0) > 2 && evtR.elegsfTrkPt->at(1) > 2 ) : false;
+      bool ele_gsf_eta  =  eleHM_two ? ( fabs(evtR.elegsfTrkEta->at(0)) < 2.5 && fabs(evtR.elegsfTrkEta->at(1)) < 2.5 ) : false;
       bool gsf_miss_hit=  eleHM_two ? ( evtR.elegsfTrkMissHits->at(0) <= 1 && evtR.elegsfTrkMissHits->at(1) <= 1) : false;
 
       exclOK=false;
@@ -211,6 +224,7 @@ void mainData() {
          recoHMpt = diele.Pt();
          recoHMrap = diele.Rapidity();
          recoHMmass = diele.M();
+         recoHMdphi = ele0.DeltaPhi(ele1);
 
          double EmEnergy_EB = 0;
          double EmEnergy_EE = 0;
@@ -241,32 +255,32 @@ void mainData() {
          exclOK = exclOK && (nextra_track==0);
       }
 
-      recoHMok_noaco   = ele_gsf_pt && diele.M()>4 && gsf_miss_hit && exclOK && diele.Pt() < 2.0;  
-      recoHMok = recoHMok_noaco && fabs(TMath::Pi()-ele0.DeltaPhi(ele1)) < 0.01;
+      recoHMok_noaco   = ele_gsf_pt && ele_gsf_eta && diele.M()>4 && gsf_miss_hit && exclOK && diele.Pt() < 2.0;  
+      recoHMok = recoHMok_noaco && acop(ele0.DeltaPhi(ele1)) < 0.01;
 
       // --- FILL HISTOS ---
       if (recoGEDok) {
-         hRecoGEDPass_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass);
+         hRecoGEDPass_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass, recoGEDdphi);
          if (SingleEG5ok) {
-            hRecoGEDPassTrigSingle_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass);
+            hRecoGEDPassTrigSingle_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass, recoGEDdphi);
          }
          if (DoubleEG2ok) {
-            hRecoGEDPassTrigDouble_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass);
+            hRecoGEDPassTrigDouble_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass, recoGEDdphi);
          }
       } // if recoGEDok
-      if (recoGEDok_noaco && DoubleEG2ok) hRecoGEDnoaco_PassTrigDouble_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass);
+      if (recoGEDok_noaco && DoubleEG2ok) hRecoGEDnoaco_PassTrigDouble_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass, recoGEDdphi);
 
 
       if (recoHMok) {
-         hRecoHMPass_recoHM.fill(recoHMpt,recoHMrap,recoHMmass);
+         hRecoHMPass_recoHM.fill(recoHMpt,recoHMrap,recoHMmass, recoHMdphi);
          if (SingleEG5ok) {
-            hRecoHMPassTrigSingle_recoHM.fill(recoHMpt,recoHMrap,recoHMmass);
+            hRecoHMPassTrigSingle_recoHM.fill(recoHMpt,recoHMrap,recoHMmass, recoHMdphi);
          }
          if (DoubleEG2ok) {
-            hRecoHMPassTrigDouble_recoHM.fill(recoHMpt,recoHMrap,recoHMmass);
+            hRecoHMPassTrigDouble_recoHM.fill(recoHMpt,recoHMrap,recoHMmass, recoHMdphi);
          }
       } // if recoHMok
-      if (recoHMok_noaco && DoubleEG2ok) hRecoHMnoaco_PassTrigDouble_recoHM.fill(recoHMpt,recoHMrap,recoHMmass);
+      if (recoHMok_noaco && DoubleEG2ok) hRecoHMnoaco_PassTrigDouble_recoHM.fill(recoHMpt,recoHMrap,recoHMmass, recoHMdphi);
    } // event loop
 
    fout->Write();

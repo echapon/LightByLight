@@ -9,24 +9,31 @@ using namespace std;
 
 const double eleMass = 0.5109989461e-3;
 
+double acop(double dphi) {
+   return 1.-fabs(TVector2::Phi_mpi_pi(dphi))/TMath::Pi(); 
+};
+
 class clHist {
    public:
       TH1F *hpt;
       TH1F *hmass;
       TH1F *hrap;
+      TH1F *haco;
       TH1F *hint;
 
       clHist(const char* name) {
          hpt = new TH1F(Form("hpt_%s",name),"",20,0,2);
          hmass = new TH1F(Form("hmass_%s",name),"",20,0,20);
          hrap = new TH1F(Form("hrap_%s",name),"",30,-3,3);
+         haco = new TH1F(Form("haco_%s",name),"",30,0,0.06);
          hint = new TH1F(Form("hint_%s",name),"",1,0,1);
       };
 
-      void fill(double pt, double rap, double mass, double weight=1.) {
+      void fill(double pt, double rap, double mass, double dphi, double weight=1.) {
          hpt->Fill(pt,weight);
          hrap->Fill(rap,weight);
          hmass->Fill(mass,weight);
+         haco->Fill(acop(dphi),weight);
          hint->Fill(0.5,weight);
       };
 };
@@ -72,9 +79,9 @@ void mainMC() {
    evtR.fChain->SetBranchStatus("elePt",1);
    evtR.fChain->SetBranchStatus("eleEta",1);
    evtR.fChain->SetBranchStatus("elePhi",1);
-   evtR.fChain->SetBranchStatus("eleSCEn",1);
+   // evtR.fChain->SetBranchStatus("eleSCEn",1);
    evtR.fChain->SetBranchStatus("eleSCEta",1);
-   evtR.fChain->SetBranchStatus("eleSCPhi",1);
+   // evtR.fChain->SetBranchStatus("eleSCPhi",1);
 
    // HM
    evtR.fChain->SetBranchStatus("ngsfEle",1);
@@ -161,10 +168,10 @@ void mainMC() {
       bool genok;
       bool recoGEDok;
       bool recoHMok;
-      double genpt, genrap, genmass;
-      double recoGEDpt, recoGEDrap, recoGEDmass;
-      double recoHMpt, recoHMrap, recoHMmass;
-      bool exclOK   =  false;
+      double genpt, genrap, genmass, gendphi;
+      double recoGEDpt, recoGEDrap, recoGEDmass, recoGEDdphi;
+      double recoHMpt, recoHMrap, recoHMmass, recoHMdphi;
+      // bool exclOK   =  false;
       bool SingleEG5ok = hltR.HLT_HIUPCL1SingleEG5NotHF2_v1;
       bool DoubleEG2ok = hltR.HLT_HIUPCL1DoubleEG2NotHF2_v1;
 
@@ -181,6 +188,7 @@ void mainMC() {
       genpt = gendiele.Pt();
       genrap = gendiele.Rapidity();
       genmass = gendiele.M();
+      gendphi = genele0.DeltaPhi(genele1);
       genok = (evtR.mcPt->at(0)>2&&evtR.mcPt->at(1)>2
             &&fabs(evtR.mcEta->at(0))<2.5&&fabs(evtR.mcEta->at(1))<2.5
             &&fabs(genrap)<2.5&&genmass>4&&genmass<53
@@ -193,10 +201,14 @@ void mainMC() {
       bool hovere    =  ele_two ? (evtR.eleHoverE->at(0) < 0.02 && evtR.eleHoverE->at(1) < 0.02) : false;
       bool track_iso =  ele_two ? ((evtR.eleTrackIso->at(0)/evtR.elePt->at(0)) < 0.05 && (evtR.eleTrackIso->at(1)/evtR.elePt->at(1)) < 0.05) : false;
       bool ecal_iso  =  ele_two ? ((evtR.eleECalIso->at(0)/evtR.elePt->at(0))  < 0.3 && (evtR.eleECalIso->at(1)/evtR.elePt->at(1))  < 0.3) : false;
-      bool hcal_iso  =  ele_two ? ((evtR.eleHCalIso->at(0)/evtR.elePt->at(0))  < 0.3 && (evtR.eleHCalIso->at(1)/evtR.elePt->at(1))  < 0.3) : false;
+      bool hcal_iso  =  ele_two ? ((evtR.eleHCalIso->at(0)/evtR.elePt->at(0))  < 0.2 && (evtR.eleHCalIso->at(1)/evtR.elePt->at(1))  < 0.2) : false;
       bool miss_hit  =  ele_two ? (evtR.eleMissHits->at(0) <= 1 && evtR.eleMissHits->at(0) <= 1) : false;
       bool opp_chrg  =  ele_two ? (evtR.eleCharge->at(0) != evtR.eleCharge->at(1) ) : false;
-      bool ele_pt    =  ele_two ? (evtR.elePt->at(0) > 2 && evtR.elePt->at(1) > 2 && fabs(evtR.eleEta->at(0))<2.5 && fabs(evtR.eleEta->at(1))<2.5 ) : false;
+      bool ele_pt    =  ele_two ? (evtR.elePt->at(0) > 2 && evtR.elePt->at(1) > 2 ) : false;
+      bool ele_eta   =  ele_two ? (fabs(evtR.eleEta->at(0))<2.5 && fabs(evtR.eleEta->at(1))<2.5 ) : false;
+      bool ele_SCeta   =  ele_two ? (fabs(evtR.eleSCEta->at(0))<2.5 && fabs(evtR.eleSCEta->at(1))<2.5
+            && (fabs(evtR.eleSCEta->at(0)) < 1.4442 || fabs(evtR.eleSCEta->at(0)) > 1.566)
+            && (fabs(evtR.eleSCEta->at(1)) < 1.4442 || fabs(evtR.eleSCEta->at(1)) > 1.566)) : false;
       bool iso       =  (hovere && track_iso && ecal_iso && hcal_iso);
       TLorentzVector ele0, ele1, diele;
       if (ele_two) {
@@ -206,46 +218,48 @@ void mainMC() {
          recoGEDpt = diele.Pt();
          recoGEDrap = diele.Rapidity();
          recoGEDmass = diele.M();
+         recoGEDdphi = ele0.DeltaPhi(ele1);
 
-         double EmEnergy_EB = 0;
-         double EmEnergy_EE = 0;
-         double HadEnergy_HB = 0;
-         double HadEnergy_HE = 0;
-         double HadEnergy_HF_Plus = 0;
-         double HadEnergy_HF_Minus = 0;
-         evtR.b_nTower->GetEntry(ientry_evt);
-         evtR.b_CaloTower_eta->GetEntry(ientry_evt);
-         evtR.b_CaloTower_phi->GetEntry(ientry_evt);
-         evtR.b_CaloTower_emE->GetEntry(ientry_evt);
-         evtR.b_CaloTower_hadE->GetEntry(ientry_evt);
-         evtR.b_CaloTower_e->GetEntry(ientry_evt);
-         fillExclVars(evtR, 
-               evtR.eleEta->at(0), evtR.elePhi->at(0), evtR.eleEta->at(1), evtR.elePhi->at(1), 
-               EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
-         exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
+      //    double EmEnergy_EB = 0;
+      //    double EmEnergy_EE = 0;
+      //    double HadEnergy_HB = 0;
+      //    double HadEnergy_HE = 0;
+      //    double HadEnergy_HF_Plus = 0;
+      //    double HadEnergy_HF_Minus = 0;
+      //    evtR.b_nTower->GetEntry(ientry_evt);
+      //    evtR.b_CaloTower_eta->GetEntry(ientry_evt);
+      //    evtR.b_CaloTower_phi->GetEntry(ientry_evt);
+      //    evtR.b_CaloTower_emE->GetEntry(ientry_evt);
+      //    evtR.b_CaloTower_hadE->GetEntry(ientry_evt);
+      //    evtR.b_CaloTower_e->GetEntry(ientry_evt);
+      //    fillExclVars(evtR, 
+      //          evtR.eleEta->at(0), evtR.elePhi->at(0), evtR.eleEta->at(1), evtR.elePhi->at(1), 
+      //          EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
+      //    exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
 
-         evtR.b_ngenTrk->GetEntry(ientry_evt);
-         evtR.b_gentrkPt->GetEntry(ientry_evt);
-         evtR.b_gentrkEta->GetEntry(ientry_evt);
-         evtR.b_gentrkPhi->GetEntry(ientry_evt);
-         int nextra_track=0;
-         fillNextraTracks(evtR, 
-               evtR.eleEta->at(0), evtR.elePhi->at(0), evtR.eleEta->at(1), evtR.elePhi->at(1), 
-               nextra_track);
+      //    evtR.b_ngenTrk->GetEntry(ientry_evt);
+      //    evtR.b_gentrkPt->GetEntry(ientry_evt);
+      //    evtR.b_gentrkEta->GetEntry(ientry_evt);
+      //    evtR.b_gentrkPhi->GetEntry(ientry_evt);
+      //    int nextra_track=0;
+      //    fillNextraTracks(evtR, 
+      //          evtR.eleEta->at(0), evtR.elePhi->at(0), evtR.eleEta->at(1), evtR.elePhi->at(1), 
+      //          nextra_track);
 
-         exclOK = exclOK && (nextra_track==0);
+      //    exclOK = exclOK && (nextra_track==0);
       }
-      recoGEDok    =  ele_pt && (recoGEDmass>4) && miss_hit && iso 
-         && (recoGEDpt < 2.0) && (fabs(recoGEDrap)<2.5) && (fabs(TMath::Pi()-ele0.DeltaPhi(ele1)) < 0.01);
-      recoGEDok = recoGEDok && exclOK;
+      recoGEDok    =  ele_pt && ele_eta && ele_SCeta && (recoGEDmass>4) && miss_hit && iso 
+         && (recoGEDpt < 2.0) && (fabs(recoGEDrap)<2.5) && (acop(ele0.DeltaPhi(ele1)) < 0.01);
+      // recoGEDok = recoGEDok && exclOK;
 
       // --- HM cuts ---
       bool eleHM_two   =  (evtR.ngsfEle==2 );
       bool no_HMpho    =  (evtR.nHyPho==0);
       bool ele_gsf_pt  =  eleHM_two ? ( evtR.elegsfTrkPt->at(0) > 2 && evtR.elegsfTrkPt->at(1) > 2 ) : false;
+      bool ele_gsf_eta  =  eleHM_two ? ( fabs(evtR.elegsfTrkEta->at(0)) < 2.5 && fabs(evtR.elegsfTrkEta->at(1)) < 2.5 ) : false;
       bool gsf_miss_hit=  eleHM_two ? ( evtR.elegsfTrkMissHits->at(0) <= 1 && evtR.elegsfTrkMissHits->at(1) <= 1) : false;
 
-      exclOK=false;
+      // exclOK=false;
       ele0 = TLorentzVector();
       ele1 = TLorentzVector();
       diele = TLorentzVector();
@@ -256,94 +270,96 @@ void mainMC() {
          recoHMpt = diele.Pt();
          recoHMrap = diele.Rapidity();
          recoHMmass = diele.M();
+         recoHMdphi = ele0.DeltaPhi(ele1);
 
-         double EmEnergy_EB = 0;
-         double EmEnergy_EE = 0;
-         double HadEnergy_HB = 0;
-         double HadEnergy_HE = 0;
-         double HadEnergy_HF_Plus = 0;
-         double HadEnergy_HF_Minus = 0;
-         evtR.b_nTower->GetEntry(ientry_evt);
-         evtR.b_CaloTower_eta->GetEntry(ientry_evt);
-         evtR.b_CaloTower_phi->GetEntry(ientry_evt);
-         evtR.b_CaloTower_emE->GetEntry(ientry_evt);
-         evtR.b_CaloTower_hadE->GetEntry(ientry_evt);
-         evtR.b_CaloTower_e->GetEntry(ientry_evt);
-         fillExclVars(evtR, 
-               ele0.Eta(), ele0.Phi(), ele1.Eta(), ele1.Phi(), 
-               EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
-         exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
+      //    double EmEnergy_EB = 0;
+      //    double EmEnergy_EE = 0;
+      //    double HadEnergy_HB = 0;
+      //    double HadEnergy_HE = 0;
+      //    double HadEnergy_HF_Plus = 0;
+      //    double HadEnergy_HF_Minus = 0;
+      //    evtR.b_nTower->GetEntry(ientry_evt);
+      //    evtR.b_CaloTower_eta->GetEntry(ientry_evt);
+      //    evtR.b_CaloTower_phi->GetEntry(ientry_evt);
+      //    evtR.b_CaloTower_emE->GetEntry(ientry_evt);
+      //    evtR.b_CaloTower_hadE->GetEntry(ientry_evt);
+      //    evtR.b_CaloTower_e->GetEntry(ientry_evt);
+      //    fillExclVars(evtR, 
+      //          ele0.Eta(), ele0.Phi(), ele1.Eta(), ele1.Phi(), 
+      //          EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
+      //    exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
 
-         evtR.b_ngenTrk->GetEntry(ientry_evt);
-         evtR.b_gentrkPt->GetEntry(ientry_evt);
-         evtR.b_gentrkEta->GetEntry(ientry_evt);
-         evtR.b_gentrkPhi->GetEntry(ientry_evt);
-         int nextra_track=0;
-         fillNextraTracks(evtR, 
-               ele0.Eta(), ele0.Phi(), ele1.Eta(), ele1.Phi(), 
-               nextra_track);
+      //    evtR.b_ngenTrk->GetEntry(ientry_evt);
+      //    evtR.b_gentrkPt->GetEntry(ientry_evt);
+      //    evtR.b_gentrkEta->GetEntry(ientry_evt);
+      //    evtR.b_gentrkPhi->GetEntry(ientry_evt);
+      //    int nextra_track=0;
+      //    fillNextraTracks(evtR, 
+      //          ele0.Eta(), ele0.Phi(), ele1.Eta(), ele1.Phi(), 
+      //          nextra_track);
 
-         exclOK = exclOK && (nextra_track==0);
+      //    exclOK = exclOK && (nextra_track==0);
       }
 
-      recoHMok   = ele_gsf_pt && diele.M()>4 && gsf_miss_hit && exclOK && diele.Pt() < 2.0 && fabs(TMath::Pi()-ele0.DeltaPhi(ele1)) < 0.01;  
+      recoHMok   = ele_gsf_pt && ele_gsf_eta && diele.M()>4 && gsf_miss_hit && diele.Pt() < 2.0 && (acop(ele0.DeltaPhi(ele1)) < 0.01);  
+      // recoHMok   = recoHMok && exclOK;
 
       // --- FILL HISTOS ---
-      hGenAll.fill(genpt,genrap,genmass);
-      if (genok) hGenPass.fill(genpt,genrap,genmass);
+      hGenAll.fill(genpt,genrap,genmass,gendphi);
+      if (genok) hGenPass.fill(genpt,genrap,genmass,gendphi);
 
 
       if (recoGEDok) {
-         hRecoGEDPass_gen.fill(genpt,genrap,genmass);
-         hRecoGEDPass_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass);
+         hRecoGEDPass_gen.fill(genpt,genrap,genmass,gendphi);
+         hRecoGEDPass_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass,recoGEDdphi);
          if (genok) {
-            hRecoGEDPassGenPass_gen.fill(genpt,genrap,genmass);
-            hRecoGEDPassGenPass_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass);
+            hRecoGEDPassGenPass_gen.fill(genpt,genrap,genmass,gendphi);
+            hRecoGEDPassGenPass_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass,recoGEDdphi);
          }
 
          if (SingleEG5ok) {
-            hRecoGEDPassTrigSingle_gen.fill(genpt,genrap,genmass);
-            hRecoGEDPassTrigSingle_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass);
+            hRecoGEDPassTrigSingle_gen.fill(genpt,genrap,genmass,gendphi);
+            hRecoGEDPassTrigSingle_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass,recoGEDdphi);
             if (genok) {
-               hRecoGEDPassTrigSingleGenPassTrigSingle_gen.fill(genpt,genrap,genmass);
-               hRecoGEDPassTrigSingleGenPassTrigSingle_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass);
+               hRecoGEDPassTrigSingleGenPassTrigSingle_gen.fill(genpt,genrap,genmass,gendphi);
+               hRecoGEDPassTrigSingleGenPassTrigSingle_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass,recoGEDdphi);
             }
          }
 
          if (DoubleEG2ok) {
-            hRecoGEDPassTrigDouble_gen.fill(genpt,genrap,genmass);
-            hRecoGEDPassTrigDouble_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass);
+            hRecoGEDPassTrigDouble_gen.fill(genpt,genrap,genmass,gendphi);
+            hRecoGEDPassTrigDouble_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass,recoGEDdphi);
             if (genok) {
-               hRecoGEDPassTrigDoubleGenPassTrigDouble_gen.fill(genpt,genrap,genmass);
-               hRecoGEDPassTrigDoubleGenPassTrigDouble_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass);
+               hRecoGEDPassTrigDoubleGenPassTrigDouble_gen.fill(genpt,genrap,genmass,gendphi);
+               hRecoGEDPassTrigDoubleGenPassTrigDouble_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass,recoGEDdphi);
             }
          }
       } // if recoGEDok
 
 
       if (recoHMok) {
-         hRecoHMPass_gen.fill(genpt,genrap,genmass);
-         hRecoHMPass_recoHM.fill(recoHMpt,recoHMrap,recoHMmass);
+         hRecoHMPass_gen.fill(genpt,genrap,genmass,gendphi);
+         hRecoHMPass_recoHM.fill(recoHMpt,recoHMrap,recoHMmass,recoHMdphi);
          if (genok) {
-            hRecoHMPassGenPass_gen.fill(genpt,genrap,genmass);
-            hRecoHMPassGenPass_recoHM.fill(recoHMpt,recoHMrap,recoHMmass);
+            hRecoHMPassGenPass_gen.fill(genpt,genrap,genmass,gendphi);
+            hRecoHMPassGenPass_recoHM.fill(recoHMpt,recoHMrap,recoHMmass,recoHMdphi);
          }
 
          if (SingleEG5ok) {
-            hRecoHMPassTrigSingle_gen.fill(genpt,genrap,genmass);
-            hRecoHMPassTrigSingle_recoHM.fill(recoHMpt,recoHMrap,recoHMmass);
+            hRecoHMPassTrigSingle_gen.fill(genpt,genrap,genmass,gendphi);
+            hRecoHMPassTrigSingle_recoHM.fill(recoHMpt,recoHMrap,recoHMmass,recoHMdphi);
             if (genok) {
-               hRecoHMPassTrigSingleGenPassTrigSingle_gen.fill(genpt,genrap,genmass);
-               hRecoHMPassTrigSingleGenPassTrigSingle_recoHM.fill(recoHMpt,recoHMrap,recoHMmass);
+               hRecoHMPassTrigSingleGenPassTrigSingle_gen.fill(genpt,genrap,genmass,gendphi);
+               hRecoHMPassTrigSingleGenPassTrigSingle_recoHM.fill(recoHMpt,recoHMrap,recoHMmass,recoHMdphi);
             }
          }
 
          if (DoubleEG2ok) {
-            hRecoHMPassTrigDouble_gen.fill(genpt,genrap,genmass);
-            hRecoHMPassTrigDouble_recoHM.fill(recoHMpt,recoHMrap,recoHMmass);
+            hRecoHMPassTrigDouble_gen.fill(genpt,genrap,genmass,gendphi);
+            hRecoHMPassTrigDouble_recoHM.fill(recoHMpt,recoHMrap,recoHMmass,recoHMdphi);
             if (genok) {
-               hRecoHMPassTrigDoubleGenPassTrigDouble_gen.fill(genpt,genrap,genmass);
-               hRecoHMPassTrigDoubleGenPassTrigDouble_recoHM.fill(recoHMpt,recoHMrap,recoHMmass);
+               hRecoHMPassTrigDoubleGenPassTrigDouble_gen.fill(genpt,genrap,genmass,gendphi);
+               hRecoHMPassTrigDoubleGenPassTrigDouble_recoHM.fill(recoHMpt,recoHMrap,recoHMmass,recoHMdphi);
             }
          }
       } // if recoHMok
