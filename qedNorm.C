@@ -2,8 +2,12 @@
 #include "TH1F.h"
 #include "TF1.h"
 
-const double excleff           = 0.984;
-const double excleff_err       = 0.01;
+const double excleff_hm        = 89.9e-2;
+const double excleff_hm_stat   = 1.3e-2;
+const double excleff_hm_syst   = 5.1e-2;
+const double excleff_ged       = 89.5e-2;
+const double excleff_ged_stat  = 1.3e-2;
+const double excleff_ged_syst  = 5.03e-2;
 const double xsec_3_53         = 20.6e3; // in mub
 const double xsec_3_53_err     = 0.00001*xsec_3_53; // FIXME what is the uncertainty?
 const double lumi_brilcalc     = 391; // in mub-1
@@ -13,6 +17,17 @@ const int    ngen              = 7929199;
 void qedNorm(const char* type = "GED") {
    TFile *fdata = TFile::Open("outputData.root");
    TFile *fmc = TFile::Open("output.root");
+
+   // exclusivity cuts efficiency
+   double excleff, excleff_err;
+   if (TString(type)=="GED") {
+      excleff = excleff_ged;
+      excleff_err = sqrt(pow(excleff_ged_stat,2)+pow(excleff_ged_syst,2));
+   } else { // HM
+      excleff = excleff_hm;
+      excleff_err = sqrt(pow(excleff_hm_stat,2)+pow(excleff_hm_syst,2));
+   }
+
 
    // estimate the purity in data
    TH1F *hacop_data = (TH1F*) fdata->Get(Form("haco_reco%snoaco_passTrigDouble_reco%s",type,type));
