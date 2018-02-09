@@ -48,8 +48,8 @@ TString collTag = "PbPb"; // isPbPb ? "PbPb" : "pp";
 bool doToys = false;
 
 // Location of the files
-const char* fDataName = "tnp_Ana_Data_HM_DoubleEG2.root";
-const char* fMCName = "tnp_Ana_MC_HM_DoubleEG2.root";
+const char* fDataName = "tnp_Ana_Data_GED_DoubleEG2.root";
+const char* fMCName = "tnp_Ana_MC_GED_DoubleEG2.root";
 
 
 
@@ -64,7 +64,7 @@ TString allTag("DoubleEG2_1bin");
 
 // Automatic parameters (shouldn't require modification by the user)
 const int nAbsEtaBins = 2;
-TString cutTag("trigTree_HM"); 
+TString cutTag("trigTree_GED"); 
 TString cutLegend("L1 EG2 trigger");
 TString absetaTag("DoubleEG2_EBEE");
 TString absetaVar("abseta");
@@ -268,7 +268,7 @@ void TnPEffDraw() {
         etamax = ((RooRealVar*) daPtData0[i]->get()->find("eta"))->getBinning().binHigh(0);
         leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{#mu}_{T}>%.1f, #eta #in [%.1f, %.1f])}",ptmin,etamin,etamax));
      }
-     sprintf(legs,"MC PYTHIA+EvtGen: %.4f^{ + %.3f}_{ - %.3f}", TrkAbsEta0[i][0], TrkAbsEta0[i][1], TrkAbsEta0[i][2]);
+     sprintf(legs,"MC STARLIGHT: %.4f^{ + %.3f}_{ - %.3f}", TrkAbsEta0[i][0], TrkAbsEta0[i][1], TrkAbsEta0[i][2]);
      leg1->AddEntry(ComPt0[i],legs,"pl");
      sprintf(legs,"Data: %.4f^{ + %.3f}_{ - %.3f}", TrkAbsEta1[i][0], TrkAbsEta1[i][1], TrkAbsEta1[i][2]);
      leg1->AddEntry(ComPt1[i],legs,"pl");
@@ -279,8 +279,8 @@ void TnPEffDraw() {
 
      lt1->SetTextSize(0.05);
      lt1->DrawLatex(0.43,0.60,"CMS Preliminary");
-     //lt1->DrawLatex(0.43,0.54,"pp  #sqrt{s} = 2.76 TeV");
-     lt1->DrawLatex(0.43,0.54,collTag + "  #sqrt{s_{NN}} = 2.76 TeV");
+     //lt1->DrawLatex(0.43,0.54,"pp  #sqrt{s} = 5.02 TeV");
+     lt1->DrawLatex(0.43,0.54,collTag + "  #sqrt{s_{NN}} = 5.02 TeV");
 
      // now take care of the data/mc ratio panel
      c1->cd();
@@ -422,8 +422,8 @@ void TnPEffDraw() {
 
   lt1->SetTextSize(0.05);
   lt1->DrawLatex(0.43,0.60,"CMS Preliminary");
-  //lt1->DrawLatex(0.43,0.54,"pp  #sqrt{s} = 2.76 TeV");
-  lt1->DrawLatex(0.43,0.54,collTag + "  #sqrt{s_{NN}} = 2.76 TeV");
+  //lt1->DrawLatex(0.43,0.54,"pp  #sqrt{s} = 5.02 TeV");
+  lt1->DrawLatex(0.43,0.54,collTag + "  #sqrt{s_{NN}} = 5.02 TeV");
 
   // now take care of the data/mc ratio panel
   c1->cd();
