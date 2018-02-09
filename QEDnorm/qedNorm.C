@@ -107,15 +107,15 @@ void qedNorm(const char* type = "GED") {
    cout << xsec << " +/- " << xsec_stat << " (stat) +/- " << xsec_syst << " (syst+lumi)" << endl;
    cout << xsec << " +/- " << xsec_stat << " (stat) +/- " << xsec_syst_nolumi << " (syst) +/- " << xsec_lumi << " (lumi)" << endl;
    cout << "Full list of uncertainties, in %:" << endl;
-   cout << "stat: " << xsec_stat/xsec << endl;
-   cout << "lumi: " << xsec_lumi/xsec << endl;
-   cout << "purity: " << xsec_purity/xsec << endl;
-   cout << "exclusivity: " << xsec_excl/xsec << endl;
-   cout << "MC stat: " << xsec_mcstat/xsec << endl;
-   cout << "tnp, reco: " << xsec_tnp_reco/xsec << endl;
-   cout << "tnp, trigger: " << xsec_tnp_trig/xsec << endl;
-   cout << "Energy scale: " << xsec_Escale/xsec << endl;
-   cout << "Energy resolution: " << xsec_Eresol/xsec << endl;
+   cout << "stat: " << 100.*xsec_stat/xsec << endl;
+   cout << "lumi: " << 100.*xsec_lumi/xsec << endl;
+   cout << "purity: " << 100.*xsec_purity/xsec << endl;
+   cout << "exclusivity: " << 100.*xsec_excl/xsec << endl;
+   cout << "MC stat: " << 100.*xsec_mcstat/xsec << endl;
+   cout << "tnp, reco: " << 100.*xsec_tnp_reco/xsec << endl;
+   cout << "tnp, trigger: " << 100.*xsec_tnp_trig/xsec << endl;
+   cout << "Energy scale: " << 100.*xsec_Escale/xsec << endl;
+   cout << "Energy resolution: " << 100.*xsec_Eresol/xsec << endl;
 
    // compute the lumi
    cout << endl;
@@ -138,13 +138,13 @@ void qedNorm(const char* type = "GED") {
    cout << lumimeas << " +/- " << lumimeas_stat << " (stat) +/- " << lumimeas_syst << " (syst+xsec)" << endl;
    cout << lumimeas << " +/- " << lumimeas_stat << " (stat) +/- " << lumimeas_syst_noxsec << " (syst) +/- " << lumimeas_xsec << " (xsec)" << endl;
    cout << "Full list of uncertainties, in %:" << endl;
-   cout << "stat: " << lumimeas_stat/lumimeas << endl;
-   cout << "xsec: " << lumimeas_xsec/lumimeas << endl;
-   cout << "purity: " << lumimeas_purity/lumimeas << endl;
-   cout << "exclusivity: " << lumimeas_excl/lumimeas << endl;
-   cout << "MC stat: " << lumimeas_mcstat/lumimeas << endl;
-   cout << "tnp, reco: " << lumimeas_tnp_reco/lumimeas << endl;
-   cout << "tnp, trigger: " << lumimeas_tnp_trig/lumimeas << endl;
-   cout << "Energy scale: " << lumimeas_Escale/lumimeas << endl;
-   cout << "Energy resolution: " << lumimeas_Eresol/lumimeas << endl;
+   cout << "stat: " << 100.*lumimeas_stat/lumimeas << endl;
+   cout << "xsec: " << 100.*lumimeas_xsec/lumimeas << endl;
+   cout << "purity: " << 100.*lumimeas_purity/lumimeas << endl;
+   cout << "exclusivity: " << 100.*lumimeas_excl/lumimeas << endl;
+   cout << "MC stat: " << 100.*lumimeas_mcstat/lumimeas << endl;
+   cout << "tnp, reco: " << 100.*lumimeas_tnp_reco/lumimeas << endl;
+   cout << "tnp, trigger: " << 100.*lumimeas_tnp_trig/lumimeas << endl;
+   cout << "Energy scale: " << 100.*lumimeas_Escale/lumimeas << endl;
+   cout << "Energy resolution: " << 100.*lumimeas_Eresol/lumimeas << endl;
 }
