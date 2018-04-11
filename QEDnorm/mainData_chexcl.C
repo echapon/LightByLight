@@ -99,7 +99,7 @@ void mainData_chexcl() {
    hltR.fChain->SetBranchStatus("HLT_HIUPCL1DoubleEG2NotHF2_v1_Prescl",1);
    pixR.fChain->SetBranchStatus("nEv",1); 
    pixR.fChain->SetBranchStatus("nhits*",1); 
-   pixR.fChain->SetBranchStatus("r*",1); 
+   // pixR.fChain->SetBranchStatus("r*",1); 
    pixR.fChain->SetBranchStatus("eta*",1); 
 
    if (evtR.fChain == 0) return;
@@ -113,16 +113,6 @@ void mainData_chexcl() {
    if (nentries != nentries2 || nentries != nentries3) return;
 
    TFile *fout = new TFile("outputData.root","RECREATE");
-
-
-   // pixel plots
-   TH1F *hmin1 = new TH1F("hmin1","hmin1",100,0,10);
-   TH2F *hmin21 = new TH2F("hmin21","hmin1",100,-10,10,100,-10,10);
-   TH2F *hmin31 = new TH2F("hmin31","hmin1",100,-10,10,100,-10,10);
-   TH1F *hmin2 = new TH1F("hmin2","hmin2",100,0,10);
-   TH1F *hmin3 = new TH1F("hmin3","hmin3",100,0,10);
-   TH1F *hmin4 = new TH1F("hmin4","hmin4",100,0,10);
-   TH1F *hmin5 = new TH1F("hmin5","hmin5",100,0,10);
 
    // plots for charged exclusivity
    TH1F *hextratracksGED = new TH1F("hextratracksGED","hextratracksGED",10,0,10);
@@ -146,6 +136,12 @@ void mainData_chexcl() {
    TH1F *hnhits5 = new TH1F("hnhits5","hnhits5",10,0,10);
    TH1F *hnhits5_lacop = new TH1F("hnhits5_lacop","hnhits5_lacop",10,0,10);
    TH1F *hnhits5_hacop = new TH1F("hnhits5_hacop","hnhits5_hacop",10,0,10);
+
+   TH1F *hdetamin1 = new TH1F("hdetamin1","hdetamin1",100,0,0.1);
+   TH1F *hdetamin2 = new TH1F("hdetamin2","hdetamin2",100,0,0.1);
+   TH1F *hdetamin3 = new TH1F("hdetamin3","hdetamin3",100,0,0.1);
+   TH1F *hdetamin4 = new TH1F("hdetamin4","hdetamin4",100,0,0.1);
+   TH1F *hdetamin5 = new TH1F("hdetamin5","hdetamin5",100,0,0.1);
    
    clHist hRecoGEDPass_recoGED("recoGEDpass_recoGED");
    
@@ -297,6 +293,45 @@ void mainData_chexcl() {
       recoHMok_noaco   = ele_gsf_pt && ele_gsf_eta && ele_gsf_chg && diele.M()>4 && gsf_miss_hit && exclOK && diele.Pt() < 2.0;  
       recoHMok = recoHMok_noaco && acop(ele0.DeltaPhi(ele1)) < 0.01;
 
+      if (!recoHMok_noaco && !recoGEDok_noaco) continue; 
+
+      // remove pixel duplicates
+      float detamin=999;
+      for (int i=0; i<pixR.nhits1; i++) {
+         for (int j=0; j<i; j++) {
+            detamin = min(detamin,fabs(pixR.eta1[i]-pixR.eta1[j]));
+         }
+      }
+      hdetamin1->Fill(detamin);
+      detamin=999;
+      for (int i=0; i<pixR.nhits2; i++) {
+         for (int j=0; j<i; j++) {
+            detamin = min(detamin,fabs(pixR.eta2[i]-pixR.eta2[j]));
+         }
+      }
+      hdetamin2->Fill(detamin);
+      detamin=999;
+      for (int i=0; i<pixR.nhits3; i++) {
+         for (int j=0; j<i; j++) {
+            detamin = min(detamin,fabs(pixR.eta3[i]-pixR.eta3[j]));
+         }
+      }
+      hdetamin3->Fill(detamin);
+      detamin=999;
+      for (int i=0; i<pixR.nhits4; i++) {
+         for (int j=0; j<i; j++) {
+            detamin = min(detamin,fabs(pixR.eta4[i]-pixR.eta4[j]));
+         }
+      }
+      hdetamin4->Fill(detamin);
+      detamin=999;
+      for (int i=0; i<pixR.nhits5; i++) {
+         for (int j=0; j<i; j++) {
+            detamin = min(detamin,fabs(pixR.eta5[i]-pixR.eta5[j]));
+         }
+      }
+      hdetamin5->Fill(detamin);
+
       // --- FILL HISTOS ---
       if (recoGEDok) {
          hRecoGEDPass_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass, recoGEDdphi);
@@ -307,55 +342,6 @@ void mainData_chexcl() {
             hRecoGEDPassTrigDouble_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass, recoGEDdphi);
          }
 
-         // pixel check
-         double z = (evtR.nVtx>0) ? evtR.zVtx->at(0) : 0.;
-         cout << __LINE__ << endl;
-         for (int i=0; i<pixR.nhits1; i++) {
-            double zpp = pixR.r1[i]/tan(2.*atan(exp(-pixR.eta1[i])))-z;
-            double zp0 = pixR.r1[i]/tan(2.*atan(exp(-ele0.Eta())));
-            double zp1 = pixR.r1[i]/tan(2.*atan(exp(-ele1.Eta())));
-            cout << pixR.r1[i] << " " << pixR.eta1[i] << "; " << ele0.Eta() << " " << ele1.Eta() << "; " << z << " " << zpp  << "; " << zp0 << " " << zp1 << endl;
-            // cout << min(fabs(zp1), fabs(zp0)) << endl;
-            hmin1->Fill(min(fabs(zp1-zpp), fabs(zp0-zpp)));
-            hmin21->Fill(zp0,zpp);
-            hmin31->Fill(zp0,zpp+z);
-         }
-         cout << __LINE__ << endl;
-         for (int i=0; i<pixR.nhits2; i++) {
-            double zpp = pixR.r2[i]/tan(2.*atan(exp(-pixR.eta2[i])))-z;
-            double zp0 = pixR.r2[i]/tan(2.*atan(exp(-ele0.Eta())));
-            double zp1 = pixR.r2[i]/tan(2.*atan(exp(-ele1.Eta())));
-            cout << pixR.r2[i] << " " << pixR.eta2[i] << "; " << ele0.Eta() << " " << ele1.Eta() << "; " << z << " " << zpp  << "; " << zp0 << " " << zp1 << endl;
-            // cout << min(fabs(zp1), fabs(zp0)) << endl;
-            hmin2->Fill(min(fabs(zp1-zpp), fabs(zp0-zpp)));
-         }
-         cout << __LINE__ << endl;
-         for (int i=0; i<pixR.nhits3; i++) {
-            double zpp = pixR.r3[i]/tan(2.*atan(exp(-pixR.eta3[i])))-z;
-            double zp0 = pixR.r3[i]/tan(2.*atan(exp(-ele0.Eta())));
-            double zp1 = pixR.r3[i]/tan(2.*atan(exp(-ele1.Eta())));
-            cout << pixR.r3[i] << " " << pixR.eta3[i] << "; " << ele0.Eta() << " " << ele1.Eta() << "; " << z << " " << zpp  << "; " << zp0 << " " << zp1 << endl;
-            // cout << min(fabs(zp1), fabs(zp0)) << endl;
-            hmin3->Fill(min(fabs(zp1-zpp), fabs(zp0-zpp)));
-         }
-         cout << __LINE__ << endl;
-         for (int i=0; i<pixR.nhits4; i++) {
-            double zpp = pixR.r4[i]/tan(2.*atan(exp(-pixR.eta4[i])))-z;
-            double zp0 = pixR.r4[i]/tan(2.*atan(exp(-ele0.Eta())));
-            double zp1 = pixR.r4[i]/tan(2.*atan(exp(-ele1.Eta())));
-            cout << pixR.r4[i] << " " << pixR.eta4[i] << "; " << ele0.Eta() << " " << ele1.Eta() << "; " << z << " " << zpp  << "; " << zp0 << " " << zp1 << endl;
-            // cout << min(fabs(zp1), fabs(zp0)) << endl;
-            hmin4->Fill(min(fabs(zp1-zpp), fabs(zp0-zpp)));
-         }
-         cout << __LINE__ << endl;
-         for (int i=0; i<pixR.nhits5; i++) {
-            double zpp = pixR.r5[i]/tan(2.*atan(exp(-pixR.eta5[i])))-z;
-            double zp0 = pixR.r5[i]/tan(2.*atan(exp(-ele0.Eta())));
-            double zp1 = pixR.r5[i]/tan(2.*atan(exp(-ele1.Eta())));
-            cout << pixR.r5[i] << " " << pixR.eta5[i] << "; " << ele0.Eta() << " " << ele1.Eta() << "; " << z << " " << zpp  << "; " << zp0 << " " << zp1 << endl;
-            // cout << min(fabs(zp1), fabs(zp0)) << endl;
-            hmin5->Fill(min(fabs(zp1-zpp), fabs(zp0-zpp)));
-         }
       } // if recoGEDok
       if (recoGEDok_noaco && DoubleEG2ok) {
          hRecoGEDnoaco_PassTrigDouble_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass, recoGEDdphi);
