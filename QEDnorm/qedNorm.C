@@ -12,20 +12,29 @@ const double xsec_3_53         = 20.6e3; // in mub
 const double xsec_3_53_err     = 0.00001*xsec_3_53; // FIXME what is the uncertainty?
 const double lumi_brilcalc     = 391; // in mub-1
 const double lumi_brilcalc_err = 0.12*lumi_brilcalc;
+const double sf_hm             = 1.;//1.19*1.19*0.923;
+const double sf_hm_syst        = 0.;//sqrt(4*pow(0.235,2)+pow(0.019,2));
+const double sf_ged            = 1.;//1.27*1.27*0.924;
+const double sf_ged_syst       = 0.;//sqrt(4*pow(0.22,2)+pow(0.019,2));
 const int    ngen              = 7929199;
 
 void qedNorm(const char* type = "GED") {
-   TFile *fdata = TFile::Open("outputData.root");
-   TFile *fmc = TFile::Open("output.root");
+   TFile *fdata = TFile::Open("outputDataAll.root");
+   TFile *fmc = TFile::Open("outputAll.root");
 
    // exclusivity cuts efficiency
    double excleff, excleff_err;
+   double sf, sf_err;
    if (TString(type)=="GED") {
       excleff = excleff_ged;
       excleff_err = sqrt(pow(excleff_ged_stat,2)+pow(excleff_ged_syst,2));
+      sf = sf_ged;
+      sf_err = sf_ged_syst;
    } else { // HM
       excleff = excleff_hm;
       excleff_err = sqrt(pow(excleff_hm_stat,2)+pow(excleff_hm_syst,2));
+      sf = sf_hm;
+      sf_err = sf_hm_syst;
    }
 
 
@@ -90,18 +99,15 @@ void qedNorm(const char* type = "GED") {
 
    // compute the cross section
    cout << endl;
-   double xsec = norm_data*purity_cnt*(ngen/norm_mc)/excleff/lumi_brilcalc;
+   double xsec = norm_data*purity_cnt*(ngen/(norm_mc*sf))/lumi_brilcalc;
    double xsec_stat = (norm_data_err/norm_data)*xsec;
    double xsec_lumi = (lumi_brilcalc_err/lumi_brilcalc)*xsec;
    double xsec_purity = (purity_syst/purity_cnt)*xsec;
-   double xsec_excl = (excleff_err/excleff)*xsec;
+   // double xsec_excl = (excleff_err/excleff)*xsec;
    double xsec_mcstat = (norm_mc_err/norm_mc)*xsec;
-   double xsec_tnp_reco = 0.; // FIXME
-   double xsec_tnp_trig = 0.; // FIXME
-   double xsec_Escale = 0.; // FIXME
-   double xsec_Eresol = 0.; // FIXME
-   double xsec_syst = sqrt(pow(xsec_lumi,2)+pow(xsec_purity,2)+pow(xsec_excl,2)+pow(xsec_tnp_reco,2)+pow(xsec_tnp_trig,2)+pow(xsec_Escale,2)+pow(xsec_Eresol,2)+pow(xsec_mcstat,2));
-   double xsec_syst_nolumi = sqrt(pow(xsec_purity,2)+pow(xsec_excl,2)+pow(xsec_tnp_reco,2)+pow(xsec_tnp_trig,2)+pow(xsec_Escale,2)+pow(xsec_Eresol,2)+pow(xsec_mcstat,2));
+   double xsec_sf = sf_err*xsec; 
+   double xsec_syst = sqrt(pow(xsec_lumi,2)+pow(xsec_purity,2)+pow(xsec_sf,2)+pow(xsec_mcstat,2));
+   double xsec_syst_nolumi = sqrt(pow(xsec_purity,2)+pow(xsec_sf,2)+pow(xsec_mcstat,2));
    cout << "Cross section for QED e+e- 3<M<53GeV, in mub: " << endl;
    cout << "Generator: " << xsec_3_53 << " +/- " << xsec_3_53_err << endl;
    cout << "Data: " << endl;
@@ -112,27 +118,19 @@ void qedNorm(const char* type = "GED") {
    cout << "stat: " << 100.*xsec_stat/xsec << endl;
    cout << "lumi: " << 100.*xsec_lumi/xsec << endl;
    cout << "purity: " << 100.*xsec_purity/xsec << endl;
-   cout << "exclusivity: " << 100.*xsec_excl/xsec << endl;
    cout << "MC stat: " << 100.*xsec_mcstat/xsec << endl;
-   cout << "tnp, reco: " << 100.*xsec_tnp_reco/xsec << endl;
-   cout << "tnp, trigger: " << 100.*xsec_tnp_trig/xsec << endl;
-   cout << "Energy scale: " << 100.*xsec_Escale/xsec << endl;
-   cout << "Energy resolution: " << 100.*xsec_Eresol/xsec << endl;
+   cout << "data-driven eff: " << 100.*xsec_sf/xsec << endl;
 
    // compute the lumi
    cout << endl;
-   double lumimeas = norm_data*purity_cnt*(ngen/norm_mc)/excleff/xsec_3_53;
+   double lumimeas = norm_data*purity_cnt*(ngen/(norm_mc*sf))/xsec_3_53;
    double lumimeas_stat = (norm_data_err/norm_data)*lumimeas;
    double lumimeas_xsec = (xsec_3_53_err/xsec_3_53)*lumimeas;
    double lumimeas_purity = (purity_syst/purity_cnt)*lumimeas;
-   double lumimeas_excl = (excleff_err/excleff)*lumimeas;
    double lumimeas_mcstat = (norm_mc_err/norm_mc)*lumimeas;
-   double lumimeas_tnp_reco = 0.; // FIXME
-   double lumimeas_tnp_trig = 0.; // FIXME
-   double lumimeas_Escale = 0.; // FIXME
-   double lumimeas_Eresol = 0.; // FIXME
-   double lumimeas_syst = sqrt(pow(lumimeas_xsec,2)+pow(lumimeas_purity,2)+pow(lumimeas_excl,2)+pow(lumimeas_tnp_reco,2)+pow(lumimeas_tnp_trig,2)+pow(lumimeas_Escale,2)+pow(lumimeas_Eresol,2)+pow(lumimeas_mcstat,2));
-   double lumimeas_syst_noxsec = sqrt(pow(lumimeas_purity,2)+pow(lumimeas_excl,2)+pow(lumimeas_tnp_reco,2)+pow(lumimeas_tnp_trig,2)+pow(lumimeas_Escale,2)+pow(lumimeas_Eresol,2)+pow(lumimeas_mcstat,2));
+   double lumimeas_sf = sf_err*lumimeas; 
+   double lumimeas_syst = sqrt(pow(lumimeas_xsec,2)+pow(lumimeas_purity,2)+pow(lumimeas_sf,2)+pow(lumimeas_mcstat,2));
+   double lumimeas_syst_noxsec = sqrt(pow(lumimeas_purity,2)+pow(lumimeas_sf,2)+pow(lumimeas_mcstat,2));
    cout << "Luminosity in mub-1: " << endl;
    cout << "Brilcalc: " << lumi_brilcalc << " +/- " << lumi_brilcalc_err << endl;
    cout << "Data: " << endl;
@@ -143,10 +141,6 @@ void qedNorm(const char* type = "GED") {
    cout << "stat: " << 100.*lumimeas_stat/lumimeas << endl;
    cout << "xsec: " << 100.*lumimeas_xsec/lumimeas << endl;
    cout << "purity: " << 100.*lumimeas_purity/lumimeas << endl;
-   cout << "exclusivity: " << 100.*lumimeas_excl/lumimeas << endl;
    cout << "MC stat: " << 100.*lumimeas_mcstat/lumimeas << endl;
-   cout << "tnp, reco: " << 100.*lumimeas_tnp_reco/lumimeas << endl;
-   cout << "tnp, trigger: " << 100.*lumimeas_tnp_trig/lumimeas << endl;
-   cout << "Energy scale: " << 100.*lumimeas_Escale/lumimeas << endl;
-   cout << "Energy resolution: " << 100.*lumimeas_Eresol/lumimeas << endl;
+   cout << "data-driven eff: " << 100.*lumimeas_sf/lumimeas << endl;
 }

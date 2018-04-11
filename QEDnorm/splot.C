@@ -84,8 +84,8 @@ void splot(const char* filename="output.root", const char* treename="trGED", con
 //____________________________________
 void AddModel(RooWorkspace* ws){
    RooRealVar acop("acop","Acoplanarity",0,0.2);
-   RooRealVar decayS("decayS","decay signal",-1.2e-1,-1000.,0.);
-   RooRealVar decayB("decayB","decay bkg",-6.8e-2,-1000.,0.);
+   RooRealVar decayB("decayB","decay bkg",-1.2e1,-100.,0.);
+   RooRealVar decayS("decayS","decay signal",-6.8e2,-1000.,-100.);
    RooRealVar NS("NS","N signal",1.5e4,0,1e6);
    RooRealVar NB("NB","N bkg",2e2,0,1e6);
    RooExponential signal("signal","signal",acop,decayS);
@@ -235,7 +235,8 @@ void MakePlots(RooWorkspace* ws, const char* varname){
   //plot acop for data with full model and individual componenets overlayed
   //  TCanvas* cdata = new TCanvas();
   cdata->cd(1);
-  RooPlot* frame = acop->frame() ;
+  gPad->SetLogy();
+  RooPlot* frame = acop->frame(Range(0,0.06),Bins(30)) ;
   data->plotOn(frame ) ;
   model->plotOn(frame) ;
   model->plotOn(frame,Components(*signal),LineStyle(kDashed), LineColor(kRed)) ;
@@ -264,6 +265,7 @@ void MakePlots(RooWorkspace* ws, const char* varname){
 
   frame2->SetTitle("exclvar distribution for signal");
   frame2->Draw() ;
+  // frame2->getHist()->SaveAs(Form("%s_sOnly.root",varname));
 
   // Plot exclvar for background component.
   // Eg. plot all events weighted by the sWeight for the background component.

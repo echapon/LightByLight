@@ -25,7 +25,7 @@ EFFICIENCYSET =cms.PSet(
             UnbinnedVariables = cms.vstring("diAcop"),
             BinnedVariables = cms.PSet(
                 pt = cms.vdouble(0, 20),
-                abseta = cms.vdouble(0, 2.5),
+                abseta = cms.vdouble(0, 2.4),
             ),
          BinToPDFmap = cms.vstring(PDFName)
         ),
@@ -34,7 +34,7 @@ EFFICIENCYSET =cms.PSet(
             UnbinnedVariables = cms.vstring("diAcop"),
             BinnedVariables = cms.PSet(
                 pt = cms.vdouble(0, 20),
-                abseta = cms.vdouble(0, 1.5, 2.5),
+                abseta = cms.vdouble(0, 1.5, 2.4),
             ),
          BinToPDFmap = cms.vstring(PDFName)
         ),
@@ -43,7 +43,7 @@ EFFICIENCYSET =cms.PSet(
             UnbinnedVariables = cms.vstring("diAcop"),
             BinnedVariables = cms.PSet(
                 pt = cms.vdouble(0, 20),
-                abseta = cms.vdouble(0, 0.5, 1, 1.5, 2, 2.5),
+                abseta = cms.vdouble(0, 0.5, 1, 1.5, 2, 2.4),
             ),
          BinToPDFmap = cms.vstring(PDFName)
         ),
@@ -61,7 +61,7 @@ EFFICIENCYSET =cms.PSet(
             UnbinnedVariables = cms.vstring("diAcop"),
             BinnedVariables = cms.PSet(
                 pt = cms.vdouble(0, 2, 3, 4, 5, 6, 7, 10, 14, 20),
-                abseta = cms.vdouble(1.5, 2.5),
+                abseta = cms.vdouble(1.5, 2.4),
             ),
          BinToPDFmap = cms.vstring(PDFName)
         )
@@ -90,8 +90,8 @@ process.tagProbeFitTreeAnalyzer = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
                          diRap            = cms.vstring("diele y", "-3", "3", ""), 
                          diAcop           = cms.vstring("diele acop", "0", "0.06", ""), 
                          pt               = cms.vstring("Probe p_{T}", "0.0", "20", "GeV/c"),
-                         eta              = cms.vstring("Probe #eta", "-2.5", "2.5", ""),
-                         abseta           = cms.vstring("Probe |#eta|", "0", "2.5", ""),
+                         eta              = cms.vstring("Probe #eta", "-2.4", "2.4", ""),
+                         abseta           = cms.vstring("Probe |#eta|", "0", "2.4", ""),
                          tag_pt           = cms.vstring("Tag p_{T}", "0", "20", "GeV/c^{2}"),
     ),
     # defines all the discrete variables of the probes available in the input tree and intended for use in the efficiency calculations

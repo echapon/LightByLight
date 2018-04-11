@@ -48,8 +48,8 @@ TString collTag = "PbPb"; // isPbPb ? "PbPb" : "pp";
 bool doToys = false;
 
 // Location of the files
-const char* fDataName = "tnp_Ana_Data_GED_DoubleEG2.root";
-const char* fMCName = "tnp_Ana_MC_GED_DoubleEG2.root";
+const char* fDataName = "tnp_Ana_Data_HM_DoubleEG2.root";
+const char* fMCName = "tnp_Ana_MC_HM_DoubleEG2.root";
 
 
 
@@ -64,7 +64,7 @@ TString allTag("DoubleEG2_1bin");
 
 // Automatic parameters (shouldn't require modification by the user)
 const int nAbsEtaBins = 2;
-TString cutTag("trigTree_GED"); 
+TString cutTag("trigTree_HM"); 
 TString cutLegend("L1 EG2 trigger");
 TString absetaTag("DoubleEG2_EBEE");
 TString absetaVar("abseta");
@@ -201,7 +201,7 @@ void TnPEffDraw() {
 
 
   TH1F *hPad = new TH1F("hPad",";p^{e}_{T} [GeV/c];Single ele. Efficiency",5,0,20);
-  TH1F *hPad1 = new TH1F("hPad1",";#eta^{e} ;Single ele. Efficiency",5,0,2.5);
+  TH1F *hPad1 = new TH1F("hPad1",";#eta^{e} ;Single ele. Efficiency",5,0,2.4);
   hPad->GetXaxis()->CenterTitle();
   hPad1->GetXaxis()->CenterTitle();
   hPad->GetXaxis()->SetLabelSize(0.);
@@ -349,7 +349,7 @@ void TnPEffDraw() {
      // fit mc
      TF1 *fmc = (TF1*) fdata->Clone("fmc");;
      // Initialize the normalization to the efficiency in the last point
-     if (isPbPb) fmc->SetParameters(ComPt0[i]->GetX()[ComPt0[i]->GetN()-1],0.5,2.5); 
+     if (isPbPb) fmc->SetParameters(ComPt0[i]->GetX()[ComPt0[i]->GetN()-1],0.5,2.4); 
      else fmc->SetParameters(ComPt0[i]->GetX()[ComPt0[i]->GetN()-1],2.2,1.5); 
      fmc->SetLineColor(kRed);
      ComPt0[i]->Fit(fmc,"WRME");

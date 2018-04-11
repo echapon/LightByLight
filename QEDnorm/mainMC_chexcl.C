@@ -45,16 +45,14 @@ void fillNextraTracks(const eventTreeReader &evtR,
       double eleEta0, double elePhi0, double eleEta1, double elePhi1, 
       int &nextratracks);
 
-void mainMC_chexcl() {
+void mainMC_chexcl(int idir=0) {
    TChain *tchHLT = new TChain("hltanalysis/HltTree");
    TChain *tchEvt = new TChain("ggHiNtuplizer/EventTree");
    TChain *tchPix = new TChain("pixel/PixelTree");
 
-   for (int i=1; i<=8; i++) {
-      tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",i));
-      tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",i));
-      tchPix->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",i));
-   }
+   tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",idir));
+   tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",idir));
+   tchPix->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",idir));
    cout << tchHLT->GetEntries() << " " << tchEvt->GetEntries() << " " << tchPix->GetEntries() << endl;
    // return;
 
@@ -106,8 +104,8 @@ void mainMC_chexcl() {
    hltR.fChain->SetBranchStatus("HLT_HIUPCL1DoubleEG2NotHF2_v1_Prescl",1);
    pixR.fChain->SetBranchStatus("nEv",1); 
    pixR.fChain->SetBranchStatus("nhits*",1); 
-   pixR.fChain->SetBranchStatus("r*",1); 
-   pixR.fChain->SetBranchStatus("eta*",1); 
+   // pixR.fChain->SetBranchStatus("r*",1); 
+   pixR.fChain->SetBranchStatus("phi*",1); 
 
    if (evtR.fChain == 0) return;
    if (pixR.fChain == 0) return;
@@ -119,18 +117,9 @@ void mainMC_chexcl() {
 
    if (nentries != nentries2 || nentries != nentries3) return;
 
-   TFile *fout = new TFile("output.root","RECREATE");
+   TFile *fout = new TFile(Form("output_%d.root",idir),"RECREATE");
    clHist hGenAll("genall");
    clHist hGenPass("genpass");
-
-   // pixel plots
-   TH1F *hmin1 = new TH1F("hmin1","hmin1",100,0,10);
-   TH2F *hmin21 = new TH2F("hmin21","hmin1",100,-10,10,100,-10,10);
-   TH2F *hmin31 = new TH2F("hmin31","hmin1",100,-10,10,100,-10,10);
-   TH1F *hmin2 = new TH1F("hmin2","hmin2",100,0,10);
-   TH1F *hmin3 = new TH1F("hmin3","hmin3",100,0,10);
-   TH1F *hmin4 = new TH1F("hmin4","hmin4",100,0,10);
-   TH1F *hmin5 = new TH1F("hmin5","hmin5",100,0,10);
 
    // plots for charged exclusivity
    TH1F *hextratracksGED = new TH1F("hextratracksGED","hextratracksGED",10,0,10);
@@ -185,6 +174,27 @@ void mainMC_chexcl() {
    clHist hRecoHMPassTrigDouble_recoHM("recoHMpassTrigDouble_recoHM");
    clHist hRecoHMPassTrigDoubleGenPassTrigDouble_gen("recoHMpassTrigDouble_genpassTrigDouble_gen");
    clHist hRecoHMPassTrigDoubleGenPassTrigDouble_recoHM("recoHMpassTrigDouble_genpassTrigDouble_recoHM");
+
+   // output TTree's
+   float acopGED, acopHM;
+   int nextra_track_GED, nextra_track_HM;
+   int nhits1, nhits2, nhits3, nhits4, nhits5;
+   TTree *trGED = new TTree("trGED","tree for GED");
+   TTree *trHM = new TTree("trHM","tree for HM");
+   trGED->Branch("acop",&acopGED,"acop/F");
+   trHM->Branch("acop",&acopHM,"acop/F");
+   trGED->Branch("nextra_track",&nextra_track_GED,"nextra_track/I");
+   trHM->Branch("nextra_track",&nextra_track_HM,"nextra_track/I");
+   trGED->Branch("nhits1",&nhits1,"nhits1/I");
+   trGED->Branch("nhits2",&nhits2,"nhits2/I");
+   trGED->Branch("nhits3",&nhits3,"nhits3/I");
+   trGED->Branch("nhits4",&nhits4,"nhits4/I");
+   trGED->Branch("nhits5",&nhits5,"nhits5/I");
+   trHM->Branch("nhits1",&nhits1,"nhits1/I");
+   trHM->Branch("nhits2",&nhits2,"nhits2/I");
+   trHM->Branch("nhits3",&nhits3,"nhits3/I");
+   trHM->Branch("nhits4",&nhits4,"nhits4/I");
+   trHM->Branch("nhits5",&nhits5,"nhits5/I");
 
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
@@ -247,7 +257,7 @@ void mainMC_chexcl() {
             && (fabs(evtR.eleSCEta->at(0)) < 1.4442 || fabs(evtR.eleSCEta->at(0)) > 1.566)
             && (fabs(evtR.eleSCEta->at(1)) < 1.4442 || fabs(evtR.eleSCEta->at(1)) > 1.566)) : false;
       bool iso       =  (hovere && track_iso && ecal_iso && hcal_iso);
-      int nextra_track_GED=0;
+      nextra_track_GED=0;
       TLorentzVector ele0, ele1, diele;
       if (ele_two) {
          ele0.SetPtEtaPhiM(evtR.elePt->at(0),evtR.eleEta->at(0),evtR.elePhi->at(0),eleMass);
@@ -288,6 +298,7 @@ void mainMC_chexcl() {
       recoGEDok    =  ele_pt && ele_eta && ele_SCeta && opp_chrg && (recoGEDmass>4) && miss_hit && iso 
          && (recoGEDpt < 2.0) && (fabs(recoGEDrap)<2.5);// && (acop(ele0.DeltaPhi(ele1)) < 0.01);
       // recoGEDok = recoGEDok && exclOK;
+      acopGED = acop(ele0.DeltaPhi(ele1));
 
       // --- HM cuts ---
       bool eleHM_two   =  (evtR.ngsfEle==2 );
@@ -296,7 +307,7 @@ void mainMC_chexcl() {
       bool ele_gsf_pt  =  eleHM_two ? ( evtR.elegsfTrkPt->at(0) > 2 && evtR.elegsfTrkPt->at(1) > 2 ) : false;
       bool ele_gsf_eta  =  eleHM_two ? ( fabs(evtR.elegsfTrkEta->at(0)) < 2.5 && fabs(evtR.elegsfTrkEta->at(1)) < 2.5 ) : false;
       bool gsf_miss_hit=  eleHM_two ? ( evtR.elegsfTrkMissHits->at(0) <= 1 && evtR.elegsfTrkMissHits->at(1) <= 1) : false;
-      int nextra_track_HM=0;
+      nextra_track_HM=0;
 
       // exclOK=false;
       ele0 = TLorentzVector();
@@ -341,6 +352,50 @@ void mainMC_chexcl() {
 
       recoHMok   = ele_gsf_pt && ele_gsf_eta && ele_gsf_chg && diele.M()>4 && gsf_miss_hit && diele.Pt() < 2.0;// && (acop(ele0.DeltaPhi(ele1)) < 0.01);  
       // recoHMok   = recoHMok && exclOK;
+      acopHM = acop(ele0.DeltaPhi(ele1));
+
+      // remove pixel duplicates
+      float dphimin=999;
+      nhits1=0;
+      nhits2=0;
+      nhits3=0;
+      nhits4=0;
+      nhits5=0;
+      for (int i=0; i<pixR.nhits1; i++) {
+         dphimin=999.;
+         for (int j=0; j<i; j++) {
+            dphimin = min(dphimin,fabs(pixR.phi1[i]-pixR.phi1[j]));
+         }
+         if (dphimin>0.05) nhits1++;
+      }
+      for (int i=0; i<pixR.nhits2; i++) {
+         dphimin=999.;
+         for (int j=0; j<i; j++) {
+            dphimin = min(dphimin,fabs(pixR.phi2[i]-pixR.phi2[j]));
+         }
+         if (dphimin>0.05) nhits2++;
+      }
+      for (int i=0; i<pixR.nhits3; i++) {
+         dphimin=999.;
+         for (int j=0; j<i; j++) {
+            dphimin = min(dphimin,fabs(pixR.phi3[i]-pixR.phi3[j]));
+         }
+         if (dphimin>0.05) nhits3++;
+      }
+      for (int i=0; i<pixR.nhits4; i++) {
+         dphimin=999.;
+         for (int j=0; j<i; j++) {
+            dphimin = min(dphimin,fabs(pixR.phi4[i]-pixR.phi4[j]));
+         }
+         if (dphimin>0.05) nhits4++;
+      }
+      for (int i=0; i<pixR.nhits5; i++) {
+         dphimin=999.;
+         for (int j=0; j<i; j++) {
+            dphimin = min(dphimin,fabs(pixR.phi5[i]-pixR.phi5[j]));
+         }
+         if (dphimin>0.05) nhits5++;
+      }
 
       // --- FILL HISTOS ---
       hGenAll.fill(genpt,genrap,genmass,gendphi);
@@ -373,51 +428,6 @@ void mainMC_chexcl() {
             }
          }
 
-         // pixel check
-         double z = (evtR.nVtx>0) ? evtR.zVtx->at(0) : 0.;
-         for (int i=0; i<pixR.nhits1; i++) {
-            double zpp = pixR.r1[i]/tan(2.*atan(exp(-pixR.eta1[i])))-z;
-            double zp0 = pixR.r1[i]/tan(2.*atan(exp(-ele0.Eta())));
-            double zp1 = pixR.r1[i]/tan(2.*atan(exp(-ele1.Eta())));
-            // cout << pixR.r1[i] << " " << pixR.eta1[i] << "; " << ele0.Eta() << " " << ele1.Eta() << "; " << z << " " << zpp  << "; " << zp0 << " " << zp1 << endl;
-            // cout << min(fabs(zp1), fabs(zp0)) << endl;
-            hmin1->Fill(min(fabs(zp1-zpp), fabs(zp0-zpp)));
-            hmin21->Fill(zp0,zpp);
-            hmin31->Fill(zp0,zpp+z);
-         }
-         for (int i=0; i<pixR.nhits2; i++) {
-            double zpp = pixR.r2[i]/tan(2.*atan(exp(-pixR.eta2[i])))-z;
-            double zp0 = pixR.r2[i]/tan(2.*atan(exp(-ele0.Eta())));
-            double zp1 = pixR.r2[i]/tan(2.*atan(exp(-ele1.Eta())));
-            // cout << pixR.r1[i] << " " << pixR.eta1[i] << "; " << ele0.Eta() << " " << ele1.Eta() << "; " << z << " " << zpp  << "; " << zp0 << " " << zp1 << endl;
-            // cout << min(fabs(zp1), fabs(zp0)) << endl;
-            hmin2->Fill(min(fabs(zp1-zpp), fabs(zp0-zpp)));
-         }
-         for (int i=0; i<pixR.nhits3; i++) {
-            double zpp = pixR.r3[i]/tan(2.*atan(exp(-pixR.eta3[i])))-z;
-            double zp0 = pixR.r3[i]/tan(2.*atan(exp(-ele0.Eta())));
-            double zp1 = pixR.r3[i]/tan(2.*atan(exp(-ele1.Eta())));
-            // cout << pixR.r1[i] << " " << pixR.eta1[i] << "; " << ele0.Eta() << " " << ele1.Eta() << "; " << z << " " << zpp  << "; " << zp0 << " " << zp1 << endl;
-            // cout << min(fabs(zp1), fabs(zp0)) << endl;
-            hmin3->Fill(min(fabs(zp1-zpp), fabs(zp0-zpp)));
-         }
-         for (int i=0; i<pixR.nhits4; i++) {
-            double zpp = pixR.r4[i]/tan(2.*atan(exp(-pixR.eta4[i])))-z;
-            double zp0 = pixR.r4[i]/tan(2.*atan(exp(-ele0.Eta())));
-            double zp1 = pixR.r4[i]/tan(2.*atan(exp(-ele1.Eta())));
-            // cout << pixR.r1[i] << " " << pixR.eta1[i] << "; " << ele0.Eta() << " " << ele1.Eta() << "; " << z << " " << zpp  << "; " << zp0 << " " << zp1 << endl;
-            // cout << min(fabs(zp1), fabs(zp0)) << endl;
-            hmin4->Fill(min(fabs(zp1-zpp), fabs(zp0-zpp)));
-         }
-         for (int i=0; i<pixR.nhits5; i++) {
-            double zpp = pixR.r5[i]/tan(2.*atan(exp(-pixR.eta5[i])))-z;
-            double zp0 = pixR.r5[i]/tan(2.*atan(exp(-ele0.Eta())));
-            double zp1 = pixR.r5[i]/tan(2.*atan(exp(-ele1.Eta())));
-            // if (min(fabs(zp1), fabs(zp0))<0.1) cout << pixR.r1[i] << " " << pixR.eta1[i] << "; " << ele0.Eta() << " " << ele1.Eta() << "; " << z << " " << zpp  << "; " << zp0 << " " << zp1 << endl;
-            // cout << min(fabs(zp1), fabs(zp0)) << endl;
-            hmin5->Fill(min(fabs(zp1-zpp), fabs(zp0-zpp)));
-         }
-
          // fill the extra tracks histos
          bool isLowAcop = (acop(recoGEDdphi)<0.005);
          hextratracksGED->Fill(nextra_track_GED);
@@ -425,24 +435,25 @@ void mainMC_chexcl() {
          else hextratracksGED_hacop->Fill(nextra_track_GED);
 
          // fill pixel histos
-         hnhits1->Fill(pixR.nhits1);
-         hnhits2->Fill(pixR.nhits2);
-         hnhits3->Fill(pixR.nhits3);
-         hnhits4->Fill(pixR.nhits4);
-         hnhits5->Fill(pixR.nhits5);
+         hnhits1->Fill(nhits1);
+         hnhits2->Fill(nhits2);
+         hnhits3->Fill(nhits3);
+         hnhits4->Fill(nhits4);
+         hnhits5->Fill(nhits5);
          if (isLowAcop) {
-            hnhits1_lacop->Fill(pixR.nhits1);
-            hnhits2_lacop->Fill(pixR.nhits2);
-            hnhits3_lacop->Fill(pixR.nhits3);
-            hnhits4_lacop->Fill(pixR.nhits4);
-            hnhits5_lacop->Fill(pixR.nhits5);
+            hnhits1_lacop->Fill(nhits1);
+            hnhits2_lacop->Fill(nhits2);
+            hnhits3_lacop->Fill(nhits3);
+            hnhits4_lacop->Fill(nhits4);
+            hnhits5_lacop->Fill(nhits5);
          } else {
-            hnhits1_hacop->Fill(pixR.nhits1);
-            hnhits2_hacop->Fill(pixR.nhits2);
-            hnhits3_hacop->Fill(pixR.nhits3);
-            hnhits4_hacop->Fill(pixR.nhits4);
-            hnhits5_hacop->Fill(pixR.nhits5);
+            hnhits1_hacop->Fill(nhits1);
+            hnhits2_hacop->Fill(nhits2);
+            hnhits3_hacop->Fill(nhits3);
+            hnhits4_hacop->Fill(nhits4);
+            hnhits5_hacop->Fill(nhits5);
          }
+         trGED->Fill();
       } // if recoGEDok
 
 
@@ -477,6 +488,8 @@ void mainMC_chexcl() {
          hextratracksHM->Fill(nextra_track_HM);
          if (isLowAcop) hextratracksHM_lacop->Fill(nextra_track_HM);
          else hextratracksHM_hacop->Fill(nextra_track_HM);
+
+         trHM->Fill();
       } // if recoHMok
    } // event loop
 
