@@ -10,7 +10,7 @@
 #include <TLegend.h>
 #include <TLatex.h>
 #include <TROOT.h>
-#include "../../../CMS_lumi.C"
+// #include "../../../CMS_lumi.C"
 #include "TStyle.h"
 #include "TPaveStats.h"
 #include "TText.h"

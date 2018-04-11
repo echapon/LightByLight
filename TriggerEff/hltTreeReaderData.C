@@ -4,6 +4,10 @@
 #include <TStyle.h>
 #include <TCanvas.h>
 
+#include <iostream>
+
+using namespace std;
+
 void hltTreeReaderData::Loop()
 {
 //   In a ROOT session, you can do:

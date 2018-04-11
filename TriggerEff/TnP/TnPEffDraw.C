@@ -200,8 +200,8 @@ void TnPEffDraw() {
   // lTextSize *= 1./0.7;
 
 
-  TH1F *hPad = new TH1F("hPad",";p^{#mu}_{T} [GeV/c];Single #mu Efficiency",5,0,20);
-  TH1F *hPad1 = new TH1F("hPad1",";#eta^{#mu} ;Single #mu Efficiency",5,0,2.5);
+  TH1F *hPad = new TH1F("hPad",";p^{e}_{T} [GeV/c];Single ele. Efficiency",5,0,20);
+  TH1F *hPad1 = new TH1F("hPad1",";#eta^{e} ;Single ele. Efficiency",5,0,2.5);
   hPad->GetXaxis()->CenterTitle();
   hPad1->GetXaxis()->CenterTitle();
   hPad->GetXaxis()->SetLabelSize(0.);
@@ -260,13 +260,13 @@ void TnPEffDraw() {
      {
         etamin = ((RooRealVar*) daPtData0[i]->get()->find("abseta"))->getBinning().binLow(0);
         etamax = ((RooRealVar*) daPtData0[i]->get()->find("abseta"))->getBinning().binHigh(0);
-        leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{#mu}_{T}>%.1f, |#eta| #in [%.1f, %.1f])}",ptmin,etamin,etamax));
+        leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{e}_{T}>%.1f, |#eta| #in [%.1f, %.1f])}",ptmin,etamin,etamax));
      }
      else
      {
         etamin = ((RooRealVar*) daPtData0[i]->get()->find("eta"))->getBinning().binLow(0);
         etamax = ((RooRealVar*) daPtData0[i]->get()->find("eta"))->getBinning().binHigh(0);
-        leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{#mu}_{T}>%.1f, #eta #in [%.1f, %.1f])}",ptmin,etamin,etamax));
+        leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{e}_{T}>%.1f, #eta #in [%.1f, %.1f])}",ptmin,etamin,etamax));
      }
      sprintf(legs,"MC STARLIGHT: %.4f^{ + %.3f}_{ - %.3f}", TrkAbsEta0[i][0], TrkAbsEta0[i][1], TrkAbsEta0[i][2]);
      leg1->AddEntry(ComPt0[i],legs,"pl");
@@ -412,8 +412,8 @@ void TnPEffDraw() {
   leg1->SetBorderSize(0);
   leg1->SetTextSize(0.035);
   double ptmin = ((RooRealVar*) daEtaData0->get()->find("pt"))->getBinning().binLow(0);
-  leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{#mu}_{T}>%.1f)}",ptmin));
-  sprintf(legs,"MC PYTHIA+EvtGen: %.4f^{ + %.3f}_{ - %.3f}", Trk0[0], Trk0[1], Trk0[2]);
+  leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{e}_{T}>%.1f)}",ptmin));
+  sprintf(legs,"MC STARLIGHT: %.4f^{ + %.3f}_{ - %.3f}", Trk0[0], Trk0[1], Trk0[2]);
   leg1->AddEntry(ComPt0[0],legs,"pl");
   sprintf(legs,"Data: %.4f^{ + %.3f}_{ - %.3f}", Trk1[0], Trk1[1], Trk1[2]);
   leg1->AddEntry(ComPt1[0],legs,"pl");

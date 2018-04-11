@@ -14,7 +14,9 @@ process = cms.Process("TagProbe")
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.source = cms.Source("EmptySource")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )    
-PDFName = "expo"
+PDFName = "expoPlusBkg"
+if dataOrMC == "MC":
+   PDFName = "expo"
 
 
 EFFICIENCYSET =cms.PSet(
@@ -103,11 +105,19 @@ process.tagProbeFitTreeAnalyzer = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
     # each pdf needs to define "signal", "backgroundPass", "backgroundFail" pdfs, "efficiency[0.9,0,1]" and "signalFractionInPassing[0.9]" are used for initial values  
     PDFs = cms.PSet(
         # Nominal
-	    expo = cms.vstring(
+	    expoPlusBkg = cms.vstring(
 		    "Exponential::signal(diAcop, decaySig[-6.8e2,-1e4,0])",
 	    	"Exponential::backgroundPass(diAcop, decayBkgPass[-12,-1e4,0])",
 		    "Exponential::backgroundFail(diAcop, decayBkgFail[-12,-1e4,0])",
-	    	"efficiency[0.9,0.5,1]",
+	    	"efficiency[0.9,0.,1]",
+		    "signalFractionInPassing[0.9]",
+    	),    
+        # Nominal
+	    expo = cms.vstring(
+		    "Exponential::signal(diAcop, decaySig[-6.8e2,-1e4,0])",
+	    	"Uniform::backgroundPass(diAcop)",
+	    	"Uniform::backgroundFail(diAcop)",
+	    	"efficiency[0.9,0.,1]",
 		    "signalFractionInPassing[0.9]",
     	),    
     ),

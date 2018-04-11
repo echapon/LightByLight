@@ -31,6 +31,8 @@ void qedNorm(const char* type = "GED") {
 
    // estimate the purity in data
    TH1F *hacop_data = (TH1F*) fdata->Get(Form("haco_reco%snoaco_passTrigDouble_reco%s",type,type));
+   hacop_data->GetXaxis()->SetTitle("Acoplanarity");
+   hacop_data->GetYaxis()->SetTitle("Entries");
    TH1F *hacop_mc = (TH1F*) fmc->Get(Form("haco_reco%spassTrigDouble_reco%s",type,type));
 
    TF1 *fexp = new TF1("fexp","[0]*exp(-[1]*x) + [2]*exp(-[3]*x)",0,0.06);
