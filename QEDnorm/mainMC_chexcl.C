@@ -183,6 +183,7 @@ void mainMC_chexcl(int idir=0) {
    float deltaptGED, deltaptHM;
    int nextra_track_GED, nextra_track_HM;
    int nhits1, nhits2, nhits3, nhits4, nhits5;
+   int doubleEG2okI;
    TTree *trGED = new TTree("trGED","tree for GED");
    TTree *trHM = new TTree("trHM","tree for HM");
    trGED->Branch("acop",&acopGED,"acop/F");
@@ -207,6 +208,8 @@ void mainMC_chexcl(int idir=0) {
    trHM->Branch("nhits3",&nhits3,"nhits3/I");
    trHM->Branch("nhits4",&nhits4,"nhits4/I");
    trHM->Branch("nhits5",&nhits5,"nhits5/I");
+   trGED->Branch("doubleEG2",&doubleEG2okI,"doubleEG2/F");
+   trHM->Branch("doubleEG2",&doubleEG2okI,"doubleEG2/F");
 
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
@@ -233,6 +236,7 @@ void mainMC_chexcl(int idir=0) {
       // bool exclOK   =  false;
       bool SingleEG5ok = hltR.HLT_HIUPCL1SingleEG5NotHF2_v1;
       bool DoubleEG2ok = hltR.HLT_HIUPCL1DoubleEG2NotHF2_v1;
+      doubleEG2okI = DoubleEG2ok;
 
       // --- GEN CUTS ---
       // usually we only have 2 MC particles and they are electrons

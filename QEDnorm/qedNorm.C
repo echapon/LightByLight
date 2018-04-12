@@ -12,9 +12,9 @@ const double xsec_3_53         = 20.6e3; // in mub
 const double xsec_3_53_err     = 0.00001*xsec_3_53; // FIXME what is the uncertainty?
 const double lumi_brilcalc     = 391; // in mub-1
 const double lumi_brilcalc_err = 0.12*lumi_brilcalc;
-const double sf_hm             = 0.923*0.98;
+const double sf_hm             = 0.923*0.98*0.98;
 const double sf_hm_syst        = sqrt(pow(0.019,2)+pow(2*0.02,2));
-const double sf_ged            = 0.924*0.98;
+const double sf_ged            = 0.924*0.98*0.98;
 const double sf_ged_syst       = sqrt(pow(0.019,2)+pow(2*0.02,2));
 const int    ngen              = 7929199;
 

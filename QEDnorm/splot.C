@@ -251,7 +251,7 @@ void MakePlots(RooWorkspace* ws, const char* varname){
   //  TCanvas* cdata = new TCanvas();
   cdata->cd(1);
   gPad->SetLogy();
-  RooPlot* frame = acop->frame(Range(0,0.06),Bins(30)) ;
+  RooPlot* frame = acop->frame(Range(0,0.1),Bins(20)) ;
   data->plotOn(frame ) ;
   model->plotOn(frame) ;
   model->plotOn(frame,Components(*signal),LineStyle(kDashed), LineColor(kRed)) ;
@@ -275,7 +275,13 @@ void MakePlots(RooWorkspace* ws, const char* varname){
   // create weightfed data set
   RooDataSet * dataw_sig = new RooDataSet(data->GetName(),data->GetTitle(),data,*data->get(),0,"NS_sw") ;
 
-  RooPlot* frame2 = exclvar->frame(Bins(10)) ;
+  RooPlot* frame2;
+  TString tvarname(varname);
+  if (tvarname=="mass") frame2 = exclvar->frame(Bins(50),Range(0.,100)) ;
+  else if (tvarname=="deltapt") frame2 = exclvar->frame(Bins(10),Range(0.,1)) ;
+  else if (tvarname=="rap") frame2 = exclvar->frame(Bins(25),Range(-2.5,2.5)) ;
+  else if (tvarname=="pt") frame2 = exclvar->frame(Bins(50),Range(0.,1)) ;
+  else frame2 = exclvar->frame(Bins(10)) ;
   dataw_sig->plotOn(frame2, DataError(RooAbsData::SumW2) ) ;
 
   frame2->SetTitle(Form("%s distribution for signal",varname));
@@ -288,7 +294,12 @@ void MakePlots(RooWorkspace* ws, const char* varname){
   // yield + "_sw".
   cdata->cd(3);
   RooDataSet * dataw_bkg = new RooDataSet(data->GetName(),data->GetTitle(),data,*data->get(),0,"NB_sw") ;
-  RooPlot* frame3 = exclvar->frame(Bins(10)) ;
+  RooPlot* frame3;
+  if (tvarname=="mass") frame3 = exclvar->frame(Bins(50),Range(0.,100)) ;
+  else if (tvarname=="deltapt") frame3 = exclvar->frame(Bins(10),Range(0.,1)) ;
+  else if (tvarname=="rap") frame3 = exclvar->frame(Bins(25),Range(-2.5,2.5)) ;
+  else if (tvarname=="pt") frame3 = exclvar->frame(Bins(50),Range(0.,1)) ;
+  else frame3 = exclvar->frame(Bins(10)) ;
   dataw_bkg->plotOn(frame3,DataError(RooAbsData::SumW2) ) ;
 
   frame3->SetTitle(Form("%s distribution for background",varname));
