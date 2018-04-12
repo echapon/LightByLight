@@ -1,5 +1,5 @@
 executable            = batch.sh
-arguments             = mainMC_chexcl.C $(ProcId)
+arguments             = mainData_chexcl.C $(ProcId)
 output                = output/$(ClusterId).$(ProcId).out
 error                 = error/$(ClusterId).$(ProcId).err
 log                   = log/$(ClusterId).log

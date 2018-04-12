@@ -23,7 +23,7 @@ class clHist {
 
       clHist(const char* name) {
          hpt = new TH1F(Form("hpt_%s",name),"",20,0,2);
-         hmass = new TH1F(Form("hmass_%s",name),"",80,0,20);
+         hmass = new TH1F(Form("hmass_%s",name),"",200,0,200);
          hrap = new TH1F(Form("hrap_%s",name),"",30,-3,3);
          haco = new TH1F(Form("haco_%s",name),"",30,0,0.06);
          hint = new TH1F(Form("hint_%s",name),"",1,0,1);
@@ -152,12 +152,24 @@ void mainData_chexcl(int idir=0) {
 
    // output TTree's
    float acopGED, acopHM;
+   float massGED, massHM;
+   float rapGED, rapHM;
+   float ptGED, ptHM;
+   float deltaptGED, deltaptHM;
    int nextra_track_GED, nextra_track_HM;
    int nhits1, nhits2, nhits3, nhits4, nhits5;
    TTree *trGED = new TTree("trGED","tree for GED");
    TTree *trHM = new TTree("trHM","tree for HM");
    trGED->Branch("acop",&acopGED,"acop/F");
    trHM->Branch("acop",&acopHM,"acop/F");
+   trGED->Branch("mass",&massGED,"mass/F");
+   trHM->Branch("mass",&massHM,"mass/F");
+   trGED->Branch("rap",&rapGED,"rap/F");
+   trHM->Branch("rap",&rapHM,"rap/F");
+   trGED->Branch("pt",&ptGED,"pt/F");
+   trHM->Branch("pt",&ptHM,"pt/F");
+   trGED->Branch("deltapt",&deltaptGED,"deltapt/F");
+   trHM->Branch("deltapt",&deltaptHM,"deltapt/F");
    trGED->Branch("nextra_track",&nextra_track_GED,"nextra_track/I");
    trHM->Branch("nextra_track",&nextra_track_HM,"nextra_track/I");
    trGED->Branch("nhits1",&nhits1,"nhits1/I");
@@ -253,6 +265,10 @@ void mainData_chexcl(int idir=0) {
          && (recoGEDpt < 2.0) && (fabs(recoGEDrap)<2.5);
       recoGEDok_noaco = recoGEDok_noaco && exclOK;
       acopGED = acop(ele0.DeltaPhi(ele1));
+      deltaptGED = fabs(ele0.Pt()-ele1.Pt());
+      ptGED = diele.Pt();
+      rapGED = diele.Rapidity();
+      massGED = diele.M();
       recoGEDok = recoGEDok_noaco && (acopGED < 0.01);
 
       // --- HM cuts ---
@@ -309,6 +325,10 @@ void mainData_chexcl(int idir=0) {
       recoHMok_noaco   = ele_gsf_pt && ele_gsf_eta && ele_gsf_chg && diele.M()>4 && gsf_miss_hit && exclOK && diele.Pt() < 2.0;  
       // cout << ele_gsf_pt << ele_gsf_eta << ele_gsf_chg << (diele.M()>4) << gsf_miss_hit << exclOK << (diele.Pt() < 2.0) << endl;  
       acopHM = acop(ele0.DeltaPhi(ele1));
+      deltaptHM = fabs(ele0.Pt()-ele1.Pt());
+      ptHM = diele.Pt();
+      rapHM = diele.Rapidity();
+      massHM = diele.M();
       recoHMok = recoHMok_noaco && acopHM < 0.01;
 
       // cout << recoHMok_noaco << recoGEDok_noaco << endl;

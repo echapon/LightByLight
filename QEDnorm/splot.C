@@ -102,6 +102,10 @@ void AddData(RooWorkspace* ws, const char* filename, const char* treename){
    TTree *tr = (TTree*) f->Get(treename);
 
    RooRealVar acop("acop","Acoplanarity",0,0.2);
+   RooRealVar mass("mass","Mass",0,200);
+   RooRealVar pt("pt","p_{T}",0,200);
+   RooRealVar deltapt("deltapt","#delta p_{T}",0,5);
+   RooRealVar rap("rap","Rapidity",-3,3);
    RooRealVar nextra_track("nextra_track","N(extra tracks)",0,10);
    RooRealVar nhits1("nhits1","N(hits, 1st layer)",0,10);
    RooRealVar nhits2("nhits2","N(hits, 2st layer)",0,10);
@@ -109,12 +113,19 @@ void AddData(RooWorkspace* ws, const char* filename, const char* treename){
    RooRealVar nhits4("nhits4","N(hits, 4st layer)",0,10);
    RooRealVar nhits5("nhits5","N(hits, 5st layer)",0,10);
 
-   RooArgSet cols(acop,nextra_track,nhits1,nhits2,nhits3,nhits4,nhits5);
+   // RooArgSet cols(acop,mass,pt,deltapt,rap,nextra_track,nhits1,nhits2,nhits3,nhits4,nhits5);
+   RooArgSet cols(acop,mass,pt,deltapt,rap,nextra_track);
+   RooArgSet cols2(nhits1,nhits2,nhits3,nhits4,nhits5);
+   cols.add(cols2);
 
    RooDataSet data("data","data",cols) ;
 
    // import by hand (cannot use Import(tr) because we have integers)
    float acopF; tr->SetBranchAddress("acop",&acopF);
+   float massF; tr->SetBranchAddress("mass",&massF);
+   float ptF; tr->SetBranchAddress("pt",&ptF);
+   float deltaptF; tr->SetBranchAddress("deltapt",&deltaptF);
+   float rapF; tr->SetBranchAddress("rap",&rapF);
    int nextra_trackI; tr->SetBranchAddress("nextra_track",&nextra_trackI);
    int nhits1I; tr->SetBranchAddress("nhits1",&nhits1I);
    int nhits2I; tr->SetBranchAddress("nhits2",&nhits2I);
@@ -125,6 +136,10 @@ void AddData(RooWorkspace* ws, const char* filename, const char* treename){
    for (int i=0; i<tr->GetEntries(); i++) {
       tr->GetEntry(i);
       acop.setVal(acopF);
+      mass.setVal(massF);
+      pt.setVal(ptF);
+      deltapt.setVal(deltaptF);
+      rap.setVal(rapF);
       nextra_track.setVal(nextra_trackI);
       nhits1.setVal(nhits1I);
       nhits2.setVal(nhits2I);

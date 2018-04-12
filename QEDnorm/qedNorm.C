@@ -12,15 +12,15 @@ const double xsec_3_53         = 20.6e3; // in mub
 const double xsec_3_53_err     = 0.00001*xsec_3_53; // FIXME what is the uncertainty?
 const double lumi_brilcalc     = 391; // in mub-1
 const double lumi_brilcalc_err = 0.12*lumi_brilcalc;
-const double sf_hm             = 1.;//1.19*1.19*0.923;
-const double sf_hm_syst        = 0.;//sqrt(4*pow(0.235,2)+pow(0.019,2));
-const double sf_ged            = 1.;//1.27*1.27*0.924;
-const double sf_ged_syst       = 0.;//sqrt(4*pow(0.22,2)+pow(0.019,2));
+const double sf_hm             = 0.923*0.98;
+const double sf_hm_syst        = sqrt(pow(0.019,2)+pow(2*0.02,2));
+const double sf_ged            = 0.924*0.98;
+const double sf_ged_syst       = sqrt(pow(0.019,2)+pow(2*0.02,2));
 const int    ngen              = 7929199;
 
 void qedNorm(const char* type = "GED") {
    TFile *fdata = TFile::Open("outputDataAll.root");
-   TFile *fmc = TFile::Open("outputAll.root");
+   TFile *fmc = TFile::Open("outputMCAll.root");
 
    // exclusivity cuts efficiency
    double excleff, excleff_err;
