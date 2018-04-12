@@ -214,8 +214,8 @@ void MakePlots(RooWorkspace* ws, const char* varname){
   std::cout << "make plots" << std::endl;
 
   // make our canvas
-  TCanvas* cdata = new TCanvas("sPlot","sPlot demo", 400, 600);
-  cdata->Divide(1,3);
+  TCanvas* cdata = new TCanvas("sPlot","sPlot demo", 1600, 400);
+  cdata->Divide(3,1);
 
   // get what we need out of the workspace
   RooAbsPdf* model = ws->pdf("model");
@@ -263,7 +263,7 @@ void MakePlots(RooWorkspace* ws, const char* varname){
   RooPlot* frame2 = exclvar->frame(Bins(10)) ;
   dataw_sig->plotOn(frame2, DataError(RooAbsData::SumW2) ) ;
 
-  frame2->SetTitle("exclvar distribution for signal");
+  frame2->SetTitle(Form("%s distribution for signal",varname));
   frame2->Draw() ;
   // frame2->getHist()->SaveAs(Form("%s_sOnly.root",varname));
 
@@ -276,9 +276,29 @@ void MakePlots(RooWorkspace* ws, const char* varname){
   RooPlot* frame3 = exclvar->frame(Bins(10)) ;
   dataw_bkg->plotOn(frame3,DataError(RooAbsData::SumW2) ) ;
 
-  frame3->SetTitle("exclvar distribution for background");
+  frame3->SetTitle(Form("%s distribution for background",varname));
   frame3->Draw() ;
 
   //  cdata->SaveAs("SPlot.gif");
 
+  // charged track exclusivity
+  if (TString(varname)=="nextra_track") {
+     double ntot = dataw_sig->sumEntries();
+     double npass = dataw_sig->sumEntries("nextra_track==0");
+     double ntot2 = data->sumEntries();
+     double npass2 = data->sumEntries("nextra_track==0");
+     double eff = npass/ntot;
+     double eff2 = npass2/ntot2;
+     double eff_err_up = TEfficiency::ClopperPearson(ntot2,npass2, 0.683, true)-eff2;
+     double eff_err_down = eff2-TEfficiency::ClopperPearson(ntot2,npass2, 0.683, false);
+     cout << "nextra_track==0 efficiency: " << eff << " +" << eff_err_up << " -" << eff_err_down << endl;
+
+     // cut based
+     double ntot3 = data->sumEntries("acop<0.005");
+     double npass3 = data->sumEntries("acop<0.005&&nextra_track==0");
+     double eff3 = npass3/ntot3;
+     double eff3_err_up = TEfficiency::ClopperPearson(ntot3,npass3, 0.683, true)-eff3;
+     double eff3_err_down = eff3-TEfficiency::ClopperPearson(ntot3,npass3, 0.683, false);
+     cout << "nextra_track==0 efficiency (cut-based): " << eff3 << " +" << eff3_err_up << " -" << eff3_err_down << endl;
+  }
 }
