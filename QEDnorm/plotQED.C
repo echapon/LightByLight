@@ -12,13 +12,13 @@ void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=391, do
    TH1F *hdeltapt_data = new TH1F("hdeltapt_data",";#Delta p_{T} (ee) [GeV];Entries",10,0,1);
    TH1F *hrap_data = new TH1F("hrap_data",";y (ee);Entries",25,-2.5,2.5);
    TH1F *hpt_data = new TH1F("hpt_data",";p_{T} (ee) [GeV];Entries",20,0,1);
-   TH1F *hacop_data = new TH1F("hacop_data",";M_{ee} [GeV];Entries",20,0,acop_cut);
+   TH1F *hacop_data = new TH1F("hacop_data",";Acoplanarity;Entries",20,0,acop_cut);
 
    TH1F *hmass_MC = new TH1F("hmass_MC",";M (ee) [GeV];Entries",50,0,100);
    TH1F *hdeltapt_MC = new TH1F("hdeltapt_MC",";#Delta p_{T} (ee) [GeV];Entries",10,0,1);
    TH1F *hrap_MC = new TH1F("hrap_MC",";y (ee);Entries",25,-2.5,2.5);
    TH1F *hpt_MC = new TH1F("hpt_MC",";p_{T} (ee) [GeV];Entries",20,0,1);
-   TH1F *hacop_MC = new TH1F("hacop_MC",";M_{ee} [GeV];Entries",20,0,acop_cut);
+   TH1F *hacop_MC = new TH1F("hacop_MC",";Acoplanarity;Entries",20,0,acop_cut);
 
    trdata->Project(hmass_data->GetName(),"mass",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
    trdata->Project(hdeltapt_data->GetName(),"deltapt",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));

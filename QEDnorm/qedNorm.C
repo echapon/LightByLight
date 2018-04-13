@@ -12,39 +12,35 @@ const double xsec_3_53         = 20.6e3; // in mub
 const double xsec_3_53_err     = 0.00001*xsec_3_53; // FIXME what is the uncertainty?
 const double lumi_brilcalc     = 391; // in mub-1
 const double lumi_brilcalc_err = 0.12*lumi_brilcalc;
-const double sf_hm             = 0.923*0.98*0.98;
-const double sf_hm_syst        = sqrt(pow(0.019,2)+pow(2*0.02,2));
-const double sf_ged            = 0.924*0.98*0.98;
-const double sf_ged_syst       = sqrt(pow(0.019,2)+pow(2*0.02,2));
+const double sf_hm             = 0.98*0.98;
+const double sf_hm_syst        = sqrt(pow(0.03,2)+pow(2*0.02,2));
+const double sf_ged            = 0.98*0.98;
+const double sf_ged_syst       = sqrt(pow(0.03,2)+pow(2*0.02,2));
 const int    ngen              = 7929199;
+const double acop_cut          = 0.06;
 
-void qedNorm(const char* type = "GED") {
+void qedNorm(const char* type = "GED", double mass_cut=5) {
    TFile *fdata = TFile::Open("outputDataAll.root");
    TFile *fmc = TFile::Open("outputMCAll.root");
+   TTree *trdata = (TTree*) fdata->Get(Form("tr%s",type));
+   TTree *trmc = (TTree*) fmc->Get(Form("tr%s",type));
 
-   // exclusivity cuts efficiency
-   double excleff, excleff_err;
    double sf, sf_err;
    if (TString(type)=="GED") {
-      excleff = excleff_ged;
-      excleff_err = sqrt(pow(excleff_ged_stat,2)+pow(excleff_ged_syst,2));
       sf = sf_ged;
       sf_err = sf_ged_syst;
-   } else { // HM
-      excleff = excleff_hm;
-      excleff_err = sqrt(pow(excleff_hm_stat,2)+pow(excleff_hm_syst,2));
+   } else {
       sf = sf_hm;
       sf_err = sf_hm_syst;
    }
 
-
    // estimate the purity in data
-   TH1F *hacop_data = (TH1F*) fdata->Get(Form("haco_reco%snoaco_passTrigDouble_reco%s",type,type));
-   hacop_data->GetXaxis()->SetTitle("Acoplanarity");
-   hacop_data->GetYaxis()->SetTitle("Entries");
-   TH1F *hacop_mc = (TH1F*) fmc->Get(Form("haco_reco%spassTrigDouble_reco%s",type,type));
+   TH1F *hacop_data = new TH1F("hacop_data",";Acoplanarity;Entries",30,0,acop_cut);
+   TH1F *hacop_mc = new TH1F("hacop_mc",";Acoplanarity;Entries",30,0,acop_cut);
+   trdata->Project(hacop_data->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
+   trmc->Project(hacop_mc->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
 
-   TF1 *fexp = new TF1("fexp","[0]*exp(-[1]*x) + [2]*exp(-[3]*x)",0,0.06);
+   TF1 *fexp = new TF1("fexp","[0]*exp(-[1]*x) + [2]*exp(-[3]*x)",0,acop_cut);
    fexp->SetParNames("Norm_sig","Decay_sig","Norm_bkg","Decay_bkg");
    fexp->SetParameters(1.5e4,6.8e2,2e2,1.2e1);
 
