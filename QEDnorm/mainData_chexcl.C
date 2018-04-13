@@ -156,6 +156,8 @@ void mainData_chexcl(int idir=0) {
    float rapGED, rapHM;
    float ptGED, ptHM;
    float deltaptGED, deltaptHM;
+   float eleGEDpt1, eleGEDeta1, eleGEDphi1, eleGEDpt2, eleGEDeta2, eleGEDphi2;
+   float eleHMpt1, eleHMeta1, eleHMphi1, eleHMpt2, eleHMeta2, eleHMphi2;
    int nextra_track_GED, nextra_track_HM;
    int nhits1, nhits2, nhits3, nhits4, nhits5;
    int doubleEG2okI;
@@ -183,8 +185,20 @@ void mainData_chexcl(int idir=0) {
    trHM->Branch("nhits3",&nhits3,"nhits3/I");
    trHM->Branch("nhits4",&nhits4,"nhits4/I");
    trHM->Branch("nhits5",&nhits5,"nhits5/I");
-   trGED->Branch("doubleEG2",&doubleEG2okI,"doubleEG2/F");
-   trHM->Branch("doubleEG2",&doubleEG2okI,"doubleEG2/F");
+   trGED->Branch("doubleEG2",&doubleEG2okI,"doubleEG2/I");
+   trHM->Branch("doubleEG2",&doubleEG2okI,"doubleEG2/I");
+   trGED->Branch("elept1",&eleGEDpt1,"elept1/F");
+   trGED->Branch("eleeta1",&eleGEDeta1,"eleeta1/F");
+   trGED->Branch("elephi1",&eleGEDphi1,"elephi1/F");
+   trGED->Branch("elept2",&eleGEDpt2,"elept2/F");
+   trGED->Branch("eleeta2",&eleGEDeta2,"eleeta2/F");
+   trGED->Branch("elephi2",&eleGEDphi2,"elephi2/F");
+   trHM->Branch("elept1",&eleHMpt1,"elept1/F");
+   trHM->Branch("eleeta1",&eleHMeta1,"eleeta1/F");
+   trHM->Branch("elephi1",&eleHMphi1,"elephi1/F");
+   trHM->Branch("elept2",&eleHMpt2,"elept2/F");
+   trHM->Branch("eleeta2",&eleHMeta2,"eleeta2/F");
+   trHM->Branch("elephi2",&eleHMphi2,"elephi2/F");
 
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
@@ -236,6 +250,13 @@ void mainData_chexcl(int idir=0) {
          recoGEDrap = diele.Rapidity();
          recoGEDmass = diele.M();
          recoGEDdphi = ele0.DeltaPhi(ele1);
+
+         eleGEDpt1 = ele0.Pt();
+         eleGEDeta1 = ele0.Eta();
+         eleGEDphi1 = ele0.Phi();
+         eleGEDpt2 = ele1.Pt();
+         eleGEDeta2 = ele1.Eta();
+         eleGEDphi2 = ele1.Phi();
 
          // double EmEnergy_EB = 0;
          // double EmEnergy_EE = 0;
@@ -296,6 +317,13 @@ void mainData_chexcl(int idir=0) {
          recoHMrap = diele.Rapidity();
          recoHMmass = diele.M();
          recoHMdphi = ele0.DeltaPhi(ele1);
+
+         eleHMpt1 = ele0.Pt();
+         eleHMeta1 = ele0.Eta();
+         eleHMphi1 = ele0.Phi();
+         eleHMpt2 = ele1.Pt();
+         eleHMeta2 = ele1.Eta();
+         eleHMphi2 = ele1.Phi();
 
          // double EmEnergy_EB = 0;
          // double EmEnergy_EE = 0;

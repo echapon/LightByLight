@@ -15,4 +15,7 @@ source /afs/cern.ch/sw/lcg/app/releases/ROOT/6.04.02/x86_64-slc6-gcc49-opt/root/
 cp $dir/*C $dir/*h .
 pwd
 root -l -b -q ${macro}+'('${arg}')'
-cp output*root $dir
+mv output*root $dir
+
+# clean files to make sure condor does not copy them back...
+rm *
