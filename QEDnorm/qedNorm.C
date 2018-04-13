@@ -139,4 +139,13 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    cout << "purity: " << 100.*lumimeas_purity/lumimeas << endl;
    cout << "MC stat: " << 100.*lumimeas_mcstat/lumimeas << endl;
    cout << "data-driven eff: " << 100.*lumimeas_sf/lumimeas << endl;
+
+   // print also the ingredients
+   cout << endl;
+   cout << "Ingredients" << endl;
+   double binwidth = hacop_data->GetBinWidth(1);
+   cout << "Ndata: " << norm_data/binwidth << " +- " << norm_data_err/binwidth << endl;
+   cout << "Purity: " << purity_cnt << " +- " << purity_syst << endl;
+   cout << "Acc*eff: " << norm_mc/ngen/binwidth << " +- " << norm_mc_err/ngen/binwidth << endl;
+   cout << "SF: " << sf << " +/- " << sf_err << endl;
 }
