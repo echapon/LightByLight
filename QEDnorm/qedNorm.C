@@ -8,7 +8,7 @@ const double excleff_hm_syst   = 5.1e-2;
 const double excleff_ged       = 89.5e-2;
 const double excleff_ged_stat  = 1.3e-2;
 const double excleff_ged_syst  = 5.03e-2;
-const double xsec_3_53         = 20.6e3; // in mub
+const double xsec_3_53         = 1.086453e-01*20.6e3; // in mub
 const double xsec_3_53_err     = 0.00001*xsec_3_53; // FIXME what is the uncertainty?
 const double lumi_brilcalc     = 391; // in mub-1
 const double lumi_brilcalc_err = 0.12*lumi_brilcalc;
@@ -16,7 +16,7 @@ const double sf_hm             = 0.98*0.98;
 const double sf_hm_syst        = sqrt(pow(0.03,2)+pow(2*0.02,2));
 const double sf_ged            = 0.98*0.98;
 const double sf_ged_syst       = sqrt(pow(0.03,2)+pow(2*0.02,2));
-const int    ngen              = 7929199;
+const int    ngen              = 2399759;//7929199;
 const double acop_cut          = 0.06;
 
 void qedNorm(const char* type = "GED", double mass_cut=5) {
@@ -35,8 +35,8 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    }
 
    // estimate the purity in data
-   TH1F *hacop_data = new TH1F("hacop_data",";Acoplanarity;Entries",30,0,acop_cut);
-   TH1F *hacop_mc = new TH1F("hacop_mc",";Acoplanarity;Entries",30,0,acop_cut);
+   TH1F *hacop_data = new TH1F("hacop_data",";Acoplanarity;Entries / 0.002",30,0,acop_cut);
+   TH1F *hacop_mc = new TH1F("hacop_mc",";Acoplanarity;Entries / 0.002",30,0,acop_cut);
    trdata->Project(hacop_data->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
    trmc->Project(hacop_mc->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
 
@@ -53,12 +53,14 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    hacop_mc->SetFillColor(kYellow+1);
 
    TCanvas *c_aco = new TCanvas("c_aco","Acoplanarity");
+   gStyle->SetOptStat(0);
    c_aco->SetLogy();
    hacop_data->Draw();
    hacop_mc->Draw("hist same");
    hacop_data->Draw("same");
    TFitResultPtr r = hacop_data->Fit(fexp,"ILEMS");
    c_aco->RedrawAxis();
+   c_aco->SaveAs("acop.pdf");
 
    const double *params = r->GetParams();
    // get the total

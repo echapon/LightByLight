@@ -1,6 +1,6 @@
-const double xsec_3_53         = 20.6e3; // in mub
-const double sf                = 0.924*0.98;
-const int    ngen              = 7929199;
+const double xsec_3_53         = 1.086453e-01*20.6e3; // in mub
+const double sf                = 0.98*0.98;
+const int    ngen              = 2399759;//7929199;
 
 void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=391, double mass_cut=0) {
    TFile *fdata = TFile::Open("outputDataAll.root");
@@ -8,11 +8,11 @@ void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=391, do
    TFile *fMC = TFile::Open("outputMCAll.root");
    TTree *trMC = (TTree*) fMC->Get("tr" + algo);
 
-   TH1F *hmass_data = new TH1F("hmass_data",";M (ee) [GeV];Entries",50,0,100);
-   TH1F *hdeltapt_data = new TH1F("hdeltapt_data",";#Delta p_{T} (ee) [GeV];Entries",10,0,1);
-   TH1F *hrap_data = new TH1F("hrap_data",";y (ee);Entries",25,-2.5,2.5);
-   TH1F *hpt_data = new TH1F("hpt_data",";p_{T} (ee) [GeV];Entries",20,0,1);
-   TH1F *hacop_data = new TH1F("hacop_data",";Acoplanarity;Entries",20,0,acop_cut);
+   TH1F *hmass_data = new TH1F("hmass_data",";M (ee) [GeV];Entries / (2 GeV)",50,0,100);
+   TH1F *hdeltapt_data = new TH1F("hdeltapt_data",";#Delta p_{T} (ee) [GeV];Entries / (1 GeV)",10,0,1);
+   TH1F *hrap_data = new TH1F("hrap_data",";y (ee);Entries / (0.2)",25,-2.5,2.5);
+   TH1F *hpt_data = new TH1F("hpt_data",";p_{T} (ee) [GeV];Entries / (0.5 GeV)",20,0,1);
+   TH1F *hacop_data = new TH1F("hacop_data",Form(";Acoplanarity;Entries / (%.4f)",acop_cut/20.),20,0,acop_cut);
 
    TH1F *hmass_MC = new TH1F("hmass_MC",";M (ee) [GeV];Entries",50,0,100);
    TH1F *hdeltapt_MC = new TH1F("hdeltapt_MC",";#Delta p_{T} (ee) [GeV];Entries",10,0,1);

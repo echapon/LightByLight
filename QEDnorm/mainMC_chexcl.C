@@ -50,9 +50,9 @@ void mainMC_chexcl(int idir=0) {
    TChain *tchEvt = new TChain("ggHiNtuplizer/EventTree");
    TChain *tchPix = new TChain("pixel/PixelTree");
 
-   tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",idir));
-   tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",idir));
-   tchPix->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",idir));
+   tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/qed_ee_approval/hiforest/0%d/hiForest_qedee_*.root",idir));
+   tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/qed_ee_approval/hiforest/0%d/hiForest_qedee_*.root",idir));
+   tchPix->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/qed_ee_approval/hiforest/0%d/hiForest_qedee_*.root",idir));
    cout << tchHLT->GetEntries() << " " << tchEvt->GetEntries() << " " << tchPix->GetEntries() << endl;
    // return;
 
