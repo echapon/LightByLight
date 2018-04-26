@@ -22,7 +22,7 @@
 using namespace std;
 
 const double eleMass = 0.5109989461e-3;
-const double DRmax   = 0.3;
+const double DRmax   = 1.;
 
 double acop(double dphi) {
    return 1.-fabs(TVector2::Phi_mpi_pi(dphi))/TMath::Pi(); 

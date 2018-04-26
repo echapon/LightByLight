@@ -12,10 +12,10 @@ const double xsec_3_53         = 1.086453e-01*20.6e3; // in mub
 const double xsec_3_53_err     = 0.00001*xsec_3_53; // FIXME what is the uncertainty?
 const double lumi_brilcalc     = 391; // in mub-1
 const double lumi_brilcalc_err = 0.12*lumi_brilcalc;
-const double sf_hm             = 0.98*0.98;
+const double sf_hm             = 0.98*0.98*0.931*0.928;
 const double sf_hm_syst        = sqrt(pow(0.03,2)+pow(2*0.02,2));
-const double sf_ged            = 0.98*0.98;
-const double sf_ged_syst       = sqrt(pow(0.03,2)+pow(2*0.02,2));
+const double sf_ged            = 0.989*0.989*0.931*0.928;
+const double sf_ged_syst       = sqrt(pow(0.03,2)+pow(2*0.02/0.989,2)+pow(0.003/0.931,2)+pow(0.020/0.928,2))*sf_ged;
 const int    ngen              = 2399759;//7929199;
 const double acop_cut          = 0.06;
 
@@ -37,8 +37,8 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    // estimate the purity in data
    TH1F *hacop_data = new TH1F("hacop_data",";Acoplanarity;Entries / 0.002",30,0,acop_cut);
    TH1F *hacop_mc = new TH1F("hacop_mc",";Acoplanarity;Entries / 0.002",30,0,acop_cut);
-   trdata->Project(hacop_data->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
-   trmc->Project(hacop_mc->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
+   trdata->Project(hacop_data->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   trmc->Project(hacop_mc->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
 
    TF1 *fexp = new TF1("fexp","[0]*exp(-[1]*x) + [2]*exp(-[3]*x)",0,acop_cut);
    fexp->SetParNames("Norm_sig","Decay_sig","Norm_bkg","Decay_bkg");

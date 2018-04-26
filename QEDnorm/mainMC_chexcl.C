@@ -77,13 +77,15 @@ void mainMC_chexcl(int idir=0) {
    evtR.fChain->SetBranchStatus("elePt",1);
    evtR.fChain->SetBranchStatus("eleEta",1);
    evtR.fChain->SetBranchStatus("elePhi",1);
-   // evtR.fChain->SetBranchStatus("eleSCEn",1);
+   evtR.fChain->SetBranchStatus("eleSCEn",1);
    evtR.fChain->SetBranchStatus("eleSCEta",1);
-   // evtR.fChain->SetBranchStatus("eleSCPhi",1);
+   evtR.fChain->SetBranchStatus("eleSCPhi",1);
    evtR.fChain->SetBranchStatus("nVtx",1);
    evtR.fChain->SetBranchStatus("zVtx",1);
    evtR.fChain->SetBranchStatus("ngenTrk",1);
    evtR.fChain->SetBranchStatus("gentrk*",1);
+   evtR.fChain->SetBranchStatus("nTower",1);
+   evtR.fChain->SetBranchStatus("CaloTower*",1);
 
    // HM
    evtR.fChain->SetBranchStatus("ngsfEle",1);
@@ -182,6 +184,7 @@ void mainMC_chexcl(int idir=0) {
    float ptGED, ptHM;
    float deltaptGED, deltaptHM;
    float eleGEDpt1, eleGEDeta1, eleGEDphi1, eleGEDpt2, eleGEDeta2, eleGEDphi2;
+   float eleGEDSCEt1, eleGEDSCEt2, eleGEDSCEta1, eleGEDSCEta2, eleGEDSCPhi1, eleGEDSCPhi2;
    float eleHMpt1, eleHMeta1, eleHMphi1, eleHMpt2, eleHMeta2, eleHMphi2;
    int nextra_track_GED, nextra_track_HM;
    int nhits1, nhits2, nhits3, nhits4, nhits5;
@@ -218,6 +221,12 @@ void mainMC_chexcl(int idir=0) {
    trGED->Branch("elept2",&eleGEDpt2,"elept2/F");
    trGED->Branch("eleeta2",&eleGEDeta2,"eleeta2/F");
    trGED->Branch("elephi2",&eleGEDphi2,"elephi2/F");
+   trGED->Branch("eleSCEt1",&eleGEDSCEt1,"eleSCEt1/F");
+   trGED->Branch("eleSCEta1",&eleGEDSCEta1,"eleSCEta1/F");
+   trGED->Branch("eleSCPhi1",&eleGEDSCPhi1,"eleSCPhi1/F");
+   trGED->Branch("eleSCEt2",&eleGEDSCEt2,"eleSCEt2/F");
+   trGED->Branch("eleSCEta2",&eleGEDSCEta2,"eleSCEta2/F");
+   trGED->Branch("eleSCPhi2",&eleGEDSCPhi2,"eleSCPhi2/F");
    trHM->Branch("elept1",&eleHMpt1,"elept1/F");
    trHM->Branch("eleeta1",&eleHMeta1,"eleeta1/F");
    trHM->Branch("elephi1",&eleHMphi1,"elephi1/F");
@@ -247,7 +256,7 @@ void mainMC_chexcl(int idir=0) {
       double genpt, genrap, genmass, gendphi;
       double recoGEDpt, recoGEDrap, recoGEDmass, recoGEDdphi;
       double recoHMpt, recoHMrap, recoHMmass, recoHMdphi;
-      // bool exclOK   =  false;
+      bool exclOK   =  false;
       bool SingleEG5ok = hltR.HLT_HIUPCL1SingleEG5NotHF2_v1;
       bool DoubleEG2ok = hltR.HLT_HIUPCL1DoubleEG2NotHF2_v1;
       doubleEG2okI = DoubleEG2ok;
@@ -305,22 +314,29 @@ void mainMC_chexcl(int idir=0) {
          eleGEDeta2 = ele1.Eta();
          eleGEDphi2 = ele1.Phi();
 
-      //    double EmEnergy_EB = 0;
-      //    double EmEnergy_EE = 0;
-      //    double HadEnergy_HB = 0;
-      //    double HadEnergy_HE = 0;
-      //    double HadEnergy_HF_Plus = 0;
-      //    double HadEnergy_HF_Minus = 0;
+         eleGEDSCEt1 = evtR.eleSCEn->at(0)/cosh(evtR.eleSCEta->at(0));
+         eleGEDSCEta1 = evtR.eleSCEta->at(0);
+         eleGEDSCPhi1 = evtR.eleSCPhi->at(0);
+         eleGEDSCEt2 = evtR.eleSCEn->at(1)/cosh(evtR.eleSCEta->at(1));
+         eleGEDSCEta2 = evtR.eleSCEta->at(1);
+         eleGEDSCPhi2 = evtR.eleSCPhi->at(1);
+
+         double EmEnergy_EB = 0;
+         double EmEnergy_EE = 0;
+         double HadEnergy_HB = 0;
+         double HadEnergy_HE = 0;
+         double HadEnergy_HF_Plus = 0;
+         double HadEnergy_HF_Minus = 0;
       //    evtR.b_nTower->GetEntry(ientry_evt);
       //    evtR.b_CaloTower_eta->GetEntry(ientry_evt);
       //    evtR.b_CaloTower_phi->GetEntry(ientry_evt);
       //    evtR.b_CaloTower_emE->GetEntry(ientry_evt);
       //    evtR.b_CaloTower_hadE->GetEntry(ientry_evt);
       //    evtR.b_CaloTower_e->GetEntry(ientry_evt);
-      //    fillExclVars(evtR, 
-      //          evtR.eleEta->at(0), evtR.elePhi->at(0), evtR.eleEta->at(1), evtR.elePhi->at(1), 
-      //          EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
-      //    exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
+         fillExclVars(evtR, 
+               evtR.eleEta->at(0), evtR.elePhi->at(0), evtR.eleEta->at(1), evtR.elePhi->at(1), 
+               EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
+         exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
 
       //    evtR.b_ngenTrk->GetEntry(ientry_evt);
       //    evtR.b_gentrkPt->GetEntry(ientry_evt);
@@ -330,11 +346,11 @@ void mainMC_chexcl(int idir=0) {
                evtR.eleEta->at(0), evtR.elePhi->at(0), evtR.eleEta->at(1), evtR.elePhi->at(1), 
                nextra_track_GED);
 
-      //    exclOK = exclOK && (nextra_track_GED==0);
+         exclOK = exclOK && (nextra_track_GED==0);
       }
       recoGEDok    =  ele_pt && ele_eta && ele_SCeta && opp_chrg && (recoGEDmass>4) && miss_hit && iso 
          && (recoGEDpt < 2.0) && (fabs(recoGEDrap)<2.5);// && (acop(ele0.DeltaPhi(ele1)) < 0.01);
-      // recoGEDok = recoGEDok && exclOK;
+      recoGEDok = recoGEDok && exclOK;
       acopGED = acop(ele0.DeltaPhi(ele1));
       deltaptGED = fabs(ele0.Pt()-ele1.Pt());
       ptGED = diele.Pt();
@@ -370,22 +386,22 @@ void mainMC_chexcl(int idir=0) {
          eleHMeta2 = ele1.Eta();
          eleHMphi2 = ele1.Phi();
 
-      //    double EmEnergy_EB = 0;
-      //    double EmEnergy_EE = 0;
-      //    double HadEnergy_HB = 0;
-      //    double HadEnergy_HE = 0;
-      //    double HadEnergy_HF_Plus = 0;
-      //    double HadEnergy_HF_Minus = 0;
+         double EmEnergy_EB = 0;
+         double EmEnergy_EE = 0;
+         double HadEnergy_HB = 0;
+         double HadEnergy_HE = 0;
+         double HadEnergy_HF_Plus = 0;
+         double HadEnergy_HF_Minus = 0;
       //    evtR.b_nTower->GetEntry(ientry_evt);
       //    evtR.b_CaloTower_eta->GetEntry(ientry_evt);
       //    evtR.b_CaloTower_phi->GetEntry(ientry_evt);
       //    evtR.b_CaloTower_emE->GetEntry(ientry_evt);
       //    evtR.b_CaloTower_hadE->GetEntry(ientry_evt);
       //    evtR.b_CaloTower_e->GetEntry(ientry_evt);
-      //    fillExclVars(evtR, 
-      //          ele0.Eta(), ele0.Phi(), ele1.Eta(), ele1.Phi(), 
-      //          EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
-      //    exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
+         fillExclVars(evtR, 
+               ele0.Eta(), ele0.Phi(), ele1.Eta(), ele1.Phi(), 
+               EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
+         exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
 
       //    evtR.b_ngenTrk->GetEntry(ientry_evt);
       //    evtR.b_gentrkPt->GetEntry(ientry_evt);
@@ -395,11 +411,11 @@ void mainMC_chexcl(int idir=0) {
                ele0.Eta(), ele0.Phi(), ele1.Eta(), ele1.Phi(), 
                nextra_track_HM);
 
-      //    exclOK = exclOK && (nextra_track_HM==0);
+         exclOK = exclOK && (nextra_track_HM==0);
       }
 
       recoHMok   = ele_gsf_pt && ele_gsf_eta && ele_gsf_chg && diele.M()>4 && gsf_miss_hit && diele.Pt() < 2.0;// && (acop(ele0.DeltaPhi(ele1)) < 0.01);  
-      // recoHMok   = recoHMok && exclOK;
+      recoHMok   = recoHMok && exclOK;
       acopHM = acop(ele0.DeltaPhi(ele1));
       deltaptHM = fabs(ele0.Pt()-ele1.Pt());
       ptHM = diele.Pt();

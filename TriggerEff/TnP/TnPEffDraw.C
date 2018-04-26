@@ -45,11 +45,11 @@ bool isPbPb = true;
 TString collTag = "PbPb"; // isPbPb ? "PbPb" : "pp";
 
 // do the toy study for the correction factors?
-bool doToys = false;
+bool doToys = true;
 
 // Location of the files
-const char* fDataName = "tnp_Ana_Data_HM_DoubleEG2.root";
-const char* fMCName = "tnp_Ana_MC_HM_DoubleEG2.root";
+const char* fDataName = "tnp_Ana_Data_GED_DoubleEG2.root";
+const char* fMCName = "tnp_Ana_MC_GED_DoubleEG2.root";
 
 
 
@@ -64,7 +64,7 @@ TString allTag("DoubleEG2_1bin");
 
 // Automatic parameters (shouldn't require modification by the user)
 const int nAbsEtaBins = 2;
-TString cutTag("trigTree_HM"); 
+TString cutTag("trigTree_GED"); 
 TString cutLegend("L1 EG2 trigger");
 TString absetaTag("DoubleEG2_EBEE");
 TString absetaVar("abseta");
@@ -121,8 +121,8 @@ void TnPEffDraw() {
   
   for (unsigned int i=0; i<daPtData0.size(); i++)
   {
-     ComPt0.push_back(plotEff_1bin(daPtData0[i], 1, "pt"));
-     ComPt1.push_back(plotEff_1bin(daPtData1[i], 1, "pt"));
+     ComPt0.push_back(plotEff_1bin(daPtData0[i], 1, "SCEt"));
+     ComPt1.push_back(plotEff_1bin(daPtData1[i], 1, "SCEt"));
   }
 
 
@@ -139,8 +139,8 @@ void TnPEffDraw() {
 
   TGraphAsymmErrors* Com0Pt0 = plotEff_1bin(daPtMC1Bin0,0,"abseta");
   TGraphAsymmErrors* Com0Pt1 = plotEff_1bin(daPtData1Bin0,0,"abseta");
-  vector<TGraphAsymmErrors*> Com0AbsEta0 = plotEff_Nbins(daAbsEtaMC1,0,"pt",absetaVar);
-  vector<TGraphAsymmErrors*> Com0AbsEta1 = plotEff_Nbins(daAbsEtaData1,0,"pt",absetaVar);
+  vector<TGraphAsymmErrors*> Com0AbsEta0 = plotEff_Nbins(daAbsEtaMC1,0,"SCEt",absetaVar);
+  vector<TGraphAsymmErrors*> Com0AbsEta1 = plotEff_Nbins(daAbsEtaData1,0,"SCEt",absetaVar);
 
 
   int nbins_abseta = ComPt0.size();
@@ -200,7 +200,8 @@ void TnPEffDraw() {
   // lTextSize *= 1./0.7;
 
 
-  TH1F *hPad = new TH1F("hPad",";p^{e}_{T} [GeV/c];Single ele. Efficiency",5,0,20);
+  // TH1F *hPad = new TH1F("hPad",";p^{e}_{T} [GeV/c];Single ele. Efficiency",5,0,20);
+  TH1F *hPad = new TH1F("hPad",";SC E_{T} [GeV/c];Single ele. Efficiency",5,0,20);
   TH1F *hPad1 = new TH1F("hPad1",";#eta^{e} ;Single ele. Efficiency",5,0,2.4);
   hPad->GetXaxis()->CenterTitle();
   hPad1->GetXaxis()->CenterTitle();
@@ -254,19 +255,21 @@ void TnPEffDraw() {
      leg1->SetFillColor(0);
      leg1->SetBorderSize(0);
      leg1->SetTextSize(0.035);
-     double ptmin = ((RooRealVar*) daPtData0[i]->get()->find("pt"))->getBinning().binLow(0);
+     double ptmin = ((RooRealVar*) daPtData0[i]->get()->find("SCEt"))->getBinning().binLow(0);
      double etamin, etamax;
      if (daPtData0[i]->get()->find("abseta"))
      {
         etamin = ((RooRealVar*) daPtData0[i]->get()->find("abseta"))->getBinning().binLow(0);
         etamax = ((RooRealVar*) daPtData0[i]->get()->find("abseta"))->getBinning().binHigh(0);
-        leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{e}_{T}>%.1f, |#eta| #in [%.1f, %.1f])}",ptmin,etamin,etamax));
+        // leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{e}_{T}>%.1f, |#eta| #in [%.1f, %.1f])}",ptmin,etamin,etamax));
+        leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(SC E_{T}>%.1f, |#eta| #in [%.1f, %.1f])}",ptmin,etamin,etamax));
      }
      else
      {
         etamin = ((RooRealVar*) daPtData0[i]->get()->find("eta"))->getBinning().binLow(0);
         etamax = ((RooRealVar*) daPtData0[i]->get()->find("eta"))->getBinning().binHigh(0);
-        leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{e}_{T}>%.1f, #eta #in [%.1f, %.1f])}",ptmin,etamin,etamax));
+        // leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{e}_{T}>%.1f, #eta #in [%.1f, %.1f])}",ptmin,etamin,etamax));
+        leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(SC E_{T}>%.1f, #eta #in [%.1f, %.1f])}",ptmin,etamin,etamax));
      }
      sprintf(legs,"MC STARLIGHT: %.4f^{ + %.3f}_{ - %.3f}", TrkAbsEta0[i][0], TrkAbsEta0[i][1], TrkAbsEta0[i][2]);
      leg1->AddEntry(ComPt0[i],legs,"pl");
@@ -319,10 +322,15 @@ void TnPEffDraw() {
      c1->SaveAs(cutTag + Form("Eff%i_",i) + collTag + "_RD_MC_PT.root");
      c1->SaveAs(cutTag + Form("Eff%i_",i) + collTag + "_RD_MC_PT.pdf");
 
+     // print the scale factors to file
+     file_sfs << "// etmin etmax SF SF_uncert" << endl;
+     file_sfs << "// " << etamin << " < |eta| < " << etamax << endl;
+     for (int i=0; i<nbins; i++) file_sfs << xr[i]-xrlo[i] << " " << xr[i]+xrhi[i] << " " << yr[i] << " " << (yrlo[i]+yrhi[i])/2. << endl;
+
      // in case we are looking at muon Id + trigger: get the scale factor at the same time
-#ifdef MUIDTRG
+// #ifdef MUIDTRG
      pad1->cd();
-     double ptmax = ((RooRealVar*) daPtData0[i]->get()->find("pt"))->getMax();
+     double ptmax = ((RooRealVar*) daPtData0[i]->get()->find("SCEt"))->getMax();
      TLatex tchi; tchi.SetNDC();
      tchi.SetTextSize(0.035);
      double chi2, pval; int dof;
@@ -393,7 +401,7 @@ void TnPEffDraw() {
 
      // toys study
      if (doToys) toyStudy(ComPt1[i], ComPt0[i], fdata, fmc, cutTag + Form("toys%i_",i) + collTag + "_RD_MC_PT");
-#endif // ifdef MUIDTRG
+// #endif // ifdef MUIDTRG
   }
 
    //---------- This is for eta dependence
@@ -411,8 +419,9 @@ void TnPEffDraw() {
   leg1->SetFillColor(0);
   leg1->SetBorderSize(0);
   leg1->SetTextSize(0.035);
-  double ptmin = ((RooRealVar*) daEtaData0->get()->find("pt"))->getBinning().binLow(0);
-  leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{e}_{T}>%.1f)}",ptmin));
+  double ptmin = ((RooRealVar*) daEtaData0->get()->find("SCEt"))->getBinning().binLow(0);
+  // leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(p^{e}_{T}>%.1f)}",ptmin));
+  leg1->SetHeader(TString("#splitline{") + cutLegend + Form(" Efficiency}{(SC E_{T}>%.1f)}",ptmin));
   sprintf(legs,"MC STARLIGHT: %.4f^{ + %.3f}_{ - %.3f}", Trk0[0], Trk0[1], Trk0[2]);
   leg1->AddEntry(ComPt0[0],legs,"pl");
   sprintf(legs,"Data: %.4f^{ + %.3f}_{ - %.3f}", Trk1[0], Trk1[1], Trk1[2]);
@@ -473,7 +482,8 @@ void formatTH1F(TH1* a, int b, int c, int d){
   a->SetMarkerColor(b);
   a->GetYaxis()->SetTitle("Efficiency");
   if(d == 1){
-    a->GetXaxis()->SetTitle("p_{T} [GeV/c]");
+    // a->GetXaxis()->SetTitle("p_{T} [GeV/c]");
+    a->GetXaxis()->SetTitle("SC E_{T} [GeV/c]");
   }else if(d == 2){
     a->GetXaxis()->SetTitle("#eta");
   }else if(d == 3){
@@ -515,7 +525,8 @@ void formatTGraph(TGraph* a, int b, int c, int d)
   a->GetYaxis()->SetTitle("Efficiency");
   a->GetXaxis()->CenterTitle();
   if(d == 1){ 
-    a->GetXaxis()->SetTitle("p_{T} (GeV/c)"); 
+    // a->GetXaxis()->SetTitle("p_{T} (GeV/c)"); 
+    a->GetXaxis()->SetTitle("SC E_{T} (GeV/c)"); 
   }else if(d == 2){ 
     a->GetXaxis()->SetTitle("eta"); 
   }else if(d == 3){ 
@@ -643,7 +654,8 @@ vector<TGraphAsymmErrors*> plotEff_Nbins(RooDataSet *a, int aa, const char* varx
      b->SetTitle("");
      b->GetXaxis()->SetTitleSize(0.05);
      b->GetYaxis()->SetTitleSize(0.05);
-     b->GetXaxis()->SetTitle("p_{T} [GeV/c]");
+     // b->GetXaxis()->SetTitle("p_{T} [GeV/c]");
+     b->GetXaxis()->SetTitle("SC E_{T} [GeV/c]");
      b->GetYaxis()->SetTitle("Efficiency");
      b->GetXaxis()->CenterTitle();
      //b->Draw("apz");
@@ -661,7 +673,7 @@ vector<TGraphAsymmErrors*> plotEff_Nbins(RooDataSet *a, int aa, const char* varx
 
 TH2F *plotEff2D(RooDataSet *a, TString b){
   const RooArgSet *set = a->get();
-  RooRealVar *yAx = (RooRealVar*)set->find("pt");
+  RooRealVar *yAx = (RooRealVar*)set->find("SCEt");
   RooRealVar *xAx = (RooRealVar*)set->find("eta");
   RooRealVar *eff = (RooRealVar*)set->find("efficiency");
 
@@ -679,7 +691,8 @@ TH2F *plotEff2D(RooDataSet *a, TString b){
   h->SetOption("colztexte");
   h->GetZaxis()->SetRangeUser(-0.001,1.001);
   h->SetStats(kFALSE);
-  h->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+  // h->GetYaxis()->SetTitle("p_{T} [GeV/c]");
+  h->GetYaxis()->SetTitle("SC E_{T} [GeV/c]");
   h->GetXaxis()->SetTitle("#eta");
   h->GetXaxis()->CenterTitle();
   h->GetYaxis()->CenterTitle();

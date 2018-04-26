@@ -16,7 +16,7 @@
 
 #include <fstream>
 
-const int nToys = 1;
+const int nToys = 100;
 
 double assym_gaus(double *x, double *par) {
    double mean = par[0];

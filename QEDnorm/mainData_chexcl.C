@@ -84,6 +84,8 @@ void mainData_chexcl(int idir=0) {
    evtR.fChain->SetBranchStatus("zVtx",1);
    evtR.fChain->SetBranchStatus("ngenTrk",1);
    evtR.fChain->SetBranchStatus("gentrk*",1);
+   evtR.fChain->SetBranchStatus("nTower",1);
+   evtR.fChain->SetBranchStatus("CaloTower*",1);
 
    // HM
    evtR.fChain->SetBranchStatus("ngsfEle",1);
@@ -258,23 +260,22 @@ void mainData_chexcl(int idir=0) {
          eleGEDeta2 = ele1.Eta();
          eleGEDphi2 = ele1.Phi();
 
-         // double EmEnergy_EB = 0;
-         // double EmEnergy_EE = 0;
-         // double HadEnergy_HB = 0;
-         // double HadEnergy_HE = 0;
-         // double HadEnergy_HF_Plus = 0;
-         // double HadEnergy_HF_Minus = 0;
+         double EmEnergy_EB = 0;
+         double EmEnergy_EE = 0;
+         double HadEnergy_HB = 0;
+         double HadEnergy_HE = 0;
+         double HadEnergy_HF_Plus = 0;
+         double HadEnergy_HF_Minus = 0;
          // evtR.b_nTower->GetEntry(ientry_evt);
          // evtR.b_CaloTower_eta->GetEntry(ientry_evt);
          // evtR.b_CaloTower_phi->GetEntry(ientry_evt);
          // evtR.b_CaloTower_emE->GetEntry(ientry_evt);
          // evtR.b_CaloTower_hadE->GetEntry(ientry_evt);
          // evtR.b_CaloTower_e->GetEntry(ientry_evt);
-         // fillExclVars(evtR, 
-         //       evtR.eleEta->at(0), evtR.elePhi->at(0), evtR.eleEta->at(1), evtR.elePhi->at(1), 
-         //       EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
-         // exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
-         exclOK = true;
+         fillExclVars(evtR, 
+               evtR.eleEta->at(0), evtR.elePhi->at(0), evtR.eleEta->at(1), evtR.elePhi->at(1), 
+               EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
+         exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
 
          // evtR.b_ngenTrk->GetEntry(ientry_evt);
          // evtR.b_gentrkPt->GetEntry(ientry_evt);
@@ -284,7 +285,7 @@ void mainData_chexcl(int idir=0) {
                evtR.eleEta->at(0), evtR.elePhi->at(0), evtR.eleEta->at(1), evtR.elePhi->at(1), 
                nextra_track_GED);
 
-         // exclOK = exclOK && (nextra_track==0);
+         exclOK = exclOK && (nextra_track_GED==0);
       }
       recoGEDok_noaco    =  ele_pt && ele_eta && ele_SCeta && opp_chrg && (recoGEDmass>4) && miss_hit && iso 
          && (recoGEDpt < 2.0) && (fabs(recoGEDrap)<2.5);
@@ -325,23 +326,22 @@ void mainData_chexcl(int idir=0) {
          eleHMeta2 = ele1.Eta();
          eleHMphi2 = ele1.Phi();
 
-         // double EmEnergy_EB = 0;
-         // double EmEnergy_EE = 0;
-         // double HadEnergy_HB = 0;
-         // double HadEnergy_HE = 0;
-         // double HadEnergy_HF_Plus = 0;
-         // double HadEnergy_HF_Minus = 0;
+         double EmEnergy_EB = 0;
+         double EmEnergy_EE = 0;
+         double HadEnergy_HB = 0;
+         double HadEnergy_HE = 0;
+         double HadEnergy_HF_Plus = 0;
+         double HadEnergy_HF_Minus = 0;
          // evtR.b_nTower->GetEntry(ientry_evt);
          // evtR.b_CaloTower_eta->GetEntry(ientry_evt);
          // evtR.b_CaloTower_phi->GetEntry(ientry_evt);
          // evtR.b_CaloTower_emE->GetEntry(ientry_evt);
          // evtR.b_CaloTower_hadE->GetEntry(ientry_evt);
          // evtR.b_CaloTower_e->GetEntry(ientry_evt);
-         // fillExclVars(evtR, 
-         //       ele0.Eta(), ele0.Phi(), ele1.Eta(), ele1.Phi(), 
-         //       EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
-         // exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
-         exclOK = true;
+         fillExclVars(evtR, 
+               ele0.Eta(), ele0.Phi(), ele1.Eta(), ele1.Phi(), 
+               EmEnergy_EB, EmEnergy_EE, HadEnergy_HB, HadEnergy_HE, HadEnergy_HF_Plus, HadEnergy_HF_Minus);
+         exclOK = (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12);
 
          // evtR.b_ngenTrk->GetEntry(ientry_evt);
          // evtR.b_gentrkPt->GetEntry(ientry_evt);
@@ -351,7 +351,7 @@ void mainData_chexcl(int idir=0) {
                ele0.Eta(), ele0.Phi(), ele1.Eta(), ele1.Phi(), 
                nextra_track_HM);
 
-         // exclOK = exclOK && (nextra_track==0);
+         exclOK = exclOK && (nextra_track_HM==0);
       }
 
       recoHMok_noaco   = ele_gsf_pt && ele_gsf_eta && ele_gsf_chg && diele.M()>4 && gsf_miss_hit && exclOK && diele.Pt() < 2.0;  

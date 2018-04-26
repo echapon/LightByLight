@@ -75,6 +75,7 @@ void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=391, do
    c1->RedrawAxis();
    c1->SaveAs("pt.pdf");
 
+   c1->SetLogy();
    hacop_data->Draw();
    hacop_MC->Draw("same hist");
    hacop_data->Draw("same");

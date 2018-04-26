@@ -106,9 +106,10 @@ process.tagProbeFitTreeAnalyzer = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
     PDFs = cms.PSet(
         # Nominal
 	    expoPlusBkg = cms.vstring(
-		    "Exponential::signal(diAcop, decaySig[-6.8e2,-1e4,0])",
-	    	"Exponential::backgroundPass(diAcop, decayBkgPass[-12,-1e4,0])",
-		    "Exponential::backgroundFail(diAcop, decayBkgFail[-12,-1e4,0])",
+		    "Exponential::signal(diAcop, decaySig[-6.8e2,-1e4,-250])",
+	    	"Exponential::backgroundPass(diAcop, decayBkgPass[-80,-249,-10])",
+          # "Exponential::backgroundFail(diAcop, decayBkgFail[-1000,-1e4,-10])",
+		    "Exponential::backgroundFail(diAcop, decayBkgPass)",
 	    	"efficiency[0.9,0.,1]",
 		    "signalFractionInPassing[0.9]",
     	),    

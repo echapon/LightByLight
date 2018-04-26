@@ -60,25 +60,23 @@ void fillNextraTracks(const eventTreeReader &evtR,
       double eleEta0, double elePhi0, double eleEta1, double elePhi1, 
       int &nextratracks);
 
-void fillHistosTnP() {
+void fillHistosTrD(int is=0) {
    TChain *tchHLT = new TChain("hltanalysis/HltTree");
    TChain *tchEvt = new TChain("ggHiNtuplizer/EventTree");
    TChain *tchPix = new TChain("pixel/PixelTree");
 
-   for (int i=1; i<=8; i++) {
 #ifdef MC
-      // tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",i));
-      // tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",i));
-      // tchPix->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",i));
-      tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/qed_ee_approval/hiforest/0%d/hiForest_qedee_*.root",i));
-      tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/qed_ee_approval/hiforest/0%d/hiForest_qedee_*.root",i));
-      tchPix->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/qed_ee_approval/hiforest/0%d/hiForest_qedee_*.root",i));
+   // tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",i));
+   // tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",i));
+   // tchPix->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",i));
+   tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/qed_ee_approval/hiforest/0%d/hiForest_qedee_*.root",is));
+   tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/qed_ee_approval/hiforest/0%d/hiForest_qedee_*.root",is));
+   tchPix->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/qed_ee_approval/hiforest/0%d/hiForest_qedee_*.root",is));
 #else
-      tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/aug_reco_data_check_for_lumi/hiforest2/%02d/*root",i));
-      tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/aug_reco_data_check_for_lumi/hiforest2/%02d/*root",i));
-      tchPix->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/aug_reco_data_check_for_lumi/hiforest2/%02d/*root",i));
+   tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/aug_reco_data_check_for_lumi/hiforest2/%02d/*root",is));
+   tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/aug_reco_data_check_for_lumi/hiforest2/%02d/*root",is));
+   tchPix->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/aug_reco_data_check_for_lumi/hiforest2/%02d/*root",is));
 #endif
-   }
    cout << tchHLT->GetEntries() << " " << tchEvt->GetEntries() << " " << tchPix->GetEntries() << endl;
    // return;
 
@@ -135,9 +133,9 @@ void fillHistosTnP() {
    if (nentries != nentries2 || nentries != nentries3) return;
 
 #ifdef MC
-   TFile *fout = new TFile("outputMC.root","RECREATE");
+   TFile *fout = new TFile(Form("outputMC_%d.root",is),"RECREATE");
 #else
-   TFile *fout = new TFile("outputData.root","RECREATE");
+   TFile *fout = new TFile(Form("outputData_%d.root",is),"RECREATE");
 #endif
    
    clHist hRecoGEDPassTrigSingle_recoGED("recoGEDpassTrigSingle_recoGED");
@@ -223,6 +221,8 @@ void fillHistosTnP() {
    trHM->Branch("doubleEG2",&doubleEG2,"doubleEG2/I");
    trHM->Branch("matchedOK",&matchedOK,"matchedOK/I");
 
+   int nnum=0, nden=0;
+
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       // if (jentry>100000) break;
@@ -244,7 +244,7 @@ void fillHistosTnP() {
       double recoGEDpt, recoGEDrap, recoGEDmass, recoGEDdphi;
       double recoHMpt, recoHMrap, recoHMmass, recoHMdphi;
       // bool exclOK   =  false;
-      bool SingleEG5ok = hltR.HLT_HIUPCL1SingleEG5NotHF2_v1;
+      bool SingleEG5ok = true; //hltR.HLT_HIUPCL1SingleEG5NotHF2_v1;
       bool DoubleEG2ok = hltR.HLT_HIUPCL1DoubleEG2NotHF2_v1;
 
 
@@ -358,6 +358,9 @@ void fillHistosTnP() {
 
       // --- FILL HISTOS ---
 
+      if (recoGEDok) nden++;
+      if (recoGEDok && DoubleEG2ok) nnum++;
+
       if (recoGEDok) {
          if (SingleEG5ok) {
             hRecoGEDPassTrigSingle_recoGED.fill(recoGEDpt,recoGEDrap,recoGEDmass,recoGEDdphi);
@@ -406,7 +409,8 @@ void fillHistosTnP() {
             doubleEG2 = DoubleEG2ok;
 
             // is ele0 a tag?
-            if (minDR0<DRmax && EtMinDR0>=5) {
+            // if (minDR0<DRmax && EtMinDR0>=5) {
+            if (true) {
                if (fabs(ele1GED.Eta())<1.5) hacop_all_EB_GED->Fill(ele1GED.Pt(),acop(ele0GED.DeltaPhi(ele1GED)));
                else hacop_all_EE_GED->Fill(ele1GED.Pt(),acop(ele0GED.DeltaPhi(ele1GED)));
 
@@ -436,7 +440,8 @@ void fillHistosTnP() {
             }
 
             // is ele1 a tag?
-            if (minDR1<DRmax && EtMinDR1>=5) {
+            // if (minDR1<DRmax && EtMinDR1>=5) {
+            if (true) {
                if (fabs(ele0GED.Eta())<1.5) hacop_all_EB_GED->Fill(ele0GED.Pt(),acop(ele0GED.DeltaPhi(ele1GED)));
                else hacop_all_EE_GED->Fill(ele0GED.Pt(),acop(ele0GED.DeltaPhi(ele1GED)));
 
@@ -572,6 +577,8 @@ void fillHistosTnP() {
 
    fout->Write();
    fout->Close();
+
+   cout << nnum << "/" << nden << " = " << (double) nnum / (double) nden << endl;
 }
 
 void fillExclVars(const eventTreeReader &evtR, 

@@ -24,7 +24,8 @@ EFFICIENCYSET =cms.PSet(
             EfficiencyCategoryAndState = cms.vstring("doubleEG2","true","matchedOK","true"),
             UnbinnedVariables = cms.vstring("diAcop"),
             BinnedVariables = cms.PSet(
-                pt = cms.vdouble(0, 20),
+                SCEt = cms.vdouble(2, 20),
+                # pt = cms.vdouble(0, 20),
                 abseta = cms.vdouble(0, 2.4),
             ),
          BinToPDFmap = cms.vstring(PDFName)
@@ -33,7 +34,8 @@ EFFICIENCYSET =cms.PSet(
             EfficiencyCategoryAndState = cms.vstring("doubleEG2","true","matchedOK","true"),
             UnbinnedVariables = cms.vstring("diAcop"),
             BinnedVariables = cms.PSet(
-                pt = cms.vdouble(0, 20),
+                # pt = cms.vdouble(0, 20),
+                SCEt = cms.vdouble(2, 20),
                 abseta = cms.vdouble(0, 1.5, 2.4),
             ),
          BinToPDFmap = cms.vstring(PDFName)
@@ -42,7 +44,8 @@ EFFICIENCYSET =cms.PSet(
             EfficiencyCategoryAndState = cms.vstring("doubleEG2","true","matchedOK","true"),
             UnbinnedVariables = cms.vstring("diAcop"),
             BinnedVariables = cms.PSet(
-                pt = cms.vdouble(0, 20),
+                # pt = cms.vdouble(0, 20),
+                SCEt = cms.vdouble(2, 20),
                 abseta = cms.vdouble(0, 0.5, 1, 1.5, 2, 2.4),
             ),
          BinToPDFmap = cms.vstring(PDFName)
@@ -51,8 +54,9 @@ EFFICIENCYSET =cms.PSet(
             EfficiencyCategoryAndState = cms.vstring("doubleEG2","true","matchedOK","true"),
             UnbinnedVariables = cms.vstring("diAcop"),
             BinnedVariables = cms.PSet(
-                pt = cms.vdouble(0, 2, 3, 4, 5, 6, 7, 10, 14, 20),
-                abseta = cms.vdouble(0, 1.5),
+                # pt = cms.vdouble(0, 2, 3, 4, 5, 6, 7, 10, 14, 20),
+                SCEt = cms.vdouble(2, 3, 4, 5, 6, 7, 10, 14, 20),
+                abseta = cms.vdouble(0, 2.4),
             ),
          BinToPDFmap = cms.vstring(PDFName)
         ),
@@ -60,7 +64,8 @@ EFFICIENCYSET =cms.PSet(
             EfficiencyCategoryAndState = cms.vstring("doubleEG2","true","matchedOK","true"),
             UnbinnedVariables = cms.vstring("diAcop"),
             BinnedVariables = cms.PSet(
-                pt = cms.vdouble(0, 2, 3, 4, 5, 6, 7, 10, 14, 20),
+                # pt = cms.vdouble(0, 2, 3, 4, 5, 6, 7, 10, 14, 20),
+                SCEt = cms.vdouble(2, 3.5, 5, 7, 10, 20),
                 abseta = cms.vdouble(1.5, 2.4),
             ),
          BinToPDFmap = cms.vstring(PDFName)
@@ -91,6 +96,8 @@ process.tagProbeFitTreeAnalyzer = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
                          diAcop           = cms.vstring("diele acop", "0", "0.06", ""), 
                          pt               = cms.vstring("Probe p_{T}", "0.0", "20", "GeV/c"),
                          eta              = cms.vstring("Probe #eta", "-2.4", "2.4", ""),
+                         SCEt             = cms.vstring("Probe SC E_{T}", "0.0", "20", "GeV/c"),
+                         SCEta            = cms.vstring("Probe SC #eta", "-2.4", "2.4", ""),
                          abseta           = cms.vstring("Probe |#eta|", "0", "2.4", ""),
                          tag_pt           = cms.vstring("Tag p_{T}", "0", "20", "GeV/c^{2}"),
     ),
@@ -106,9 +113,10 @@ process.tagProbeFitTreeAnalyzer = cms.EDAnalyzer("TagProbeFitTreeAnalyzer",
     PDFs = cms.PSet(
         # Nominal
 	    expoPlusBkg = cms.vstring(
-		    "Exponential::signal(diAcop, decaySig[-6.8e2,-1e4,0])",
-	    	"Exponential::backgroundPass(diAcop, decayBkgPass[-12,-1e4,0])",
-		    "Exponential::backgroundFail(diAcop, decayBkgFail[-12,-1e4,0])",
+		    "Exponential::signal(diAcop, decaySig[-6.8e2,-1e4,-250])",
+	    	"Exponential::backgroundPass(diAcop, decayBkgPass[-80,-249,-10])",
+          # "Exponential::backgroundFail(diAcop, decayBkgFail[-1000,-1e4,-10])",
+		    "Exponential::backgroundFail(diAcop, decayBkgPass)",
 	    	"efficiency[0.9,0.,1]",
 		    "signalFractionInPassing[0.9]",
     	),    
