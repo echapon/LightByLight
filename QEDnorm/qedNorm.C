@@ -1,6 +1,7 @@
 #include "TFile.h"
 #include "TH1F.h"
 #include "TF1.h"
+#include "CMS_lumi.C"
 
 const double excleff_hm        = 89.9e-2;
 const double excleff_hm_stat   = 1.3e-2;
@@ -12,16 +13,17 @@ const double xsec_3_53         = 1.086453e-01*20.6e3; // in mub
 const double xsec_3_53_err     = 0.00001*xsec_3_53; // FIXME what is the uncertainty?
 const double lumi_brilcalc     = 391; // in mub-1
 const double lumi_brilcalc_err = 0.12*lumi_brilcalc;
-const double sf_hm             = 0.98*0.98*0.931*0.928;
+const double sf_hm             = 0.98*0.98;//*0.931*0.928;
 const double sf_hm_syst        = sqrt(pow(0.03,2)+pow(2*0.02,2));
-const double sf_ged            = 0.989*0.989*0.931*0.928;
-const double sf_ged_syst       = sqrt(pow(0.03,2)+pow(2*0.02/0.989,2)+pow(0.003/0.931,2)+pow(0.020/0.928,2))*sf_ged;
+// const double sf_ged            = 0.989*0.989*0.931*0.928;
+const double sf_ged            = 0.98*0.98;//*0.931*0.928;
+const double sf_ged_syst       = sqrt(pow(0.03,2)+pow(2*0.02,2));//+pow(0.003/0.931,2)+pow(0.020/0.928,2))*sf_ged;
 const int    ngen              = 2399759;//7929199;
 const double acop_cut          = 0.06;
 
 void qedNorm(const char* type = "GED", double mass_cut=5) {
    TFile *fdata = TFile::Open("outputDataAll.root");
-   TFile *fmc = TFile::Open("outputMCAll.root");
+   TFile *fmc = TFile::Open("outputMCAll_noexcl.root");
    TTree *trdata = (TTree*) fdata->Get(Form("tr%s",type));
    TTree *trmc = (TTree*) fmc->Get(Form("tr%s",type));
 
@@ -35,7 +37,7 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    }
 
    // estimate the purity in data
-   TH1F *hacop_data = new TH1F("hacop_data",";Acoplanarity;Entries / 0.002",30,0,acop_cut);
+   TH1F *hacop_data = new TH1F("hacop_data",";e^{+}e^{-} acoplanarity;Entries / 0.002",30,0,acop_cut);
    TH1F *hacop_mc = new TH1F("hacop_mc",";Acoplanarity;Entries / 0.002",30,0,acop_cut);
    trdata->Project(hacop_data->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
    trmc->Project(hacop_mc->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
@@ -50,17 +52,46 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    double norm_data = hacop_data->IntegralAndError(1,5,norm_data_err,"width");
    cout << "Scaling MC by " << norm_mc << " / " << norm_data << " = " << norm_mc/norm_data << endl;
    hacop_mc->Scale(norm_data/norm_mc);
-   hacop_mc->SetFillColor(kYellow+1);
+   hacop_mc->SetFillColor(kYellow);
 
-   TCanvas *c_aco = new TCanvas("c_aco","Acoplanarity");
+   int W = 700;
+   int H = 600;
+
+   float T = 0.08;
+   float B = 0.14;
+   float L = 0.14;
+   float R = 0.04;
+
+
+   TCanvas* c_aco = new TCanvas("c_aco","Acoplanarity",50,50,W,H);
+   c_aco->SetFillColor(0);
+   c_aco->SetBorderMode(0);
+   c_aco->SetFrameFillStyle(0);
+   c_aco->SetFrameBorderMode(0);
+   c_aco->SetLeftMargin( L );
+   c_aco->SetRightMargin( R );
+   c_aco->SetTopMargin( T );
+   c_aco->SetBottomMargin( B );
+   c_aco->SetTickx(0);
+   c_aco->SetTicky(0);
    gStyle->SetOptStat(0);
+   gStyle->SetOptFit(0);
    c_aco->SetLogy();
    hacop_data->Draw();
    hacop_mc->Draw("hist same");
    hacop_data->Draw("same");
    TFitResultPtr r = hacop_data->Fit(fexp,"ILEMS");
+
+   TLegend *tleg = new TLegend(0.5,0.6,0.9,0.9);
+   tleg->SetBorderSize(0);
+   tleg->AddEntry(hacop_data,"data","LP");
+   tleg->AddEntry(hacop_mc,"QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","F");
+   tleg->Draw();
+
    c_aco->RedrawAxis();
+   CMS_lumi( c_aco, 104, 10,lumi_PbPb2015 );
    c_aco->SaveAs("acop.pdf");
+   c_aco->SaveAs("acop.root");
 
    const double *params = r->GetParams();
    // get the total
