@@ -84,14 +84,16 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
 
    TLegend *tleg = new TLegend(0.5,0.6,0.9,0.9);
    tleg->SetBorderSize(0);
-   tleg->AddEntry(hacop_data,"data","LP");
+   tleg->AddEntry(hacop_data,"Data","LP");
    tleg->AddEntry(hacop_mc,"QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","F");
+   tleg->AddEntry(fexp,"Fit to data","L");
    tleg->Draw();
 
    c_aco->RedrawAxis();
-   CMS_lumi( c_aco, 104, 10,lumi_PbPb2015 );
-   c_aco->SaveAs("acop.pdf");
-   c_aco->SaveAs("acop.root");
+   CMS_lumi( c_aco, 104, 33,lumi_PbPb2015 );
+   c_aco->SaveAs("acop_fit.C");
+   c_aco->SaveAs("acop_fit.pdf");
+   c_aco->SaveAs("acop_fit.root");
 
    const double *params = r->GetParams();
    // get the total
