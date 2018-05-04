@@ -22,7 +22,7 @@ const int    ngen              = 2399759;//7929199;
 const double acop_cut          = 0.06;
 
 void qedNorm(const char* type = "GED", double mass_cut=5) {
-   TFile *fdata = TFile::Open("outputDataAll.root");
+   TFile *fdata = TFile::Open("outputDataAll_noexcl.root");
    TFile *fmc = TFile::Open("outputMCAll_noexcl.root");
    TTree *trdata = (TTree*) fdata->Get(Form("tr%s",type));
    TTree *trmc = (TTree*) fmc->Get(Form("tr%s",type));

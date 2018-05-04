@@ -190,8 +190,8 @@ void mainMC() {
       genmass = gendiele.M();
       gendphi = genele0.DeltaPhi(genele1);
       genok = (evtR.mcPt->at(0)>2&&evtR.mcPt->at(1)>2
-            &&fabs(evtR.mcEta->at(0))<2.5&&fabs(evtR.mcEta->at(1))<2.5
-            &&fabs(genrap)<2.5&&genmass>4&&genmass<53
+            &&fabs(evtR.mcEta->at(0))<2.4&&fabs(evtR.mcEta->at(1))<2.4
+            &&fabs(genrap)<2.4&&genmass>4&&genmass<53
             &&genpt<2
             &&(evtR.mcPID->at(0)==-evtR.mcPID->at(1)));
 
@@ -205,8 +205,8 @@ void mainMC() {
       bool miss_hit  =  ele_two ? (evtR.eleMissHits->at(0) <= 1 && evtR.eleMissHits->at(0) <= 1) : false;
       bool opp_chrg  =  ele_two ? (evtR.eleCharge->at(0) != evtR.eleCharge->at(1) ) : false;
       bool ele_pt    =  ele_two ? (evtR.elePt->at(0) > 2 && evtR.elePt->at(1) > 2 ) : false;
-      bool ele_eta   =  ele_two ? (fabs(evtR.eleEta->at(0))<2.5 && fabs(evtR.eleEta->at(1))<2.5 ) : false;
-      bool ele_SCeta   =  ele_two ? (fabs(evtR.eleSCEta->at(0))<2.5 && fabs(evtR.eleSCEta->at(1))<2.5
+      bool ele_eta   =  ele_two ? (fabs(evtR.eleEta->at(0))<2.4 && fabs(evtR.eleEta->at(1))<2.4 ) : false;
+      bool ele_SCeta   =  ele_two ? (fabs(evtR.eleSCEta->at(0))<2.4 && fabs(evtR.eleSCEta->at(1))<2.4
             && (fabs(evtR.eleSCEta->at(0)) < 1.4442 || fabs(evtR.eleSCEta->at(0)) > 1.566)
             && (fabs(evtR.eleSCEta->at(1)) < 1.4442 || fabs(evtR.eleSCEta->at(1)) > 1.566)) : false;
       bool iso       =  (hovere && track_iso && ecal_iso && hcal_iso);
@@ -249,7 +249,7 @@ void mainMC() {
       //    exclOK = exclOK && (nextra_track==0);
       }
       recoGEDok    =  ele_pt && ele_eta && ele_SCeta && opp_chrg && (recoGEDmass>4) && miss_hit && iso 
-         && (recoGEDpt < 2.0) && (fabs(recoGEDrap)<2.5) && (acop(ele0.DeltaPhi(ele1)) < 0.01);
+         && (recoGEDpt < 2.0) && (fabs(recoGEDrap)<2.4) && (acop(ele0.DeltaPhi(ele1)) < 0.01);
       // recoGEDok = recoGEDok && exclOK;
 
       // --- HM cuts ---
@@ -257,7 +257,7 @@ void mainMC() {
       bool no_HMpho    =  (evtR.nHyPho==0);
       bool ele_gsf_chg =  eleHM_two ? ( evtR.elegsfTrkCharge->at(0) != evtR.elegsfTrkCharge->at(1)) : false;
       bool ele_gsf_pt  =  eleHM_two ? ( evtR.elegsfTrkPt->at(0) > 2 && evtR.elegsfTrkPt->at(1) > 2 ) : false;
-      bool ele_gsf_eta  =  eleHM_two ? ( fabs(evtR.elegsfTrkEta->at(0)) < 2.5 && fabs(evtR.elegsfTrkEta->at(1)) < 2.5 ) : false;
+      bool ele_gsf_eta  =  eleHM_two ? ( fabs(evtR.elegsfTrkEta->at(0)) < 2.4 && fabs(evtR.elegsfTrkEta->at(1)) < 2.4 ) : false;
       bool gsf_miss_hit=  eleHM_two ? ( evtR.elegsfTrkMissHits->at(0) <= 1 && evtR.elegsfTrkMissHits->at(1) <= 1) : false;
 
       // exclOK=false;

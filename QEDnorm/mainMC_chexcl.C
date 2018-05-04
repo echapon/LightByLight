@@ -188,7 +188,7 @@ void mainMC_chexcl(int idir=0) {
    float eleHMpt1, eleHMeta1, eleHMphi1, eleHMpt2, eleHMeta2, eleHMphi2;
    int nextra_track_GED, nextra_track_HM;
    int nhits1, nhits2, nhits3, nhits4, nhits5;
-   int doubleEG2okI;
+   int doubleEG2okI, exclOKI;
    TTree *trGED = new TTree("trGED","tree for GED");
    TTree *trHM = new TTree("trHM","tree for HM");
    trGED->Branch("acop",&acopGED,"acop/F");
@@ -215,6 +215,8 @@ void mainMC_chexcl(int idir=0) {
    trHM->Branch("nhits5",&nhits5,"nhits5/I");
    trGED->Branch("doubleEG2",&doubleEG2okI,"doubleEG2/I");
    trHM->Branch("doubleEG2",&doubleEG2okI,"doubleEG2/I");
+   trGED->Branch("exclOK",&exclOKI,"exclOK/I");
+   trHM->Branch("exclOK",&exclOKI,"exclOK/I");
    trGED->Branch("elept1",&eleGEDpt1,"elept1/F");
    trGED->Branch("eleeta1",&eleGEDeta1,"eleeta1/F");
    trGED->Branch("elephi1",&eleGEDphi1,"elephi1/F");
@@ -276,8 +278,8 @@ void mainMC_chexcl(int idir=0) {
       genmass = gendiele.M();
       gendphi = genele0.DeltaPhi(genele1);
       genok = (evtR.mcPt->at(0)>2&&evtR.mcPt->at(1)>2
-            &&fabs(evtR.mcEta->at(0))<2.5&&fabs(evtR.mcEta->at(1))<2.5
-            &&fabs(genrap)<2.5&&genmass>4&&genmass<53
+            &&fabs(evtR.mcEta->at(0))<2.4&&fabs(evtR.mcEta->at(1))<2.4
+            &&fabs(genrap)<2.4&&genmass>4&&genmass<53
             &&genpt<2
             &&(evtR.mcPID->at(0)==-evtR.mcPID->at(1)));
 
@@ -291,8 +293,8 @@ void mainMC_chexcl(int idir=0) {
       bool miss_hit  =  ele_two ? (evtR.eleMissHits->at(0) <= 1 && evtR.eleMissHits->at(0) <= 1) : false;
       bool opp_chrg  =  ele_two ? (evtR.eleCharge->at(0) != evtR.eleCharge->at(1) ) : false;
       bool ele_pt    =  ele_two ? (evtR.elePt->at(0) > 2 && evtR.elePt->at(1) > 2 ) : false;
-      bool ele_eta   =  ele_two ? (fabs(evtR.eleEta->at(0))<2.5 && fabs(evtR.eleEta->at(1))<2.5 ) : false;
-      bool ele_SCeta   =  ele_two ? (fabs(evtR.eleSCEta->at(0))<2.5 && fabs(evtR.eleSCEta->at(1))<2.5
+      bool ele_eta   =  ele_two ? (fabs(evtR.eleEta->at(0))<2.4 && fabs(evtR.eleEta->at(1))<2.4 ) : false;
+      bool ele_SCeta   =  ele_two ? (fabs(evtR.eleSCEta->at(0))<2.4 && fabs(evtR.eleSCEta->at(1))<2.4
             && (fabs(evtR.eleSCEta->at(0)) < 1.4442 || fabs(evtR.eleSCEta->at(0)) > 1.566)
             && (fabs(evtR.eleSCEta->at(1)) < 1.4442 || fabs(evtR.eleSCEta->at(1)) > 1.566)) : false;
       bool iso       =  (hovere && track_iso && ecal_iso && hcal_iso);
@@ -347,10 +349,11 @@ void mainMC_chexcl(int idir=0) {
                nextra_track_GED);
 
          exclOK = exclOK && (nextra_track_GED==0);
+         exclOKI = exclOK;
       }
       recoGEDok    =  ele_pt && ele_eta && ele_SCeta && opp_chrg && (recoGEDmass>4) && miss_hit && iso 
-         && (recoGEDpt < 2.0) && (fabs(recoGEDrap)<2.5);// && (acop(ele0.DeltaPhi(ele1)) < 0.01);
-      recoGEDok = recoGEDok && exclOK;
+         && (recoGEDpt < 2.0) && (fabs(recoGEDrap)<2.4);// && (acop(ele0.DeltaPhi(ele1)) < 0.01);
+      // recoGEDok = recoGEDok && exclOK;
       acopGED = acop(ele0.DeltaPhi(ele1));
       deltaptGED = fabs(ele0.Pt()-ele1.Pt());
       ptGED = diele.Pt();
@@ -362,7 +365,7 @@ void mainMC_chexcl(int idir=0) {
       bool no_HMpho    =  (evtR.nHyPho==0);
       bool ele_gsf_chg =  eleHM_two ? ( evtR.elegsfTrkCharge->at(0) != evtR.elegsfTrkCharge->at(1)) : false;
       bool ele_gsf_pt  =  eleHM_two ? ( evtR.elegsfTrkPt->at(0) > 2 && evtR.elegsfTrkPt->at(1) > 2 ) : false;
-      bool ele_gsf_eta  =  eleHM_two ? ( fabs(evtR.elegsfTrkEta->at(0)) < 2.5 && fabs(evtR.elegsfTrkEta->at(1)) < 2.5 ) : false;
+      bool ele_gsf_eta  =  eleHM_two ? ( fabs(evtR.elegsfTrkEta->at(0)) < 2.4 && fabs(evtR.elegsfTrkEta->at(1)) < 2.4 ) : false;
       bool gsf_miss_hit=  eleHM_two ? ( evtR.elegsfTrkMissHits->at(0) <= 1 && evtR.elegsfTrkMissHits->at(1) <= 1) : false;
       nextra_track_HM=0;
 
@@ -412,10 +415,11 @@ void mainMC_chexcl(int idir=0) {
                nextra_track_HM);
 
          exclOK = exclOK && (nextra_track_HM==0);
+         exclOKI = exclOK;
       }
 
       recoHMok   = ele_gsf_pt && ele_gsf_eta && ele_gsf_chg && diele.M()>4 && gsf_miss_hit && diele.Pt() < 2.0;// && (acop(ele0.DeltaPhi(ele1)) < 0.01);  
-      recoHMok   = recoHMok && exclOK;
+      // recoHMok   = recoHMok && exclOK;
       acopHM = acop(ele0.DeltaPhi(ele1));
       deltaptHM = fabs(ele0.Pt()-ele1.Pt());
       ptHM = diele.Pt();

@@ -4,8 +4,8 @@ const double xsec_3_53         = 1.086453e-01*20.6e3; // in mub
 const double sf                = 0.98*0.98;
 const int    ngen              = 2399759;//7929199;
 
-void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=391, double mass_cut=0) {
-   TFile *fdata = TFile::Open("outputDataAll.root");
+void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=391, double mass_cut=5) {
+   TFile *fdata = TFile::Open("outputDataAll_noexcl.root");
    TTree *trdata = (TTree*) fdata->Get("tr" + algo);
    // TFile *fMC = TFile::Open("outputMCAll.root");
    TFile *fMC = TFile::Open("outputMCAll_noexcl.root");
@@ -23,16 +23,16 @@ void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=391, do
    TH1F *hpt_MC = new TH1F("hpt_MC",";p_{T} (e^{+}2^{-}) [GeV];Entries",20,0,1);
    TH1F *hacop_MC = new TH1F("hacop_MC",";e{+}e^{-} acoplanarity;Entries",20,0,acop_cut);
 
-   trdata->Project(hmass_data->GetName(),"mass",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
-   trdata->Project(hdeltapt_data->GetName(),"deltapt",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
-   trdata->Project(hrap_data->GetName(),"rap",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
-   trdata->Project(hpt_data->GetName(),"pt",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
-   trdata->Project(hacop_data->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
-   trMC->Project(hmass_MC->GetName(),"mass",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
-   trMC->Project(hdeltapt_MC->GetName(),"deltapt",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
-   trMC->Project(hrap_MC->GetName(),"rap",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
-   trMC->Project(hpt_MC->GetName(),"pt",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
-   trMC->Project(hacop_MC->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f",acop_cut,mass_cut));
+   trdata->Project(hmass_data->GetName(),"mass",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   trdata->Project(hdeltapt_data->GetName(),"deltapt",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   trdata->Project(hrap_data->GetName(),"rap",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   trdata->Project(hpt_data->GetName(),"pt",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   trdata->Project(hacop_data->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   trMC->Project(hmass_MC->GetName(),"mass",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   trMC->Project(hdeltapt_MC->GetName(),"deltapt",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   trMC->Project(hrap_MC->GetName(),"rap",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   trMC->Project(hpt_MC->GetName(),"pt",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   trMC->Project(hacop_MC->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
 
    // scale MC
    double xsec = xsec_3_53;
@@ -64,7 +64,7 @@ void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=391, do
    c1->SetTicky(0);
    gStyle->SetOptStat(0);
    gStyle->SetOptFit(0);
-   TLegend *tleg = new TLegend(0.5,0.6,0.9,0.9);
+   TLegend *tleg = new TLegend(0.5,0.63,0.9,0.9);
    tleg->SetBorderSize(0);
    tleg->AddEntry(hmass_data,"Data","lp");
    tleg->AddEntry(hmass_MC,"#gamma#gamma #rightarrow e^{+}e^{-} (MC)","f");
@@ -91,7 +91,7 @@ void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=391, do
    c1->SaveAs("deltapt.C");
    c1->SaveAs("deltapt.pdf");
 
-   TLegend *tleg2 = new TLegend(0.16,0.6,0.56,0.9);
+   TLegend *tleg2 = new TLegend(0.16,0.63,0.56,0.9);
    tleg2->SetBorderSize(0);
    tleg2->AddEntry(hmass_data,"Data","lp");
    tleg2->AddEntry(hmass_MC,"#gamma#gamma #rightarrow e^{+}e^{-} (MC)","f");
