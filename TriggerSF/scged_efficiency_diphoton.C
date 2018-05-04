@@ -56,8 +56,8 @@ double SF(double et, double eta);
 double SF_uncert(double et, double eta);
 double SF_uncert_diEG(double et1, double eta1, double et2, double eta2);
 
-const int nptbins=9;
-double ptbin[nptbins]={0,5,7.5,10,12.5,15,17.5,20,200};
+const int nptbins=10;
+double ptbin[nptbins]={0,5,6,7,8,10,12,15,20,30};
 const int nptbin= sizeof(ptbin)/sizeof(double) - 1;
 
 
@@ -81,6 +81,7 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
    TH1D* hnum_wt       = new TH1D("hnum_wt" ,"",nptbin,ptbin);
    TH1D* hnum          = new TH1D("hnum" ,"",nptbin,ptbin);
    TH1D* hden          = new TH1D("hden" ,"",nptbin,ptbin);
+   TH1D* hden2         = new TH1D("hden_nopt_noaco" ,"",nptbin,ptbin);
 
    TH1D** hnum_uncert          = new TH1D*[14];
    for (int i=0; i<14; i++) hnum_uncert[i] = new TH1D(Form("hnum_uncert%d",i) ,"",nptbin,ptbin);
@@ -655,6 +656,9 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
                if(vSum_gen.M()> 5 && vSum_gen.Pt() < 1 && genaco < 0.01){
                   hden->Fill(vSum_gen.M());
                }
+               if(vSum_gen.M()> 5){
+                  hden2->Fill(vSum_gen.M());
+               }
 
 
 
@@ -875,7 +879,7 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
                      if(ngenTrk ==0 && nEle ==0 && ngsfEle==0 && 
                            pho_swissCrx->at(i) < 0.95 && fabs(pho_seedTime->at(i)) < 3.6 && pho_swissCrx->at(j) < 0.95 && fabs(pho_seedTime->at(j)) < 3.6 && 
                            vSum2.M() > 5 && EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12  && vSum2.Pt() < 1 && aco2 < 0.01 && 
-                           fabs(phoSCEta->at(i))<2.4 && fabs(phoSCEta->at(j))<2.4 && (fabs(phoSCEta->at(i)) < 1.4442 || fabs(phoSCEta->at(i)) > 1.566) && (fabs(phoSCEta->at(i)) < 1.4442 || fabs(phoSCEta->at(j)) > 1.566) 
+                           fabs(phoSCEta->at(i))<2.4 && fabs(phoSCEta->at(j))<2.4 && (fabs(phoSCEta->at(i)) < 1.4442 || fabs(phoSCEta->at(i)) > 1.566) && (fabs(phoSCEta->at(j)) < 1.4442 || fabs(phoSCEta->at(j)) > 1.566) 
                        ){
 
                         hnum->Fill(vSum2.M());
@@ -937,6 +941,7 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
       hnum_wt->Write();
       for (int i=0; i<14; i++) hnum_uncert[i]->Write();
       hden->Write();
+      hden2->Write();
       output->Close();
    }
 
