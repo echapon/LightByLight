@@ -78,10 +78,24 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
    TTree *tree      = (TTree*)fin->Get("ggHiNtuplizer/EventTree");
    TTree *treePixel = (TTree*)fin->Get("pixel/PixelTree");
 
-   TH1D* hnum_wt       = new TH1D("hnum_wt" ,"",nptbin,ptbin);
-   TH1D* hnum          = new TH1D("hnum" ,"",nptbin,ptbin);
-   TH1D* hden          = new TH1D("hden" ,"",nptbin,ptbin);
-   TH1D* hden2         = new TH1D("hden_nopt_noaco" ,"",nptbin,ptbin);
+   TH1D* hnum_wt       = new TH1D("hnum_wt" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum          = new TH1D("hnum" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID000          = new TH1D("hnum_recoID000" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID001          = new TH1D("hnum_recoID001" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID002          = new TH1D("hnum_recoID002" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID003          = new TH1D("hnum_recoID003" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID004          = new TH1D("hnum_recoID004" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID00          = new TH1D("hnum_recoID00" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID01          = new TH1D("hnum_recoID01" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID02          = new TH1D("hnum_recoID02" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID0          = new TH1D("hnum_recoID0" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID1          = new TH1D("hnum_recoID1" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID2          = new TH1D("hnum_recoID2" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_recoID          = new TH1D("hnum_recoID" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_trig          = new TH1D("hnum_trig" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hnum_chexcl          = new TH1D("hnum_chexcl" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hden          = new TH1D("hden" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
+   TH1D* hden2         = new TH1D("hden_nopt_noaco" ,";m (#gamma#gamma) [GeV];Efficiency",nptbin,ptbin);
 
    TH1D** hnum_uncert          = new TH1D*[14];
    for (int i=0; i<14; i++) hnum_uncert[i] = new TH1D(Form("hnum_uncert%d",i) ,"",nptbin,ptbin);
@@ -615,6 +629,7 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
       sf_uncert_diEG.clear();
 
 
+      TLorentzVector v1_gen, v2_gen, vSum_gen;
       for(int ii=0; ii<nMC; ++ii){
          for(int jj=ii+1; jj<nMC; ++jj){
 
@@ -636,7 +651,6 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
                genphoPhi2_accp.push_back(mcPhi->at(jj));
 
 
-               TLorentzVector v1_gen, v2_gen, vSum_gen;
                v1_gen.SetPtEtaPhiE( mcEt->at(ii), mcEta->at(ii),
                      mcPhi->at(ii), mcE->at(ii));
                v2_gen.SetPtEtaPhiE( mcEt->at(jj), mcEta->at(jj),
@@ -671,10 +685,20 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
 
          for(int i=0; i<nPho; ++i){
             for(int j=i+1; j<nPho; ++j){
+               TLorentzVector v1, v2, vSum;
+               v1.SetPtEtaPhiE( phoSCEt->at(i), phoSCEta->at(i),
+                     phoSCPhi->at(i), phoSCE->at(i));
+               v2.SetPtEtaPhiE( phoSCEt->at(j), phoSCEta->at(j),
+                     phoSCPhi->at(j), phoSCE->at(j));
+               vSum = v1+v2;
+               hnum_recoID00->Fill(vSum.M());
 
                //cout << " coming in reco loop" << endl;
 
-               if(phoSCEt->at(i) > 2.0 && fabs(phoSCEta->at(i)) < 2.4 && phoSCEt->at(j) > 2.0 && fabs(phoSCEta->at(j)) < 2.4){ 
+               if(!(phoSCEt->at(i) > 2.0 && fabs(phoSCEta->at(i)) < 2.4 && phoSCEt->at(j) > 2.0 && fabs(phoSCEta->at(j)) < 2.4)){ 
+               // cout << phoSCEt->at(i) << " "  << fabs(phoSCEta->at(i)) << " " << phoSCEt->at(j) << " " << fabs(phoSCEta->at(j)) << endl;
+               }  else {
+                  hnum_recoID000->Fill(vSum.M());
 
                   //for(int aa = 0 ; aa <nMC; ++aa ){    
                   //  for(int bb = aa+1 ; bb <nMC; ++bb ){    
@@ -702,9 +726,13 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
 
 
                   if(fabs(phoSCEta->at(i)) < 1.4791 && phoSigmaIEtaIEta->at(i) > 0.02) continue;
+               hnum_recoID001->Fill(vSum.M());
                   if(fabs(phoSCEta->at(j)) < 1.4791 && phoSigmaIEtaIEta->at(j) > 0.02) continue;
+               hnum_recoID002->Fill(vSum.M());
                   if(fabs(phoSCEta->at(i)) > 1.4791 && phoSigmaIEtaIEta->at(i) > 0.06) continue;
+               hnum_recoID003->Fill(vSum.M());
                   if(fabs(phoSCEta->at(j)) > 1.4791 && phoSigmaIEtaIEta->at(j) > 0.06) continue;
+               hnum_recoID004->Fill(vSum.M());
 
                   phoEt_gen_reco_1.push_back(phoSCEt->at(i));
                   phoEta_gen_reco_1.push_back(phoSCEta->at(i));
@@ -734,12 +762,6 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
 
 
                   // diphoton inv mass
-                  TLorentzVector v1, v2, vSum;
-                  v1.SetPtEtaPhiE( phoSCEt->at(i), phoSCEta->at(i),
-                        phoSCPhi->at(i), phoSCE->at(i));
-                  v2.SetPtEtaPhiE( phoSCEt->at(j), phoSCEta->at(j),
-                        phoSCPhi->at(j), phoSCE->at(j));
-                  vSum = v1+v2;
 
                   vSum_gg_M.push_back(vSum.M());
                   vSum_gg_Pt.push_back(vSum.Pt());
@@ -750,7 +772,7 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
                   pho_aco.push_back(aco);		    
 
                   //if(HLT_HIUPCL1DoubleEG2NotHF2_v1==1 || HLT_HIUPCL1SingleEG5NotHF2_v1==1){  // for trigger efficiency
-                  if(HLT_HIUPCL1DoubleEG2NotHF2_v1==1){  // for trigger efficiency
+                  // if(HLT_HIUPCL1DoubleEG2NotHF2_v1==1){  // for trigger efficiency
 
                      id ++ ;
 
@@ -781,17 +803,17 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
 
                      // diphoton inv mass
                      TLorentzVector v3, v4, vSum2;
-                     v3.SetPtEtaPhiE( phoSCEt->at(i), phoSCEta->at(i),
-                           phoSCPhi->at(i), phoSCE->at(i));
-                     v4.SetPtEtaPhiE( phoSCEt->at(j), phoSCEta->at(j),
-                           phoSCPhi->at(j), phoSCE->at(j));
+                     v3.SetPtEtaPhiM( phoSCEt->at(i), phoSCEta->at(i),
+                           phoSCPhi->at(i), 0);
+                     v4.SetPtEtaPhiM( phoSCEt->at(j), phoSCEta->at(j),
+                           phoSCPhi->at(j), 0);
                      vSum2 = v3+v4;
 
                      vSum_gg_M_doubleEG2.push_back(vSum2.M());
                      vSum_gg_Pt_doubleEG2.push_back(vSum2.Pt());
                      vSum_gg_Rapidity_doubleEG2.push_back(vSum2.Rapidity());
 
-                     phodphi2 = getDPHI(phoPhi->at(i) ,phoPhi->at(j));
+                     phodphi2 = getDPHI(phoSCPhi->at(i) ,phoSCPhi->at(j));
                      aco2 = 1- (phodphi2/3.141592653589); 
                      pho_aco_doubleEG2.push_back(aco2);
 
@@ -876,39 +898,64 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
 
 
 
-                     if(ngenTrk ==0 && nEle ==0 && ngsfEle==0 && 
-                           pho_swissCrx->at(i) < 0.95 && fabs(pho_seedTime->at(i)) < 3.6 && pho_swissCrx->at(j) < 0.95 && fabs(pho_seedTime->at(j)) < 3.6 && 
-                           vSum2.M() > 5 && EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12  && vSum2.Pt() < 1 && aco2 < 0.01 && 
-                           fabs(phoSCEta->at(i))<2.4 && fabs(phoSCEta->at(j))<2.4 && (fabs(phoSCEta->at(i)) < 1.4442 || fabs(phoSCEta->at(i)) > 1.566) && (fabs(phoSCEta->at(j)) < 1.4442 || fabs(phoSCEta->at(j)) > 1.566) 
-                       ){
+                     // if(ngenTrk ==0 && nEle ==0 && ngsfEle==0 && 
+                     //       pho_swissCrx->at(i) < 0.95 && fabs(pho_seedTime->at(i)) < 3.6 && pho_swissCrx->at(j) < 0.95 && fabs(pho_seedTime->at(j)) < 3.6 && 
+                     //       vSum2.M() > 5 && EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12  && vSum2.Pt() < 1 && aco2 < 0.01 && 
+                     //       fabs(phoSCEta->at(i))<2.4 && fabs(phoSCEta->at(j))<2.4 && (fabs(phoSCEta->at(i)) < 1.4442 || fabs(phoSCEta->at(i)) > 1.566) && (fabs(phoSCEta->at(j)) < 1.4442 || fabs(phoSCEta->at(j)) > 1.566) 
+                     //   ){
 
-                        hnum->Fill(vSum2.M());
+                     // reco ID
+                     if (vSum2.M() > 5) {
+                        hnum_recoID01->Fill(vSum2.M());
+                        if (vSum2.Pt() < 1) {
+                        hnum_recoID02->Fill(vSum2.M());
+                           if (aco2 < 0.01) {
+                        hnum_recoID0->Fill(vSum2.M());
+                        if (fabs(phoSCEta->at(i))<2.4 && fabs(phoSCEta->at(j))<2.4 && (fabs(phoSCEta->at(i)) < 1.4442 || fabs(phoSCEta->at(i)) > 1.566) && (fabs(phoSCEta->at(j)) < 1.4442 || fabs(phoSCEta->at(j)) > 1.566)) {
+                           hnum_recoID1->Fill(vSum2.M());
+                           if (pho_swissCrx->at(i) < 0.95 && pho_swissCrx->at(j) < 0.95) {
+                              hnum_recoID2->Fill(vSum2.M());
+                              if ( fabs(pho_seedTime->at(i)) < 3.6 && fabs(pho_seedTime->at(j)) < 3.6 ) {
+                                 hnum_recoID->Fill(vSum2.M());
 
-                        double sf1 = SF(phoSCEt->at(i),phoSCEta->at(i));
-                        double sf2 = SF(phoSCEt->at(j),phoSCEta->at(j));
+                                 if (HLT_HIUPCL1DoubleEG2NotHF2_v1==1) {
+                                    hnum_trig->Fill(vSum2.M());
 
-                        hnum_wt->Fill(vSum2.M(), sf1*sf2);
+                                    if (ngenTrk ==0 && nEle ==0 && ngsfEle==0) {
+                                       hnum_chexcl->Fill(vSum2.M());
 
+                                       if (EmEnergy_EB< 0.55 && EmEnergy_EE < 3.16 && HadEnergy_HB < 2.0 && HadEnergy_HE < 3.0 && HadEnergy_HF_Plus < 4.85 && HadEnergy_HF_Minus < 4.12) {
 
-                        hnum_uncert[0]->Fill(vSum2.M(), SF_uncert_diEG(phoSCEt->at(i),phoSCEta->at(i), phoSCEt->at(j),phoSCEta->at(j)));
-                        for (int ivar=1; ivar<14; ivar++) {
-                           double sf1p=sf1, sf2p=sf2;
-                           if (ireg(phoSCEt->at(i),phoSCEta->at(i))==ivar) sf1p += SF_uncert(phoSCEt->at(i),phoSCEta->at(i));
-                           if (ireg(phoSCEt->at(j),phoSCEta->at(j))==ivar) sf2p += SF_uncert(phoSCEt->at(j),phoSCEta->at(j));
-                           hnum_uncert[ivar]->Fill(vSum2.M(),sf1p*sf2p);
-                        };
+                                          hnum->Fill(vSum2.M());
 
-                        // cout << " scale factor 1 : " << sf1 << "  " << sf2 << " both uncertainty: " << sf_uncert << endl;
+                                          double sf1 = SF(phoSCEt->at(i),phoSCEta->at(i));
+                                          double sf2 = SF(phoSCEt->at(j),phoSCEta->at(j));
 
-                     } // reco cuts
-
-                  } // trigger
+                                          hnum_wt->Fill(vSum2.M(), sf1*sf2);
 
 
-                  // } // gen-reco matching
-                  //	}//gen cuts
-                  //     } // bb gen loopo
-                  //   }// aa gen loop	  
+                                          hnum_uncert[0]->Fill(vSum2.M(), SF_uncert_diEG(phoSCEt->at(i),phoSCEta->at(i), phoSCEt->at(j),phoSCEta->at(j)));
+                                          for (int ivar=1; ivar<14; ivar++) {
+                                             double sf1p=sf1, sf2p=sf2;
+                                             if (ireg(phoSCEt->at(i),phoSCEta->at(i))==ivar) sf1p += SF_uncert(phoSCEt->at(i),phoSCEta->at(i));
+                                             if (ireg(phoSCEt->at(j),phoSCEta->at(j))==ivar) sf2p += SF_uncert(phoSCEt->at(j),phoSCEta->at(j));
+                                             hnum_uncert[ivar]->Fill(vSum2.M(),sf1p*sf2p);
+                                          };
+
+                                          // cout << " scale factor 1 : " << sf1 << "  " << sf2 << " both uncertainty: " << sf_uncert << endl;
+                                       } // neu excl
+                                    } // ch excl
+                                 } // trigger
+                              } // reco+ID
+                           }}}}}
+
+                              // } // trigger
+
+
+                              // } // gen-reco matching
+                              //	}//gen cuts
+                     //     } // bb gen loopo
+                     //   }// aa gen loop	  
 
 
                } //reco cuts
@@ -938,6 +985,20 @@ void scged_efficiency_diphoton( std::string infile_Forest = "exclgg_mc_forests.t
 
       output->Write();
       hnum->Write();
+      hnum_recoID000->Write();
+      hnum_recoID001->Write();
+      hnum_recoID002->Write();
+      hnum_recoID003->Write();
+      hnum_recoID004->Write();
+      hnum_recoID00->Write();
+      hnum_recoID01->Write();
+      hnum_recoID02->Write();
+      hnum_recoID0->Write();
+      hnum_recoID1->Write();
+      hnum_recoID2->Write();
+      hnum_recoID->Write();
+      hnum_trig->Write();
+      hnum_chexcl->Write();
       hnum_wt->Write();
       for (int i=0; i<14; i++) hnum_uncert[i]->Write();
       hden->Write();

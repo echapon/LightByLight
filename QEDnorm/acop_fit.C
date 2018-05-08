@@ -1,8 +1,8 @@
 void acop_fit()
 {
 //=========Macro generated from canvas: c_aco/Acoplanarity
-//=========  (Fri May  4 14:38:56 2018) by ROOT version6.06/08
-   TCanvas *c_aco = new TCanvas("c_aco", "Acoplanarity",56,87,700,600);
+//=========  (Tue May  8 10:17:33 2018) by ROOT version6.06/08
+   TCanvas *c_aco = new TCanvas("c_aco", "Acoplanarity",0,0,700,600);
    gStyle->SetOptStat(0);
    gStyle->SetOptTitle(0);
    c_aco->Range(0,0,1,1);

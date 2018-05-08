@@ -1,3 +1,6 @@
+#ifndef CMS_lumi_C
+#define CMS_lumi_C
+
 #include "CMS_lumi.h"
 
 void 
@@ -198,3 +201,5 @@ CMS_lumi( TPad* pad, int iPeriod, int iPosX, TString label )
     }
   return;
 }
+
+#endif
