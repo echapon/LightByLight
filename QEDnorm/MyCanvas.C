@@ -69,6 +69,16 @@ public:
       gStyle->SetNumberContours(100);
 		// tdrStyle->SetErrorX(0.5);
 		c = new TCanvas(CanvasName, "", length_x, length_y);
+      c->SetFillColor(0);
+      c->SetBorderMode(0);
+      c->SetFrameFillStyle(0);
+      c->SetFrameBorderMode(0);
+      // c->SetLeftMargin( L );
+      // c->SetRightMargin( R );
+      // c->SetTopMargin( T );
+      // c->SetBottomMargin( B );
+      c->SetTickx(0);
+      c->SetTicky(0);
 
 		TitleX = XTitle;
 		TitleY = YTitle;
@@ -209,18 +219,19 @@ public:
 		// -- Top Pad -- //
 		//###TopPad = new TPad("TopPad", "TopPad", 0.01, 0.01, 0.99, 0.99);
 		TopPad = new TPad("TopPad", "TopPad", 0.01, 0.26, 1., 1.);
-      TopPad->SetTopMargin(gStyle->GetPadTopMargin()/0.7);
+      TopPad->SetTopMargin(gStyle->GetPadTopMargin()/0.74);
 
       double gTextSize1 = 0.05;
-      double gTextSize2 = 0.05;
-      double gYoffset = 1.7;
+      double gTextSize2 = 0.05*0.9;
+      double gYoffset = gStyle->GetTitleYOffset();
 
 		if( isLogX == kTRUE ) TopPad->SetLogx();
 		if( isLogY == kTRUE ) TopPad->SetLogy();
 
 		// -- ensure additional space at the bottom side for ratio plot -- //
 		//TopPad->SetBottomMargin(0.00);//0.32, 0.00
-		TopPad->SetRightMargin(gStyle->GetPadRightMargin()*0.74);
+		TopPad->SetRightMargin(gStyle->GetPadRightMargin());//*0.74);
+		TopPad->SetLeftMargin(gStyle->GetPadLeftMargin()*0.9);
       // TopPad->SetLeftMargin(gStyle->GetPadLeftMargin()*0.74);
 
 		if( isRatioPadAttached == kTRUE) TopPad->SetBottomMargin(0.04/0.74);
@@ -231,6 +242,11 @@ public:
 
 		h1->Draw(DrawOp1);
 		h2->Draw(DrawOp2);
+      TH1D *h2c = (TH1D*) h2->Clone();
+      h2c->SetFillColor(kBlack);
+      h2c->SetFillStyle(3005);
+      h2c->SetMarkerSize(0);
+      h2c->Draw("E2 same");
 		//h1->Draw("AXISSAME");
 		h1->Draw(DrawOp1+"SAME");
 
@@ -261,13 +277,14 @@ public:
 		// -- X-axis Setting -- //
 		h1->GetXaxis()->SetLabelSize(0);
 		h1->GetXaxis()->SetTitleSize(0);
+      h1->GetXaxis()->SetNdivisions(509);
 		if( isSetNoExpo_MoreLogLabels_X == kTRUE ) { h1->GetXaxis()->SetNoExponent(); h1->GetXaxis()->SetMoreLogLabels(); }
 		if( !(LowerEdge_X == 0 && UpperEdge_X == 0) ) h1->GetXaxis()->SetRangeUser( LowerEdge_X, UpperEdge_X );
 
 		// -- Y-axis Setting -- //
 		h1->GetYaxis()->SetTitleSize(gTextSize1/(0.74));
 		h1->GetYaxis()->SetLabelSize(gTextSize2/(0.74));
-		h1->GetYaxis()->SetTitleOffset(gYoffset*0.74);
+		h1->GetYaxis()->SetTitleOffset(gYoffset*0.8);
 		h1->GetYaxis()->SetRangeUser( 0.1*TMath::Min(h1->GetMinimum(), h2->GetMinimum()), 3.0*TMath::Max(h1->GetMaximum(), h2->GetMaximum()) );
 		if( isSetNoExpo_MoreLogLabels_Y == kTRUE ) { h1->GetYaxis()->SetNoExponent(); h1->GetYaxis()->SetMoreLogLabels(); }
 		if( !(LowerEdge_Y == 0 && UpperEdge_Y == 0) ) h1->GetYaxis()->SetRangeUser( LowerEdge_Y, UpperEdge_Y );
@@ -287,13 +304,14 @@ public:
       BottomPad->SetTopMargin(0);
       BottomPad->SetFillColor(0);
       BottomPad->SetFillStyle(0);
-      BottomPad->SetBottomMargin(gStyle->GetPadBottomMargin()/0.3);
+      BottomPad->SetBottomMargin(gStyle->GetPadBottomMargin()*0.74/0.3);
 		BottomPad->Draw();
 		BottomPad->cd();
 
       // BottomPad->SetBottomMargin(0.4);
-		BottomPad->SetRightMargin(0.05);
-		BottomPad->SetRightMargin(gStyle->GetPadRightMargin()*0.3);
+      // BottomPad->SetRightMargin(0.05);
+		BottomPad->SetRightMargin(gStyle->GetPadRightMargin()*0.755);
+		BottomPad->SetLeftMargin(gStyle->GetPadLeftMargin()*0.91);
       // BottomPad->SetLeftMargin(gStyle->GetPadLeftMargin()*0.3);
 		//BottomPad->SetLeftMargin(0.15);	
 		if( isRatioPadAttached == kTRUE) BottomPad->SetTopMargin(0.00);
@@ -319,6 +337,7 @@ public:
          }
       h2_unit->SetFillColor(kBlack);
       h2_unit->SetFillStyle(3005);
+      h2_unit->SetMarkerSize(0);
       h2_unit->Draw("E2 same");
 
 
@@ -332,20 +351,23 @@ public:
 
 		// -- X-axis Setting -- //		
 		h_ratio->GetXaxis()->SetTitle( TitleX );
-		h_ratio->GetXaxis()->SetTitleOffset( 0.9 );
+		h_ratio->GetXaxis()->SetTitleOffset( 1. );
 		h_ratio->GetXaxis()->SetTitleSize( gTextSize1/0.3 );
 		h_ratio->GetXaxis()->SetLabelColor(1);
 		h_ratio->GetXaxis()->SetLabelFont(42);
 		h_ratio->GetXaxis()->SetLabelOffset(0.007);
-		h_ratio->GetXaxis()->SetLabelSize(gTextSize2/0.3);
+      h_ratio->GetXaxis()->SetLabelSize(gTextSize2/0.3);
+      h_ratio->GetXaxis()->SetNdivisions(509);
+      h_ratio->GetXaxis()->SetTickLength(gStyle->GetTickLength()/0.35);
 		if( isSetNoExpo_MoreLogLabels_X == kTRUE ) { h_ratio->GetXaxis()->SetMoreLogLabels(); h_ratio->GetXaxis()->SetNoExponent(); }
 
 		// -- Y-axis Setting -- //
 		h_ratio->GetYaxis()->SetTitle( Name_Ratio );
-		h_ratio->GetYaxis()->SetTitleOffset( gYoffset * 0.3 );//0.4
+		h_ratio->GetYaxis()->SetTitleOffset( gYoffset * 0.33 );//0.4
 		h_ratio->GetYaxis()->SetTitleSize(gTextSize1/0.3);
 		h_ratio->GetYaxis()->SetLabelSize(gTextSize2/0.3);
 		h_ratio->GetYaxis()->SetRangeUser( RatioStandard-1+LowerEdge_Ratio, RatioStandard-1+UpperEdge_Ratio );
+      // h_ratio->GetYaxis()->SetTickLength(gStyle->GetTickLength()*0.74/0.3);
 
 		// -- flat line = 1.00 -- //
 		TF1 *f_line = new TF1("f_line", Form("%f",RatioStandard), -10000, 10000);//"1"
@@ -356,8 +378,18 @@ public:
 		h_ratio->Draw("EPSAME");
       h_ratio->GetYaxis()->SetNdivisions(505);
       BottomPad->RedrawAxis();
+      TopPad->RedrawAxis();
 
+      // need to scale because the TopPad is smaller
+      // lumiTextSize /= 0.74;
+      // lumiTextOffset /= 0.74;
+      // cmsTextSize /= 0.74;
+      // cmsTextOffset /= 0.74;
       CMS_lumi( TopPad, 104, 33,lumi_PbPb2015 );
+      // lumiTextSize *= 0.74;
+      // lumiTextOffset *= 0.74;
+      // cmsTextSize *= 0.74;
+      // cmsTextOffset *= 0.74;
 	}
 
 	void CanvasWithThreeHistogramsRatioPlot(TH1D *h1, TH1D *h2, TH1D* h_ref, 

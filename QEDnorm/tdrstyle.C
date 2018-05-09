@@ -94,10 +94,10 @@ void setTDRStyle() {
   // tdrStyle->SetStatY(Float_t y = 0);
 
 // Margins:
-  tdrStyle->SetPadTopMargin(0.05);
-  tdrStyle->SetPadBottomMargin(0.13);
-  tdrStyle->SetPadLeftMargin(0.16);
-  tdrStyle->SetPadRightMargin(0.02);
+  tdrStyle->SetPadTopMargin(0.08);
+  tdrStyle->SetPadBottomMargin(0.14);
+  tdrStyle->SetPadLeftMargin(0.14);
+  tdrStyle->SetPadRightMargin(0.04);
 
 // For the Global title:
 

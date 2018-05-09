@@ -13,6 +13,11 @@ double acop(double dphi) {
    return 1.-fabs(TVector2::Phi_mpi_pi(dphi))/TMath::Pi(); 
 };
 
+int ireg(double et, double eta);
+double SF(double et, double eta);
+double SF_uncert(double et, double eta);
+double SF_uncert_diEG(double et1, double eta1, double et2, double eta2);
+
 class clHist {
    public:
       TH1F *hpt;
@@ -189,6 +194,7 @@ void mainMC_chexcl(int idir=0) {
    int nextra_track_GED, nextra_track_HM;
    int nhits1, nhits2, nhits3, nhits4, nhits5;
    int doubleEG2okI, exclOKI;
+   float SFweight[14];
    TTree *trGED = new TTree("trGED","tree for GED");
    TTree *trHM = new TTree("trHM","tree for HM");
    trGED->Branch("acop",&acopGED,"acop/F");
@@ -235,6 +241,7 @@ void mainMC_chexcl(int idir=0) {
    trHM->Branch("elept2",&eleHMpt2,"elept2/F");
    trHM->Branch("eleeta2",&eleHMeta2,"eleeta2/F");
    trHM->Branch("elephi2",&eleHMphi2,"elephi2/F");
+   trGED->Branch("SFweight",SFweight,"SFweight[14]/F");
 
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
@@ -322,6 +329,17 @@ void mainMC_chexcl(int idir=0) {
          eleGEDSCEt2 = evtR.eleSCEn->at(1)/cosh(evtR.eleSCEta->at(1));
          eleGEDSCEta2 = evtR.eleSCEta->at(1);
          eleGEDSCPhi2 = evtR.eleSCPhi->at(1);
+
+         double sf1 = SF(eleGEDSCEt1,eleGEDSCEta1);
+         double sf2 = SF(eleGEDSCEt2,eleGEDSCEta2);
+         SFweight[0] = sf1*sf2;
+
+         for (int ivar=1; ivar<14; ivar++) {
+            double sf1p=sf1, sf2p=sf2;
+            if (ireg(eleGEDSCEt1,eleGEDSCEta1)==ivar) sf1p += SF_uncert(eleGEDSCEt1,eleGEDSCEta1);
+            if (ireg(eleGEDSCEt2,eleGEDSCEta2)==ivar) sf2p += SF_uncert(eleGEDSCEt2,eleGEDSCEta2);
+            SFweight[ivar] = sf1p*sf2p;
+         }
 
          double EmEnergy_EB = 0;
          double EmEnergy_EE = 0;
@@ -415,7 +433,7 @@ void mainMC_chexcl(int idir=0) {
                nextra_track_HM);
 
          exclOK = exclOK && (nextra_track_HM==0);
-         exclOKI = exclOK;
+         // exclOKI = exclOK;
       }
 
       recoHMok   = ele_gsf_pt && ele_gsf_eta && ele_gsf_chg && diele.M()>4 && gsf_miss_hit && diele.Pt() < 2.0;// && (acop(ele0.DeltaPhi(ele1)) < 0.01);  
@@ -645,4 +663,72 @@ void fillNextraTracks(const eventTreeReader &evtR,
       nextratracks++;
 
    }
+}
+
+int ireg(double et, double eta) {
+   if (fabs(eta)<1.5) {
+      if (et<3) return 1;
+      else if (et<4) return 2;
+      else if (et<5) return 3;
+      else if (et<6) return 4;
+      else if (et<7) return 5;
+      else if (et<10) return 6;
+      else if (et<14) return 7;
+      else return 8;
+   } else {
+      if (et<3.5) return 9;
+      else if (et<5) return 10;
+      else if (et<7) return 11;
+      else if (et<10) return 12;
+      else return 13;
+   }
+}
+
+double SF(double et, double eta) {
+   if (fabs(eta)<1.5) {
+      if (et<3) return 1.04953;
+      else if (et<4) return 1.14323;
+      else if (et<5) return 1.02158;
+      else if (et<6) return 0.999508;
+      else if (et<7) return 1.01261;
+      else if (et<10) return 0.99313;
+      else if (et<14) return 0.9943;
+      else return 0.978535;
+   } else {
+      if (et<3.5) return 0.969575;
+      else if (et<5) return 0.912982;
+      else if (et<7) return 0.963249;
+      else if (et<10) return 0.935725;
+      else return 1;
+   }
+}
+
+double SF_uncert(double et, double eta) {
+   if (fabs(eta)<1.5) {
+      if (et<3) return 0.404692;
+      else if (et<4) return 0.0488214;
+      else if (et<5) return 0.0193057;
+      else if (et<6) return 0.0102954;
+      else if (et<7) return 0.00513479;
+      else if (et<10) return 0.00466996;
+      else if (et<14) return 0.00807531;
+      else return 0.0217015;
+   } else {
+      if (et<3.5) return 0.207799;
+      else if (et<5) return 0.0621188;
+      else if (et<7) return 0.0275508;
+      else if (et<10) return 0.0373266;
+      else return 0.0211426;
+   }
+}
+
+double SF_uncert_diEG(double et1, double eta1, double et2, double eta2) {
+   double SF1 = SF(et1,eta1);
+   double SF2 = SF(et2,eta2);
+   int i1 = ireg(et1,eta1);
+   int i2 = ireg(et2,eta2);
+   double uncert1 = SF_uncert(et1,eta1);
+   double uncert2 = SF_uncert(et2,eta2);
+   if (uncert1==uncert2 && SF1==SF2) return 2.*SF1*SF1*(uncert1/SF1);
+   else return SF1*SF2*sqrt(pow(uncert1/SF1,2)+pow(uncert2/SF2,2));
 }

@@ -4,6 +4,9 @@
 const double xsec_3_53         = 1.086453e-01*20.6e3*4.82/4.73; // in mub
 const double sf                = 0.98*0.98;
 const int    ngen              = 2399759;//7929199;
+const double glob_syst         = 2.*(0.02/0.98); // reco+ID
+
+TH1D* SFuncert(TTree *tr, const char* name, const char* var, const char* cut, int nbins, double binmin, double binmax, bool dorew=false);
 
 void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=363.959, double mass_cut=5) {
    TFile *fdata = TFile::Open("outputDataAll_noexcl.root");
@@ -18,22 +21,16 @@ void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=363.959
    TH1D *hpt_data = new TH1D("hpt_data",";p_{T} (e^{+}e^{-}) [GeV];Entries / (0.5 GeV)",20,0,1);
    TH1D *hacop_data = new TH1D("hacop_data",Form(";e^{+}e^{-} acoplanarity;Entries / (%.4f)",acop_cut/20.),20,0,acop_cut);
 
-   TH1D *hmass_MC = new TH1D("hmass_MC",";M (e^{+}e^{-}) [GeV];Entries",50,0,100);
-   TH1D *hdeltapt_MC = new TH1D("hdeltapt_MC",";#Delta p_{T} (e^{+}e^{-}) [GeV];Entries",10,0,1);
-   TH1D *hrap_MC = new TH1D("hrap_MC",";y ();Entries",25,-2.5,2.5);
-   TH1D *hpt_MC = new TH1D("hpt_MC",";p_{T} (e^{+}2^{-}) [GeV];Entries",20,0,1);
-   TH1D *hacop_MC = new TH1D("hacop_MC",";e{+}e^{-} acoplanarity;Entries",20,0,acop_cut);
-
    trdata->Project(hmass_data->GetName(),"mass",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
    trdata->Project(hdeltapt_data->GetName(),"deltapt",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
    trdata->Project(hrap_data->GetName(),"rap",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
    trdata->Project(hpt_data->GetName(),"pt",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
    trdata->Project(hacop_data->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
-   trMC->Project(hmass_MC->GetName(),"mass",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
-   trMC->Project(hdeltapt_MC->GetName(),"deltapt",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
-   trMC->Project(hrap_MC->GetName(),"rap",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
-   trMC->Project(hpt_MC->GetName(),"pt",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
-   trMC->Project(hacop_MC->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   TH1D *hmass_MC = SFuncert(trMC,"hmass_MC","mass",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut),50,0,100);
+   TH1D *hdeltapt_MC = SFuncert(trMC,"hdeltapt_MC","deltapt",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut),10,0,1);
+   TH1D *hrap_MC = SFuncert(trMC,"hrap_MC","rap",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut),25,-2.5,2.5);
+   TH1D *hpt_MC = SFuncert(trMC,"hpt_MC","pt",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut),20,0,1);
+   TH1D *hacop_MC = SFuncert(trMC,"hacop_MC","acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut),20,0,acop_cut);
 
    // scale MC
    double xsec = xsec_3_53;
@@ -52,89 +49,68 @@ void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=363.959
    float R = 0.04;
 
 
-   // TCanvas* c1 = new TCanvas("c1","Acoplanarity",50,50,W,H);
-   // c1->SetFillColor(0);
-   // c1->SetBorderMode(0);
-   // c1->SetFrameFillStyle(0);
-   // c1->SetFrameBorderMode(0);
-   // c1->SetLeftMargin( L );
-   // c1->SetRightMargin( R );
-   // c1->SetTopMargin( T );
-   // c1->SetBottomMargin( B );
-   // c1->SetTickx(0);
-   // c1->SetTicky(0);
-   // gStyle->SetOptStat(0);
-   // gStyle->SetOptFit(0);
-   // TLegend *tleg = new TLegend(0.5,0.63,0.9,0.9);
-   // tleg->SetBorderSize(0);
-   // tleg->AddEntry(hmass_data,"Data","lp");
-   // tleg->AddEntry(hmass_MC,"#gamma#gamma #rightarrow e^{+}e^{-} (MC)","f");
-
    MyCanvas mc1("mass","M (e^{+}e^{-}) [GeV]", "Entries", W, H);
    mc1.SetLogy(false);
    mc1.SetYRange(0.1,9000);
    mc1.SetRatioRange(0.1,1.9);
-   mc1.SetLegendPosition(0.5,0.63,0.9,0.9);
+   mc1.SetLegendPosition(0.5,0.68,0.8,0.85);
    mc1.CanvasWithHistogramsRatioPlot(hmass_data,hmass_MC,"Data","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
+   mc1.PrintCanvas();
+   mc1.PrintCanvas_C();
 
-   // c1->SetLogy();
-   // hmass_data->Draw();
-   // hmass_data->GetYaxis()->SetTitleOffset(1.17);
-   // hmass_MC->Draw("same hist");
-   // hmass_data->Draw("same");
-   // tleg->Draw();
-   // c1->RedrawAxis();
-   // CMS_lumi( c1, 104, 33,lumi_PbPb2015 );
-   // c1->SaveAs("mass.C");
-   // c1->SaveAs("mass.pdf");
-   // c1->SetLogy(false);
+   MyCanvas mc2("deltapt","#Delta p_{T} (e^{+}e^{-}) [GeV]", "Entries", W, H);
+   mc2.SetYRange(0.,4000);
+   mc2.SetRatioRange(0.1,1.9);
+   mc2.SetLegendPosition(0.5,0.68,0.8,0.85);
+   mc2.CanvasWithHistogramsRatioPlot(hdeltapt_data,hdeltapt_MC,"Data","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
+   mc2.PrintCanvas();
+   mc2.PrintCanvas_C();
 
-   // hdeltapt_data->Draw();
-   // hdeltapt_data->GetYaxis()->SetTitleOffset(1.17);
-   // hdeltapt_MC->Draw("same hist");
-   // hdeltapt_data->Draw("same");
-   // tleg->Draw();
-   // c1->RedrawAxis();
-   // CMS_lumi( c1, 104, 33,lumi_PbPb2015 );
-   // c1->SaveAs("deltapt.C");
-   // c1->SaveAs("deltapt.pdf");
+   MyCanvas mc3("rap","y (e^{+}e^{-})", "Entries / (0.2)", W, H);
+   // mc3.SetLogy(false);
+   mc3.SetYRange(0,1900);
+   mc3.SetRatioRange(0.1,1.9);
+   mc3.SetLegendPosition(0.16,0.68,0.46,0.85);
+   mc3.CanvasWithHistogramsRatioPlot(hrap_data,hrap_MC,"Data","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
+   mc3.PrintCanvas();
+   mc3.PrintCanvas_C();
 
-   // TLegend *tleg2 = new TLegend(0.16,0.63,0.56,0.9);
-   // tleg2->SetBorderSize(0);
-   // tleg2->AddEntry(hmass_data,"Data","lp");
-   // tleg2->AddEntry(hmass_MC,"#gamma#gamma #rightarrow e^{+}e^{-} (MC)","f");
-   // hrap_data->Draw();
-   // hrap_data->GetYaxis()->SetTitleOffset(1.17);
-   // hrap_data->GetYaxis()->SetRangeUser(0,1900);
-   // hrap_MC->Draw("same hist");
-   // hrap_data->Draw("same");
-   // tleg2->Draw();
-   // c1->RedrawAxis();
-   // CMS_lumi( c1, 104, 33,lumi_PbPb2015 );
-   // c1->SaveAs("rap.C");
-   // c1->SaveAs("rap.pdf");
-   // c1->SaveAs("rap.root");
+   MyCanvas mc4("pt","p_{T} (e^{+}e^{-}) [GeV]", "Entries / (0.5 GeV)", W, H);
+   // mc4.SetLogy(false);
+   mc4.SetYRange(0.,2000);
+   mc4.SetRatioRange(0.1,1.9);
+   mc4.SetLegendPosition(0.5,0.68,0.8,0.85);
+   mc4.CanvasWithHistogramsRatioPlot(hpt_data,hpt_MC,"Data","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
+   mc4.PrintCanvas();
+   mc4.PrintCanvas_C();
 
-   // hpt_data->Draw();
-   // hpt_data->GetYaxis()->SetTitleOffset(1.17);
-   // hpt_MC->Draw("same hist");
-   // hpt_data->Draw("same");
-   // tleg->Draw();
-   // c1->RedrawAxis();
-   // CMS_lumi( c1, 104, 33,lumi_PbPb2015 );
-   // c1->SaveAs("pt.C");
-   // c1->SaveAs("pt.pdf");
+   MyCanvas mc5("acop","e^{+}e^{-} acoplanarity", Form("Entries / (%.4f)",acop_cut/20.), W, H);
+   mc5.SetLogy(false);
+   mc5.SetYRange(0.1,9000);
+   mc5.SetRatioRange(0.1,1.9);
+   mc5.SetLegendPosition(0.5,0.68,0.8,0.85);
+   mc5.CanvasWithHistogramsRatioPlot(hacop_data,hacop_MC,"Data","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
+   mc5.PrintCanvas();
+   mc5.PrintCanvas_C();
+}
 
-   // c1->SetLogy();
-   // hacop_data->Draw();
-   // hacop_data->GetYaxis()->SetTitleOffset(1.17);
-   // hacop_data->SetNdivisions(509);
-   // hacop_MC->Draw("same hist");
-   // hacop_data->Draw("same");
-   // tleg->Draw();
-   // c1->RedrawAxis();
-   // CMS_lumi( c1, 104, 33,lumi_PbPb2015 );
-   // c1->SaveAs("acop.C");
-   // c1->SaveAs("acop.pdf");
-   // c1->SaveAs("acop.root");
+TH1D* SFuncert(TTree *tr, const char* name, const char* var, const char* cut, int nbins, double binmin, double binmax, bool dorew) {
+   TH1D *hvari[14];
+   for (int ivar=0; ivar<14; ivar++) {
+      TString namei = Form("%s_%d",name,ivar);
+      hvari[ivar] = new TH1D(namei,"",nbins,binmin, binmax);
+      tr->Project(namei,var,Form("SFweight[%d]*(%s)",ivar,cut));
+   }
+
+   TH1D *hans = new TH1D(name,"",nbins,binmin,binmax);
+   if (dorew) hans = (TH1D*) hvari[0]->Clone(name);
+   else tr->Project(name,var,cut); 
+
+   for (int i=1; i<=hans->GetNbinsX(); i++) {
+      double err=0;
+      for (int ivar=1; ivar<14; ivar++) err += pow(hvari[ivar]->GetBinContent(i)-hvari[0]->GetBinContent(i),2);
+      hans->SetBinError(i,sqrt(err+pow(hans->GetBinError(i),2)+pow(glob_syst,2)));
+   }
+
+   return hans;
 }

@@ -2,6 +2,7 @@
 #include "TH1F.h"
 #include "TF1.h"
 #include "CMS_lumi.C"
+#include "tdrstyle.C"
 
 const double excleff_hm        = 89.9e-2;
 const double excleff_hm_stat   = 1.3e-2;
@@ -16,10 +17,14 @@ const double lumi_brilcalc_err = 0.12*lumi_brilcalc;
 const double sf_hm             = 0.98*0.98;//*0.931*0.928;
 const double sf_hm_syst        = sqrt(pow(0.03,2)+pow(2*0.02,2));
 // const double sf_ged            = 0.989*0.989*0.931*0.928;
-const double sf_ged            = 0.98*0.98;//*0.931*0.928;
+const double sf_ged            = 0.98*0.98;//*0.931*0.928;//*1.09;
 const double sf_ged_syst       = sqrt(pow(0.03,2)+pow(2*0.02,2));//+pow(0.003/0.931,2)+pow(0.020/0.928,2))*sf_ged;
 const int    ngen              = 2399759;//7929199;
 const double acop_cut          = 0.06;
+const double glob_syst         = 2.*(0.02/0.98); // reco+ID
+
+TH1D* SFuncert(TTree *tr, const char* name, const char* var, const char* cut, int nbins, double binmin, double binmax, bool dorew=false);
+
 
 void qedNorm(const char* type = "GED", double mass_cut=5) {
    TFile *fdata = TFile::Open("outputDataAll_noexcl.root");
@@ -38,13 +43,15 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
 
    // estimate the purity in data
    TH1F *hacop_data = new TH1F("hacop_data",";e^{+}e^{-} acoplanarity;Entries / 0.002",30,0,acop_cut);
-   TH1F *hacop_mc = new TH1F("hacop_mc",";Acoplanarity;Entries / 0.002",30,0,acop_cut);
+   // TH1F *hacop_mc = new TH1F("hacop_mc",";Acoplanarity;Entries / 0.002",30,0,acop_cut);
    trdata->Project(hacop_data->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
-   trmc->Project(hacop_mc->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   // trmc->Project(hacop_mc->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
+   TH1D *hacop_mc = SFuncert(trmc,"hacop_mc","acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut),30,0,acop_cut,false);
 
    TF1 *fexp = new TF1("fexp","[0]*exp(-[1]*x) + [2]*exp(-[3]*x)",0,acop_cut);
    fexp->SetParNames("Norm_sig","Decay_sig","Norm_bkg","Decay_bkg");
    fexp->SetParameters(1.5e4,6.8e2,2e2,1.2e1);
+   fexp->SetLineColor(kRed);
 
    // normalise MC: force the data and MC integrals to be the same within acop<0.01
    double norm_mc_err,norm_data_err;
@@ -62,16 +69,19 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    float L = 0.14;
    float R = 0.04;
 
+   setTDRStyle();
+   gROOT->SetStyle( "tdrStyle" );
+   gStyle->SetNumberContours(100);
 
    TCanvas* c_aco = new TCanvas("c_aco","Acoplanarity",50,50,W,H);
    c_aco->SetFillColor(0);
    c_aco->SetBorderMode(0);
    c_aco->SetFrameFillStyle(0);
    c_aco->SetFrameBorderMode(0);
-   c_aco->SetLeftMargin( L );
-   c_aco->SetRightMargin( R );
-   c_aco->SetTopMargin( T );
-   c_aco->SetBottomMargin( B );
+   // c_aco->SetLeftMargin( L );
+   // c_aco->SetRightMargin( R );
+   // c_aco->SetTopMargin( T );
+   // c_aco->SetBottomMargin( B );
    c_aco->SetTickx(0);
    c_aco->SetTicky(0);
    gStyle->SetOptStat(0);
@@ -79,6 +89,11 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    c_aco->SetLogy();
    hacop_data->Draw();
    hacop_mc->Draw("hist same");
+   TH1D *h2c = (TH1D*) hacop_mc->Clone();
+   h2c->SetFillColor(kBlack);
+   h2c->SetFillStyle(3005);
+   h2c->SetMarkerSize(0);
+   h2c->Draw("E2 same");
    hacop_data->Draw("same");
    TFitResultPtr r = hacop_data->Fit(fexp,"ILEMS");
 
@@ -183,4 +198,25 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    cout << "Purity: " << purity_cnt << " +- " << purity_syst << endl;
    cout << "Acc*eff: " << norm_mc/ngen/binwidth << " +- " << norm_mc_err/ngen/binwidth << endl;
    cout << "SF: " << sf << " +/- " << sf_err << endl;
+}
+
+TH1D* SFuncert(TTree *tr, const char* name, const char* var, const char* cut, int nbins, double binmin, double binmax, bool dorew) {
+   TH1D *hvari[14];
+   for (int ivar=0; ivar<14; ivar++) {
+      TString namei = Form("%s_%d",name,ivar);
+      hvari[ivar] = new TH1D(namei,"",nbins,binmin, binmax);
+      tr->Project(namei,var,Form("SFweight[%d]*(%s)",ivar,cut));
+   }
+
+   TH1D *hans = new TH1D(name,"",nbins,binmin,binmax);
+   if (dorew) hans = (TH1D*) hvari[0]->Clone(name);
+   else tr->Project(name,var,cut); 
+
+   for (int i=1; i<=hans->GetNbinsX(); i++) {
+      double err=0;
+      for (int ivar=1; ivar<14; ivar++) err += pow(hvari[ivar]->GetBinContent(i)-hvari[0]->GetBinContent(i),2);
+      hans->SetBinError(i,sqrt(err+pow(hans->GetBinError(i),2)+pow(glob_syst,2)));
+   }
+
+   return hans;
 }
