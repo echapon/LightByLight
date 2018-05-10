@@ -42,14 +42,17 @@ Double_t getY(Double_t Pt, Double_t Phi);
 Double_t getZ(Double_t Pt, Double_t Eta);
 Double_t cosTheta12(Double_t Eta1, Double_t Phi1, Double_t Eta2, Double_t Phi2);
 Double_t getInvMass(Double_t Energy1, Double_t Eta1, Double_t Phi1, Double_t Energy2, Double_t Eta2, Double_t Phi2);
+double acop(double dphi) {
+   return 1.-fabs(TVector2::Phi_mpi_pi(dphi))/TMath::Pi(); 
+};
 
 void hardbrem(int idir=0) {
    TChain *tchHLT = new TChain("hltanalysis/HltTree");
    TChain *tchEvt = new TChain("ggHiNtuplizer/EventTree");
 
 #ifdef MC
-   tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",idir));
-   tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/hiforest_noptcut_3-53_invmass_more_var3/000%d/hiForest_qedee_*.root",idir));
+   tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/qed_ee_approval/hiforest/0%d/hiForest_qedee_*.root",idir));
+   tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/qed_ee/qed_ee_approval/hiforest/0%d/hiForest_qedee_*.root",idir));
 #else
    tchHLT->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/aug_reco_data_check_for_lumi/hiforest2/%02d/*root",idir));
    tchEvt->Add(Form("/eos/cms/store/group/phys_diffraction/diphoton/aug_reco_data_check_for_lumi/hiforest2/%02d/*root",idir));
@@ -123,22 +126,24 @@ void hardbrem(int idir=0) {
    tr->Branch("gentrkEta",&(evtR.gentrkEta));
    tr->Branch("gentrkPhi",&(evtR.gentrkPhi));
    // derived quantities
-   int nPho_notag; float phoSCEt_notag, phoSCEta_notag, phoSCPhi_notag;
+   int nPho_notag; float phoSCEt_notag, phoSCEta_notag, phoSCPhi_notag, phoAco;
    tr->Branch("nPho_notag",&nPho_notag,"nPho_notag/I");
    tr->Branch("phoSCEt_notag",&phoSCEt_notag,"phoSCEt_notag/F");
    tr->Branch("phoSCEta_notag",&phoSCEta_notag,"phoSCEta_notag/F");
    tr->Branch("phoSCPhi_notag",&phoSCPhi_notag,"phoSCPhi_notag/F");
+   tr->Branch("phoAco",&phoAco,"phoAco/F");
    float tagPt, tagEta, tagPhi; int tagCharge;
    tr->Branch("tagCharge",&tagCharge,"tagCharge/I");
    tr->Branch("tagPt",&tagPt,"tagPt/F");
    tr->Branch("tagEta",&tagEta,"tagEta/F");
    tr->Branch("tagPhi",&tagPhi,"tagPhi/F");
-   float probetkPt, probetkEta, probetkPhi, probeTkMinDphi; int probetkCharge; float probetkMinDpt;
+   float probetkPt, probetkEta, probetkPhi, probeTkMinDphi, probetkAco; int probetkCharge; float probetkMinDpt;
    tr->Branch("probetkCharge",&probetkCharge,"probetkCharge/I");
    tr->Branch("probetkPt",&probetkPt,"probetkPt/F");
    tr->Branch("probetkEta",&probetkEta,"probetkEta/F");
    tr->Branch("probetkPhi",&probetkPhi,"probetkPhi/F");
    tr->Branch("probetkMinDpt",&probetkMinDpt,"probetkMinDpt/F");
+   tr->Branch("probetkAco",&probetkAco,"probetkAco/F");
    int nmatchele; float matchelePt, matcheleEta, matchelePhi;
    int nmatchtrk; float matchtrkPt, matchtrkEta, matchtrkPhi;
    tr->Branch("nmatchele",&nmatchele,"nmatchele/I");
@@ -250,12 +255,17 @@ void hardbrem(int idir=0) {
             phoSCEt_notag = evtR.phoSCEt->at(i);
             phoSCEta_notag = evtR.phoSCEta->at(i);
             phoSCPhi_notag = evtR.phoSCPhi->at(i);
+            phoAco = acop(tagPhi-phoSCPhi_notag);
          }
       }
 
       // there should be max 1 photon unmatched to the tag
       if (nPho_notag!=1) continue;
       cnt[7]++;
+
+      // the tag and photon should be +- back to back
+      if (getDPHI(tagPhi,phoSCPhi_notag)<2) continue;
+      cnt[8]++;
 
       // find the track not matched to the electron tag or the photon. there should be only 1
       probetkMinDpt=999.;
@@ -273,15 +283,16 @@ void hardbrem(int idir=0) {
          double dpt = fabs((tagPt-evtR.gentrkPt->at(i))-phoSCEt_notag);
 
          if (dpt<probetkMinDpt) {
-            probetkMinDpt = dphi;
+            probetkMinDpt = dpt;
             probetkCharge = evtR.gentrkcharge->at(i);   
             probetkPt = evtR.gentrkPt->at(i);   
             probetkEta = evtR.gentrkEta->at(i);   
             probetkPhi = evtR.gentrkPhi->at(i);   
+            probetkAco = acop(tagPhi-probetkPhi);
          }
       }
       if (probetkMinDpt>990) continue;
-      cnt[8]++;
+      cnt[9]++;
 
       // check event kinematics: is it a hard brem event?
       // if (fabs((tagPt-probetkPt)-phoSCEt_notag) > 1) continue;
@@ -298,7 +309,7 @@ void hardbrem(int idir=0) {
          if (getDPHI(evtR.elePhi->at(i),tagPhi)<1e-6) continue;
 
          double deta = getDETA(evtR.eleEta->at(i),phoSCEta_notag);
-         double dphi = getDETA(evtR.eleEta->at(i),phoSCEta_notag);
+         double dphi = getDPHI(evtR.elePhi->at(i),phoSCPhi_notag);
          if (deta<0.15 && dphi<0.7) {
             nmatchele++;
             if (dphi<eleminDphi) {
@@ -314,7 +325,7 @@ void hardbrem(int idir=0) {
          if (getDPHI(evtR.gentrkPhi->at(i),tagPhi)<1e-6) continue;
 
          double deta = getDETA(evtR.gentrkEta->at(i),phoSCEta_notag);
-         double dphi = getDETA(evtR.gentrkEta->at(i),phoSCEta_notag);
+         double dphi = getDPHI(evtR.gentrkPhi->at(i),phoSCPhi_notag);
          if (deta<0.15 && dphi<0.7) {
             nmatchtrk++;
             if (dphi<trkminDphi) {
