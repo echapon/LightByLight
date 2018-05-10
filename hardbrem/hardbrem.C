@@ -118,6 +118,7 @@ void hardbrem(int idir=0) {
    tr->Branch("eleEta",&(evtR.eleEta));
    tr->Branch("elePhi",&(evtR.elePhi));
    tr->Branch("ngenTrk",&(evtR.ngenTrk),"ngenTrk/I");
+   tr->Branch("gentrkcharge",&(evtR.gentrkcharge));
    tr->Branch("gentrkPt",&(evtR.gentrkPt));
    tr->Branch("gentrkEta",&(evtR.gentrkEta));
    tr->Branch("gentrkPhi",&(evtR.gentrkPhi));
@@ -127,10 +128,26 @@ void hardbrem(int idir=0) {
    tr->Branch("phoSCEt_notag",&phoSCEt_notag,"phoSCEt_notag/F");
    tr->Branch("phoSCEta_notag",&phoSCEta_notag,"phoSCEta_notag/F");
    tr->Branch("phoSCPhi_notag",&phoSCPhi_notag,"phoSCPhi_notag/F");
-   float tagPt, tagEta, tagPhi;
+   float tagPt, tagEta, tagPhi; int tagCharge;
+   tr->Branch("tagCharge",&tagCharge,"tagCharge/I");
    tr->Branch("tagPt",&tagPt,"tagPt/F");
    tr->Branch("tagEta",&tagEta,"tagEta/F");
    tr->Branch("tagPhi",&tagPhi,"tagPhi/F");
+   float probetkPt, probetkEta, probetkPhi; int probetkCharge;
+   tr->Branch("probetkCharge",&probetkCharge,"probetkCharge/I");
+   tr->Branch("probetkPt",&probetkPt,"probetkPt/F");
+   tr->Branch("probetkEta",&probetkEta,"probetkEta/F");
+   tr->Branch("probetkPhi",&probetkPhi,"probetkPhi/F");
+   int nmatchele; float matchelePt, matcheleEta, matchelePhi;
+   int nmatchtrk; float matchtrkPt, matchtrkEta, matchtrkPhi;
+   tr->Branch("nmatchele",&nmatchele,"nmatchele/I");
+   tr->Branch("matchelePt",&matchelePt,"matchelePt/F");
+   tr->Branch("matcheleEta",&matcheleEta,"matcheleEta/F");
+   tr->Branch("matchelePhi",&matchelePhi,"matchelePhi/F");
+   tr->Branch("nmatchtrk",&nmatchtrk,"nmatchtrk/I");
+   tr->Branch("matchtrkPt",&matchtrkPt,"matchtrkPt/F");
+   tr->Branch("matchtrkEta",&matchtrkEta,"matchtrkEta/F");
+   tr->Branch("matchtrkPhi",&matchtrkPhi,"matchtrkPhi/F");
 
    int cnt[10] = {0};
 
@@ -153,7 +170,7 @@ void hardbrem(int idir=0) {
       if (evtR.nEle==0 || evtR.nEle>3) continue;
       cnt[2]++;
       evtR.b_nPho->GetEntry(ientry_evt);
-      if (evtR.nPho>2) continue;
+      if (evtR.nPho==0 || evtR.nPho>2) continue;
       cnt[3]++;
 
       hltR.b_HLT_HIUPCL1SingleEG5NotHF2_v1->GetEntry(ientry_hlt);
@@ -192,6 +209,7 @@ void hardbrem(int idir=0) {
       if (ntag!=1) continue;
       cnt[5]++;
 
+      tagCharge = evtR.eleCharge->at(itag);
       tagPt = evtR.elePt->at(itag);
       tagEta = evtR.eleEta->at(itag);
       tagPhi = evtR.elePhi->at(itag);
@@ -235,25 +253,70 @@ void hardbrem(int idir=0) {
       }
 
       // there should be max 1 photon unmatched to the tag
-      if (nPho_notag>1) continue;
+      if (nPho_notag!=1) continue;
       cnt[7]++;
 
-      // ignore the track matched to the tag electron
-      int itrktag=-1;
+      // find the track not matched to the electron tag or the photon. there should be only 1
+      int ntkok=0;
       for (int i=0; i<evtR.ngenTrk; i++) {
-         double deta = getDETA(evtR.eleEta->at(itag), evtR.gentrkEta->at(i));
-         double dphi = getDPHI(evtR.elePhi->at(itag), evtR.gentrkPhi->at(i));
-         if (deta<0.15 && dphi<0.7) {
-            if (itrktag>=0) {
-               // cout << "Error... we had already found a tag track..." << endl;
-               // itrktag=-1;
-               // break;
-            }
-            itrktag = i;
-         };
+         if (evtR.gentrkPt->at(i)>2) continue;
+         double deta = getDETA(evtR.gentrkEta->at(i), tagEta);
+         double dphi = getDPHI(evtR.gentrkPhi->at(i), tagPhi);
+         if (deta<0.15 && dphi<0.7) continue;
+         deta = getDETA(evtR.gentrkEta->at(i), phoSCEta_notag);
+         dphi = getDPHI(evtR.gentrkPhi->at(i), phoSCPhi_notag);
+         if (deta<0.15 && dphi<0.7) continue;
+
+         ntkok++;
+         probetkCharge = evtR.gentrkcharge->at(i);   
+         probetkPt = evtR.gentrkPt->at(i);   
+         probetkEta = evtR.gentrkEta->at(i);   
+         probetkPhi = evtR.gentrkPhi->at(i);   
       }
-      if (itrktag<0) continue;
+      if (ntkok != 1) continue;
       cnt[8]++;
+
+      // check event kinematics: is it a hard brem event?
+      if (fabs((tagPt-probetkPt)-phoSCEt_notag) > 1) continue;
+      cnt[9]++;
+
+      // at this point we have a tag electron, an unmatched track, and a hard brem photon. Check if there is sthg suspicious around the photon.
+      int ieleminDphi=-1, itrkminDphi=-1;
+      float eleminDphi=999., trkminDphi=999;
+      nmatchele=0; matchelePt=-999.; matcheleEta=-999; matchelePhi=-999.;
+      nmatchtrk=0; matchtrkPt=-999.; matchtrkEta=-999; matchtrkPhi=-999.;
+
+      for (int i=0; i<evtR.nEle; i++) {
+         // ignore the tag
+         if (getDPHI(evtR.elePhi->at(i),tagPhi)<1e-6) continue;
+
+         double deta = getDETA(evtR.eleEta->at(i),phoSCEta_notag);
+         double dphi = getDETA(evtR.eleEta->at(i),phoSCEta_notag);
+         if (deta<0.15 && dphi<0.7) {
+            nmatchele++;
+            if (dphi<eleminDphi) {
+               matchelePt=evtR.elePt->at(i);
+               matcheleEta=evtR.eleEta->at(i);
+               matchelePhi=evtR.elePhi->at(i);
+            }
+         }
+      }
+
+      for (int i=0; i<evtR.ngenTrk; i++) {
+         // ignore the tag
+         if (getDPHI(evtR.gentrkPhi->at(i),tagPhi)<1e-6) continue;
+
+         double deta = getDETA(evtR.gentrkEta->at(i),phoSCEta_notag);
+         double dphi = getDETA(evtR.gentrkEta->at(i),phoSCEta_notag);
+         if (deta<0.15 && dphi<0.7) {
+            nmatchtrk++;
+            if (dphi<trkminDphi) {
+               matchtrkPt=evtR.gentrkPt->at(i);
+               matchtrkEta=evtR.gentrkEta->at(i);
+               matchtrkPhi=evtR.gentrkPhi->at(i);
+            }
+         }
+      }
 
       // fill the tree
       tr->Fill();
