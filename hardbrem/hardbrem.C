@@ -133,11 +133,12 @@ void hardbrem(int idir=0) {
    tr->Branch("tagPt",&tagPt,"tagPt/F");
    tr->Branch("tagEta",&tagEta,"tagEta/F");
    tr->Branch("tagPhi",&tagPhi,"tagPhi/F");
-   float probetkPt, probetkEta, probetkPhi; int probetkCharge;
+   float probetkPt, probetkEta, probetkPhi, probeTkMinDphi; int probetkCharge; float probetkMinDpt;
    tr->Branch("probetkCharge",&probetkCharge,"probetkCharge/I");
    tr->Branch("probetkPt",&probetkPt,"probetkPt/F");
    tr->Branch("probetkEta",&probetkEta,"probetkEta/F");
    tr->Branch("probetkPhi",&probetkPhi,"probetkPhi/F");
+   tr->Branch("probetkMinDpt",&probetkMinDpt,"probetkMinDpt/F");
    int nmatchele; float matchelePt, matcheleEta, matchelePhi;
    int nmatchtrk; float matchtrkPt, matchtrkEta, matchtrkPhi;
    tr->Branch("nmatchele",&nmatchele,"nmatchele/I");
@@ -154,7 +155,7 @@ void hardbrem(int idir=0) {
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
       cnt[0]++;
-      if (jentry>100000) break;
+      // if (jentry>100000) break;
       if (jentry%100000==0) cout << "--> " << jentry << "/" << nentries << endl;
 
       Long64_t ientry_evt = evtR.LoadTree(jentry);
@@ -257,28 +258,34 @@ void hardbrem(int idir=0) {
       cnt[7]++;
 
       // find the track not matched to the electron tag or the photon. there should be only 1
-      int ntkok=0;
+      probetkMinDpt=999.;
       for (int i=0; i<evtR.ngenTrk; i++) {
-         if (evtR.gentrkPt->at(i)>2) continue;
+         if (evtR.gentrkPt->at(i)>3) continue;
          double deta = getDETA(evtR.gentrkEta->at(i), tagEta);
          double dphi = getDPHI(evtR.gentrkPhi->at(i), tagPhi);
          if (deta<0.15 && dphi<0.7) continue;
-         deta = getDETA(evtR.gentrkEta->at(i), phoSCEta_notag);
-         dphi = getDPHI(evtR.gentrkPhi->at(i), phoSCPhi_notag);
-         if (deta<0.15 && dphi<0.7) continue;
 
-         ntkok++;
-         probetkCharge = evtR.gentrkcharge->at(i);   
-         probetkPt = evtR.gentrkPt->at(i);   
-         probetkEta = evtR.gentrkEta->at(i);   
-         probetkPhi = evtR.gentrkPhi->at(i);   
+         // deta = getDETA(evtR.gentrkEta->at(i), phoSCEta_notag);
+         // dphi = getDPHI(evtR.gentrkPhi->at(i), phoSCPhi_notag);
+         // removing the matching with the photon
+         // if (deta<0.15 && dphi<0.7) continue;
+
+         double dpt = fabs((tagPt-evtR.gentrkPt->at(i))-phoSCEt_notag);
+
+         if (dpt<probetkMinDpt) {
+            probetkMinDpt = dphi;
+            probetkCharge = evtR.gentrkcharge->at(i);   
+            probetkPt = evtR.gentrkPt->at(i);   
+            probetkEta = evtR.gentrkEta->at(i);   
+            probetkPhi = evtR.gentrkPhi->at(i);   
+         }
       }
-      if (ntkok != 1) continue;
+      if (probetkMinDpt>990) continue;
       cnt[8]++;
 
       // check event kinematics: is it a hard brem event?
-      if (fabs((tagPt-probetkPt)-phoSCEt_notag) > 1) continue;
-      cnt[9]++;
+      // if (fabs((tagPt-probetkPt)-phoSCEt_notag) > 1) continue;
+      // cnt[9]++;
 
       // at this point we have a tag electron, an unmatched track, and a hard brem photon. Check if there is sthg suspicious around the photon.
       int ieleminDphi=-1, itrkminDphi=-1;
