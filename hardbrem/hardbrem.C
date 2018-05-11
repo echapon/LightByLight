@@ -13,6 +13,7 @@
 #endif
 #include "TH1F.h"
 #include "TLorentzVector.h"
+#include "TDirectory.h"
 #include <iostream>
 
 using namespace std;
@@ -299,10 +300,10 @@ void hardbrem(int idir=0) {
    evtR.fChain->SetBranchStatus("elePt",1);
    evtR.fChain->SetBranchStatus("eleEta",1);
    evtR.fChain->SetBranchStatus("elePhi",1);
-   // evtR.fChain->SetBranchStatus("eleSCEn",1);
+   evtR.fChain->SetBranchStatus("eleSCEn",1);
    evtR.fChain->SetBranchStatus("eleSCEta",1);
    evtR.fChain->SetBranchStatus("eleEn",1);
-   // evtR.fChain->SetBranchStatus("eleSCPhi",1);
+   evtR.fChain->SetBranchStatus("eleSCPhi",1);
 
    evtR.fChain->SetBranchStatus("pho*",1);
    evtR.fChain->SetBranchStatus("ngenTrk",1);
@@ -329,8 +330,10 @@ void hardbrem(int idir=0) {
 #else
    TFile *fout = new TFile(Form("outputData_%d.root",idir),"RECREATE");
 #endif
+   TDirectory *tdir = fout->mkdir("tpTree_conv");
+   tdir->cd();
    
-   TTree *tr = new TTree("tr","");
+   TTree *tr = new TTree("fitter_tree","");
    // original quantities
    tr->Branch("nPho",&(evtR.nPho),"nPho/I");
    tr->Branch("phoSCEt",&(evtR.phoSCEt));
@@ -353,9 +356,10 @@ void hardbrem(int idir=0) {
    tr->Branch("phoSCEta_notag",&phoSCEta_notag,"phoSCEta_notag/F");
    tr->Branch("phoSCPhi_notag",&phoSCPhi_notag,"phoSCPhi_notag/F");
    tr->Branch("phoAco",&phoAco,"phoAco/F");
-   float tagPt, tagEta, tagPhi, tagEt; int tagCharge;
+   float tagPt, tagEta, tagPhi, tagEt, tagSCEt; int tagCharge;
    tr->Branch("tagCharge",&tagCharge,"tagCharge/I");
    tr->Branch("tagEt",&tagEt,"tagEt/F");
+   tr->Branch("tagSCEt",&tagSCEt,"tagSCEt/F");
    tr->Branch("tagPt",&tagPt,"tagPt/F");
    tr->Branch("tagEta",&tagEta,"tagEta/F");
    tr->Branch("tagPhi",&tagPhi,"tagPhi/F");
@@ -440,6 +444,7 @@ void hardbrem(int idir=0) {
 
       tagCharge = evtR.eleCharge->at(itag);
       tagEt = evtR.eleEn->at(itag)/cosh(evtR.eleSCEta->at(itag));
+      tagSCEt = evtR.eleSCEn->at(itag)/cosh(evtR.eleSCEta->at(itag));
       tagPt = evtR.elePt->at(itag);
       tagEta = evtR.eleEta->at(itag);
       tagPhi = evtR.elePhi->at(itag);

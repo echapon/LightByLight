@@ -301,7 +301,7 @@ void hardbrem_recoid(int idir=0) {
    evtR.fChain->SetBranchStatus("elePhi",1);
    evtR.fChain->SetBranchStatus("eleSCEn",1);
    evtR.fChain->SetBranchStatus("eleSCEta",1);
-   // evtR.fChain->SetBranchStatus("eleEn",1);
+   evtR.fChain->SetBranchStatus("eleEn",1);
    evtR.fChain->SetBranchStatus("eleSCPhi",1);
 
    evtR.fChain->SetBranchStatus("pho*",1);
@@ -325,12 +325,14 @@ void hardbrem_recoid(int idir=0) {
    if (nentries != nentries2) return;
 
 #ifdef MC
-   TFile *fout = new TFile(Form("outputMC_%d.root",idir),"RECREATE");
+   TFile *fout = new TFile(Form("outputMC_%d_recoid.root",idir),"RECREATE");
 #else
-   TFile *fout = new TFile(Form("outputData_%d.root",idir),"RECREATE");
+   TFile *fout = new TFile(Form("outputData_%d_recoid.root",idir),"RECREATE");
 #endif
    
-   TTree *tr = new TTree("tr","");
+   TDirectory *tdir = fout->mkdir("tpTree_recoid");
+   tdir->cd();
+   TTree *tr = new TTree("fitter_tree","");
    // original quantities
    tr->Branch("nPho",&(evtR.nPho),"nPho/I");
    tr->Branch("phoSCEt",&(evtR.phoSCEt));
@@ -519,7 +521,7 @@ void hardbrem_recoid(int idir=0) {
       cnt[8]++;
 
       // the tag and track +- back to back
-      if (acop(tagPhi-probetkPhi)>0.3) continue;
+      if (acop(tagPhi-probetkPhi)>0.5) continue;
       cnt[9]++;
 
       // check event kinematics: is it a hard brem event?
