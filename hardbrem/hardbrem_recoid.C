@@ -1,4 +1,4 @@
-// #define MC // comment this line to run on data
+#define MC // comment this line to run on data
 
 #ifdef MC
 #include "eventTreeReader.C"
