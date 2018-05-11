@@ -289,6 +289,7 @@ void hardbrem(int idir=0) {
    evtR.fChain->SetBranchStatus("*",0);
 
    // GED
+   evtR.fChain->SetBranchStatus("*Vtx",1);
    evtR.fChain->SetBranchStatus("nEle",1);
    evtR.fChain->SetBranchStatus("nPho",1);
    evtR.fChain->SetBranchStatus("eleHoverE",1);
@@ -335,6 +336,10 @@ void hardbrem(int idir=0) {
    
    TTree *tr = new TTree("fitter_tree","");
    // original quantities
+   tr->Branch("nVtx",&(evtR.nVtx),"nVtx/I");
+   tr->Branch("xVtx",&(evtR.xVtx),"xVtx");
+   tr->Branch("yVtx",&(evtR.yVtx),"yVtx");
+   tr->Branch("zVtx",&(evtR.zVtx),"zVtx");
    tr->Branch("nPho",&(evtR.nPho),"nPho/I");
    tr->Branch("phoSCEt",&(evtR.phoSCEt));
    tr->Branch("phoSCEta",&(evtR.phoSCEta));
@@ -349,6 +354,17 @@ void hardbrem(int idir=0) {
    tr->Branch("gentrkPt",&(evtR.gentrkPt));
    tr->Branch("gentrkEta",&(evtR.gentrkEta));
    tr->Branch("gentrkPhi",&(evtR.gentrkPhi));
+   tr->Branch("gentrkPhi",&(evtR.gentrkPhi));
+   tr->Branch("gentrkvx",&(evtR.gentrkvx));
+   tr->Branch("gentrkvy",&(evtR.gentrkvy));
+   tr->Branch("gentrkvz",&(evtR.gentrkvz));
+   tr->Branch("gentrkd0",&(evtR.gentrkd0));
+   tr->Branch("gentrkdxy",&(evtR.gentrkdxy));
+   tr->Branch("gentrkdz",&(evtR.gentrkdz));
+   tr->Branch("gentrkdxyError",&(evtR.gentrkdxyError));
+   tr->Branch("gentrkdzError",&(evtR.gentrkdzError));
+   tr->Branch("gentrkValidHits",&(evtR.gentrkValidHits));
+   tr->Branch("gentrkMissHits",&(evtR.gentrkMissHits));
    // derived quantities
    int nPho_notag; float phoSCEt_notag, phoSCEta_notag, phoSCPhi_notag, phoAco;
    tr->Branch("nPho_notag",&nPho_notag,"nPho_notag/I");
@@ -364,25 +380,39 @@ void hardbrem(int idir=0) {
    tr->Branch("tagEta",&tagEta,"tagEta/F");
    tr->Branch("tagPhi",&tagPhi,"tagPhi/F");
    float probetkPt, probetkEta, probetkPhi, probeTkMinDphi, probetkAco; int probetkCharge; float probetkMinDpt, probetkMinDet;
+   float probetkvx; float probetkvy; float probetkvz; float probetkd0; float probetkdxy; float probetkdz; float probetkdxyError; float probetkdzError; int probetkValidHits; int probetkMissHits;
    tr->Branch("probetkCharge",&probetkCharge,"probetkCharge/I");
    tr->Branch("probetkPt",&probetkPt,"probetkPt/F");
    tr->Branch("probetkEta",&probetkEta,"probetkEta/F");
    tr->Branch("probetkPhi",&probetkPhi,"probetkPhi/F");
    tr->Branch("probetkMinDpt",&probetkMinDpt,"probetkMinDpt/F");
    tr->Branch("probetkAco",&probetkAco,"probetkAco/F");
+   tr->Branch("probetkvx",&probetkvx,"probetkvx/F");
+   tr->Branch("probetkvy",&probetkvy,"probetkvy/F");
+   tr->Branch("probetkvz",&probetkvz,"probetkvz/F");
+   tr->Branch("probetkd0",&probetkd0,"probetkd0/F");
+   tr->Branch("probetkdxy",&probetkdxy,"probetkdxy/F");
+   tr->Branch("probetkdz",&probetkdz,"probetkdz/F");
+   tr->Branch("probetkdxyError",&probetkdxyError,"probetkdxyError/F");
+   tr->Branch("probetkdzError",&probetkdzError,"probetkdzError/F");
+   tr->Branch("probetkValidHits",&probetkValidHits,"probetkValidHits/F");
+   tr->Branch("probetkMissHits",&probetkMissHits,"probetkMissHits/F");
    float ttgPt,ttgRap,ttgMass;
    tr->Branch("ttgPt",&ttgPt,"ttgPt/F");
    tr->Branch("ttgRap",&ttgRap,"ttgRap/F");
    tr->Branch("ttgMass",&ttgMass,"ttgMass/F");
    int nmatchele; float matchelePt, matcheleEta, matchelePhi;
    int nmatchtrk; float matchtrkPt, matchtrkEta, matchtrkPhi;
+   int imatchtrk[4];
    tr->Branch("nmatchele",&nmatchele,"nmatchele/I");
    tr->Branch("matchelePt",&matchelePt,"matchelePt/F");
    tr->Branch("matcheleEta",&matcheleEta,"matcheleEta/F");
    tr->Branch("matchelePhi",&matchelePhi,"matchelePhi/F");
    tr->Branch("nmatchtrk",&nmatchtrk,"nmatchtrk/I");
+   tr->Branch("imatchtrk",imatchtrk,"imatchtrk[nmatchtrk]/I");
    tr->Branch("matchtrkPt",&matchtrkPt,"matchtrkPt/F");
    tr->Branch("matchtrkEta",&matchtrkEta,"matchtrkEta/F");
+   tr->Branch("matchtrkPhi",&matchtrkPhi,"matchtrkPhi/F");
    tr->Branch("matchtrkPhi",&matchtrkPhi,"matchtrkPhi/F");
 
    int cnt[10] = {0};
@@ -534,6 +564,16 @@ void hardbrem(int idir=0) {
             probetkEta = evtR.gentrkEta->at(i);   
             probetkPhi = evtR.gentrkPhi->at(i);   
             probetkAco = acop(tagPhi-probetkPhi);
+            probetkvx = evtR.gentrkvx->at(i); 
+            probetkvy = evtR.gentrkvy->at(i); 
+            probetkvz = evtR.gentrkvz->at(i); 
+            probetkd0 = evtR.gentrkd0->at(i); 
+            probetkdxy = evtR.gentrkdxy->at(i); 
+            probetkdz = evtR.gentrkdz->at(i); 
+            probetkdxyError = evtR.gentrkdxyError->at(i); 
+            probetkdzError = evtR.gentrkdzError->at(i);
+            probetkValidHits = evtR.gentrkValidHits->at(i); 
+            probetkMissHits = evtR.gentrkMissHits->at(i);
          }
       }
       if (probetkMinDpt>990) continue;
@@ -575,12 +615,14 @@ void hardbrem(int idir=0) {
 
       for (int i=0; i<evtR.ngenTrk; i++) {
          // ignore the tag
-         if (getDPHI(evtR.gentrkPhi->at(i),tagPhi)<1e-6) continue;
+         if (getDPHI(evtR.gentrkPhi->at(i),tagPhi)<1) continue;
+         // ignore the probe tk
          if (getDPHI(evtR.gentrkPhi->at(i),probetkPhi)<1e-6) continue;
 
          double deta = getDETA(evtR.gentrkEta->at(i),phoSCEta_notag);
          double dphi = getDPHI(evtR.gentrkPhi->at(i),phoSCPhi_notag);
          if (deta<0.15 && dphi<0.7) {
+            imatchtrk[nmatchtrk] = i;
             nmatchtrk++;
             if (dphi<trkminDphi) {
                matchtrkPt=evtR.gentrkPt->at(i);
