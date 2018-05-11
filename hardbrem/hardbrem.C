@@ -370,6 +370,10 @@ void hardbrem(int idir=0) {
    tr->Branch("probetkPhi",&probetkPhi,"probetkPhi/F");
    tr->Branch("probetkMinDpt",&probetkMinDpt,"probetkMinDpt/F");
    tr->Branch("probetkAco",&probetkAco,"probetkAco/F");
+   float ttgPt,ttgRap,ttgMass;
+   tr->Branch("ttgPt",&ttgPt,"ttgPt/F");
+   tr->Branch("ttgRap",&ttgRap,"ttgRap/F");
+   tr->Branch("ttgMass",&ttgMass,"ttgMass/F");
    int nmatchele; float matchelePt, matcheleEta, matchelePhi;
    int nmatchtrk; float matchtrkPt, matchtrkEta, matchtrkPhi;
    tr->Branch("nmatchele",&nmatchele,"nmatchele/I");
@@ -538,6 +542,14 @@ void hardbrem(int idir=0) {
       // check event kinematics: is it a hard brem event?
       // if (fabs((tagPt-probetkPt)-phoSCEt_notag) > 1) continue;
       // cnt[9]++;
+
+      // fill tag-tracl-photon kinematic variables
+      TLorentzVector tlvgam; tlvgam.SetPtEtaPhiM(phoSCEt_notag,phoSCEta_notag,phoSCPhi_notag,0);
+      TLorentzVector tlvtk; tlvtk.SetPtEtaPhiM(probetkPt,probetkEta,probetkPhi,eleMass);
+      TLorentzVector ttg = ele0 + tlvgam + tlvtk;
+      ttgPt = ttg.Pt();
+      ttgRap = ttg.Rapidity();
+      ttgMass = ttg.M();
 
       // at this point we have a tag electron, an unmatched track, and a hard brem photon. Check if there is sthg suspicious around the photon.
       int ieleminDphi=-1, itrkminDphi=-1;
