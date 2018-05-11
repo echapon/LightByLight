@@ -3,6 +3,11 @@ arguments             = hardbrem.C $(ProcId)
 output                = output/$(ClusterId).$(ProcId).out
 error                 = error/$(ClusterId).$(ProcId).err
 log                   = log/$(ClusterId).log
-+JobFlavour           = "workday"
++JobFlavour           = "espresso"
 # RequestCpus           = 8
-queue 10
+
+# data
+queue 195
+
+# MC
+# queue 24
