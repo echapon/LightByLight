@@ -219,7 +219,7 @@ void TnPEffDraw() {
 
 
   // TH1F *hPad = new TH1F("hPad",";p^{e}_{T} [GeV/c];Single ele. Efficiency",5,0,20);
-  TH1F *hPad = new TH1F("hPad",";p_{T}^{e} - p_{T}^{tk} [GeV/c];Single ele. Efficiency",5,0,20);
+  TH1F *hPad = new TH1F("hPad",";p_{T}^{e} - p_{T}^{tk} ~ E_{T}^{#gamma} [GeV/c];Single ele. Efficiency",5,0,20);
   TH1F *hPad1 = new TH1F("hPad1",";#eta^{e} ;Single ele. Efficiency",5,0,2.4);
   hPad->GetXaxis()->CenterTitle();
   hPad1->GetXaxis()->CenterTitle();
@@ -501,7 +501,7 @@ void formatTH1F(TH1* a, int b, int c, int d){
   a->GetYaxis()->SetTitle("Efficiency");
   if(d == 1){
     // a->GetXaxis()->SetTitle("p_{T} [GeV/c]");
-    a->GetXaxis()->SetTitle("p_{T}^{e} - p_{T}^{tk} [GeV/c]");
+    a->GetXaxis()->SetTitle("p_{T}^{e} - p_{T}^{tk} ~ E_{T}^{#gamma} [GeV/c]");
   }else if(d == 2){
     a->GetXaxis()->SetTitle("#eta");
   }else if(d == 3){
@@ -544,7 +544,7 @@ void formatTGraph(TGraph* a, int b, int c, int d)
   a->GetXaxis()->CenterTitle();
   if(d == 1){ 
     // a->GetXaxis()->SetTitle("p_{T} (GeV/c)"); 
-    a->GetXaxis()->SetTitle("p_{T}^{e} - p_{T}^{tk} (GeV/c)"); 
+    a->GetXaxis()->SetTitle("p_{T}^{e} - p_{T}^{tk} ~ E_{T}^{#gamma} (GeV/c)"); 
   }else if(d == 2){ 
     a->GetXaxis()->SetTitle("probetkEta"); 
   }else if(d == 3){ 
@@ -677,7 +677,7 @@ vector<TGraphAsymmErrors*> plotEff_Nbins(RooDataSet *a, int aa, const char* varx
      b->GetXaxis()->SetTitleSize(0.05);
      b->GetYaxis()->SetTitleSize(0.05);
      // b->GetXaxis()->SetTitle("p_{T} [GeV/c]");
-     b->GetXaxis()->SetTitle("p_{T}^{e} - p_{T}^{tk} [GeV/c]");
+     b->GetXaxis()->SetTitle("p_{T}^{e} - p_{T}^{tk} ~ E_{T}^{#gamma} [GeV/c]");
      b->GetYaxis()->SetTitle("Efficiency");
      b->GetXaxis()->CenterTitle();
      //b->Draw("apz");
@@ -714,7 +714,7 @@ TH2F *plotEff2D(RooDataSet *a, TString b){
   h->GetZaxis()->SetRangeUser(-0.001,1.001);
   h->SetStats(kFALSE);
   // h->GetYaxis()->SetTitle("p_{T} [GeV/c]");
-  h->GetYaxis()->SetTitle("p_{T}^{e} - p_{T}^{tk} [GeV/c]");
+  h->GetYaxis()->SetTitle("p_{T}^{e} - p_{T}^{tk} ~ E_{T}^{#gamma} [GeV/c]");
   h->GetXaxis()->SetTitle("#eta");
   h->GetXaxis()->CenterTitle();
   h->GetYaxis()->CenterTitle();

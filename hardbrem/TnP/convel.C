@@ -1,11 +1,11 @@
 void convel()
 {
 //=========Macro generated from canvas: c1/c1
-//=========  (Fri May 11 15:14:57 2018) by ROOT version6.02/05
+//=========  (Sat May 12 00:39:56 2018) by ROOT version6.06/08
    TCanvas *c1 = new TCanvas("c1", "c1",1,1,700,476);
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(0);
-   c1->Range(-4.533333,-0.1875,22.13333,1.0625);
+   c1->Range(-4.533333,-0.09375,22.13333,0.53125);
    c1->SetFillColor(0);
    c1->SetBorderMode(0);
    c1->SetBorderSize(0);
@@ -20,52 +20,52 @@ void convel()
    c1->SetFrameLineColor(0);
    c1->SetFrameBorderMode(0);
    
-   TH1F *haxes_el3 = new TH1F("haxes_el3","",1,0,20);
-   haxes_el3->SetMinimum(0);
-   haxes_el3->SetMaximum(1);
-   haxes_el3->SetLineStyle(0);
-   haxes_el3->SetMarkerStyle(20);
-   haxes_el3->GetXaxis()->SetTitle("photon E_{T} [GeV]");
-   haxes_el3->GetXaxis()->SetLabelFont(42);
-   haxes_el3->GetXaxis()->SetLabelOffset(0.01);
-   haxes_el3->GetXaxis()->SetLabelSize(0.045);
-   haxes_el3->GetXaxis()->SetTitleSize(0.055);
-   haxes_el3->GetXaxis()->SetTitleFont(42);
-   haxes_el3->GetYaxis()->SetTitle("electron finding prob.");
-   haxes_el3->GetYaxis()->SetLabelFont(42);
-   haxes_el3->GetYaxis()->SetLabelOffset(0.01);
-   haxes_el3->GetYaxis()->SetLabelSize(0.045);
-   haxes_el3->GetYaxis()->SetTitleSize(0.055);
-   haxes_el3->GetYaxis()->SetTitleOffset(1.3);
-   haxes_el3->GetYaxis()->SetTitleFont(42);
-   haxes_el3->GetZaxis()->SetLabelFont(42);
-   haxes_el3->GetZaxis()->SetLabelSize(0.045);
-   haxes_el3->GetZaxis()->SetTitleFont(42);
-   haxes_el3->Draw("");
+   TH1F *haxes_el__3 = new TH1F("haxes_el__3","",1,0,20);
+   haxes_el__3->SetMinimum(0);
+   haxes_el__3->SetMaximum(0.5);
+   haxes_el__3->SetLineStyle(0);
+   haxes_el__3->SetMarkerStyle(20);
+   haxes_el__3->GetXaxis()->SetTitle("photon E_{T} [GeV]");
+   haxes_el__3->GetXaxis()->SetLabelFont(42);
+   haxes_el__3->GetXaxis()->SetLabelOffset(0.01);
+   haxes_el__3->GetXaxis()->SetLabelSize(0.045);
+   haxes_el__3->GetXaxis()->SetTitleSize(0.055);
+   haxes_el__3->GetXaxis()->SetTitleFont(42);
+   haxes_el__3->GetYaxis()->SetTitle("electron finding prob.");
+   haxes_el__3->GetYaxis()->SetLabelFont(42);
+   haxes_el__3->GetYaxis()->SetLabelOffset(0.01);
+   haxes_el__3->GetYaxis()->SetLabelSize(0.045);
+   haxes_el__3->GetYaxis()->SetTitleSize(0.055);
+   haxes_el__3->GetYaxis()->SetTitleOffset(1.3);
+   haxes_el__3->GetYaxis()->SetTitleFont(42);
+   haxes_el__3->GetZaxis()->SetLabelFont(42);
+   haxes_el__3->GetZaxis()->SetLabelSize(0.045);
+   haxes_el__3->GetZaxis()->SetTitleFont(42);
+   haxes_el__3->Draw("");
    
-   TH1F *haxes_el_copy4 = new TH1F("haxes_el_copy4","",1,0,20);
-   haxes_el_copy4->SetMinimum(0);
-   haxes_el_copy4->SetMaximum(1);
-   haxes_el_copy4->SetDirectory(0);
-   haxes_el_copy4->SetLineStyle(0);
-   haxes_el_copy4->SetMarkerStyle(20);
-   haxes_el_copy4->GetXaxis()->SetTitle("photon E_{T} [GeV]");
-   haxes_el_copy4->GetXaxis()->SetLabelFont(42);
-   haxes_el_copy4->GetXaxis()->SetLabelOffset(0.01);
-   haxes_el_copy4->GetXaxis()->SetLabelSize(0.045);
-   haxes_el_copy4->GetXaxis()->SetTitleSize(0.055);
-   haxes_el_copy4->GetXaxis()->SetTitleFont(42);
-   haxes_el_copy4->GetYaxis()->SetTitle("electron finding prob.");
-   haxes_el_copy4->GetYaxis()->SetLabelFont(42);
-   haxes_el_copy4->GetYaxis()->SetLabelOffset(0.01);
-   haxes_el_copy4->GetYaxis()->SetLabelSize(0.045);
-   haxes_el_copy4->GetYaxis()->SetTitleSize(0.055);
-   haxes_el_copy4->GetYaxis()->SetTitleOffset(1.3);
-   haxes_el_copy4->GetYaxis()->SetTitleFont(42);
-   haxes_el_copy4->GetZaxis()->SetLabelFont(42);
-   haxes_el_copy4->GetZaxis()->SetLabelSize(0.045);
-   haxes_el_copy4->GetZaxis()->SetTitleFont(42);
-   haxes_el_copy4->Draw("sameaxis");
+   TH1F *haxes_el_copy__4 = new TH1F("haxes_el_copy__4","",1,0,20);
+   haxes_el_copy__4->SetMinimum(0);
+   haxes_el_copy__4->SetMaximum(0.5);
+   haxes_el_copy__4->SetDirectory(0);
+   haxes_el_copy__4->SetLineStyle(0);
+   haxes_el_copy__4->SetMarkerStyle(20);
+   haxes_el_copy__4->GetXaxis()->SetTitle("photon E_{T} [GeV]");
+   haxes_el_copy__4->GetXaxis()->SetLabelFont(42);
+   haxes_el_copy__4->GetXaxis()->SetLabelOffset(0.01);
+   haxes_el_copy__4->GetXaxis()->SetLabelSize(0.045);
+   haxes_el_copy__4->GetXaxis()->SetTitleSize(0.055);
+   haxes_el_copy__4->GetXaxis()->SetTitleFont(42);
+   haxes_el_copy__4->GetYaxis()->SetTitle("electron finding prob.");
+   haxes_el_copy__4->GetYaxis()->SetLabelFont(42);
+   haxes_el_copy__4->GetYaxis()->SetLabelOffset(0.01);
+   haxes_el_copy__4->GetYaxis()->SetLabelSize(0.045);
+   haxes_el_copy__4->GetYaxis()->SetTitleSize(0.055);
+   haxes_el_copy__4->GetYaxis()->SetTitleOffset(1.3);
+   haxes_el_copy__4->GetYaxis()->SetTitleFont(42);
+   haxes_el_copy__4->GetZaxis()->SetLabelFont(42);
+   haxes_el_copy__4->GetZaxis()->SetLabelSize(0.045);
+   haxes_el_copy__4->GetZaxis()->SetTitleFont(42);
+   haxes_el_copy__4->Draw("sameaxis");
    
    Double_t divide_hnum_el_data_by_hden_data_fx3003[4] = {
    3,
@@ -73,30 +73,30 @@ void convel()
    7,
    14};
    Double_t divide_hnum_el_data_by_hden_data_fy3003[4] = {
-   0.6290323,
-   0.3770492,
-   0.2619048,
-   0.2};
+   0,
+   0,
+   0,
+   0};
    Double_t divide_hnum_el_data_by_hden_data_felx3003[4] = {
    1,
    1,
    1,
    6};
    Double_t divide_hnum_el_data_by_hden_data_fely3003[4] = {
-   0.07113811,
-   0.04667369,
-   0.07223922,
-   0.09312246};
+   0,
+   0,
+   0,
+   0};
    Double_t divide_hnum_el_data_by_hden_data_fehx3003[4] = {
    1,
    1,
    1,
    6};
    Double_t divide_hnum_el_data_by_hden_data_fehy3003[4] = {
-   0.06647884,
-   0.04886589,
-   0.08535128,
-   0.1301189};
+   0.01253057,
+   0.01070846,
+   0.0317826,
+   0.04498243};
    TGraphAsymmErrors *grae = new TGraphAsymmErrors(4,divide_hnum_el_data_by_hden_data_fx3003,divide_hnum_el_data_by_hden_data_fy3003,divide_hnum_el_data_by_hden_data_felx3003,divide_hnum_el_data_by_hden_data_fehx3003,divide_hnum_el_data_by_hden_data_fely3003,divide_hnum_el_data_by_hden_data_fehy3003);
    grae->SetName("divide_hnum_el_data_by_hden_data");
    grae->SetTitle("");
@@ -112,8 +112,8 @@ void convel()
    grae->SetMarkerStyle(20);
    
    TH1F *Graph_divide_hnum_el_data_by_hden_data3003 = new TH1F("Graph_divide_hnum_el_data_by_hden_data3003","",100,0.2,21.8);
-   Graph_divide_hnum_el_data_by_hden_data3003->SetMinimum(0.04801418);
-   Graph_divide_hnum_el_data_by_hden_data3003->SetMaximum(0.7543745);
+   Graph_divide_hnum_el_data_by_hden_data3003->SetMinimum(0);
+   Graph_divide_hnum_el_data_by_hden_data3003->SetMaximum(0.04948067);
    Graph_divide_hnum_el_data_by_hden_data3003->SetDirectory(0);
    Graph_divide_hnum_el_data_by_hden_data3003->SetStats(0);
    Graph_divide_hnum_el_data_by_hden_data3003->SetLineStyle(0);
@@ -142,30 +142,30 @@ void convel()
    7,
    14};
    Double_t divide_hnum_el_mc_by_hden_mc_fy3004[4] = {
-   0.6691729,
-   0.4083045,
-   0.1071429,
-   0.05555556};
+   0,
+   0,
+   0,
+   0};
    Double_t divide_hnum_el_mc_by_hden_mc_felx3004[4] = {
    1,
    1,
    1,
    6};
    Double_t divide_hnum_el_mc_by_hden_mc_fely3004[4] = {
-   0.04577112,
-   0.03025257,
-   0.02963331,
-   0.03008345};
+   0,
+   0,
+   0,
+   0};
    Double_t divide_hnum_el_mc_by_hden_mc_fehx3004[4] = {
    1,
    1,
    1,
    6};
    Double_t divide_hnum_el_mc_by_hden_mc_fehy3004[4] = {
-   0.04300618,
-   0.03092365,
-   0.03767231,
-   0.05110014};
+   0.01070846,
+   0.005187126,
+   0.01334823,
+   0.02393292};
    grae = new TGraphAsymmErrors(4,divide_hnum_el_mc_by_hden_mc_fx3004,divide_hnum_el_mc_by_hden_mc_fy3004,divide_hnum_el_mc_by_hden_mc_felx3004,divide_hnum_el_mc_by_hden_mc_fehx3004,divide_hnum_el_mc_by_hden_mc_fely3004,divide_hnum_el_mc_by_hden_mc_fehy3004);
    grae->SetName("divide_hnum_el_mc_by_hden_mc");
    grae->SetTitle("");
@@ -180,7 +180,7 @@ void convel()
    
    TH1F *Graph_divide_hnum_el_mc_by_hden_mc3004 = new TH1F("Graph_divide_hnum_el_mc_by_hden_mc3004","",100,0.2,21.8);
    Graph_divide_hnum_el_mc_by_hden_mc3004->SetMinimum(0);
-   Graph_divide_hnum_el_mc_by_hden_mc3004->SetMaximum(0.7808498);
+   Graph_divide_hnum_el_mc_by_hden_mc3004->SetMaximum(0.02632622);
    Graph_divide_hnum_el_mc_by_hden_mc3004->SetDirectory(0);
    Graph_divide_hnum_el_mc_by_hden_mc3004->SetStats(0);
    Graph_divide_hnum_el_mc_by_hden_mc3004->SetLineStyle(0);
@@ -211,7 +211,7 @@ void convel()
    leg->SetLineWidth(1);
    leg->SetFillColor(0);
    leg->SetFillStyle(1001);
-   TLegendEntry *entry=leg->AddEntry("divide_hnum_el_data_by_hden_data","Data: 0.41^{+0.03}_{-0.03}","LP");
+   TLegendEntry *entry=leg->AddEntry("divide_hnum_el_data_by_hden_data","Data: 0.000^{+0.004}_{0.000}","LP");
 
    ci = TColor::GetColor("#0000ff");
    entry->SetLineColor(ci);
@@ -222,7 +222,7 @@ void convel()
    entry->SetMarkerStyle(20);
    entry->SetMarkerSize(1);
    entry->SetTextFont(62);
-   entry=leg->AddEntry("divide_hnum_el_mc_by_hden_mc","MC: 0.38^{+0.02}_{-0.02}","LP");
+   entry=leg->AddEntry("divide_hnum_el_mc_by_hden_mc","MC: 0.000^{+0.002}_{0.000}","LP");
 
    ci = TColor::GetColor("#ff0000");
    entry->SetLineColor(ci);
