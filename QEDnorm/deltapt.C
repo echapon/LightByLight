@@ -1,7 +1,8 @@
 void deltapt()
 {
 //=========Macro generated from canvas: deltapt/
-//=========  (Wed May  9 17:29:25 2018) by ROOT version6.06/08
+//=========  (Mon Jun  4 17:20:17 2018) by ROOT version6.06/08
+   gROOT->SetStyle("Plain");
    TCanvas *deltapt = new TCanvas("deltapt", "",0,0,700,600);
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(0);
@@ -68,7 +69,7 @@ void deltapt()
    hdeltapt_data__10->SetFillColor(ci);
    hdeltapt_data__10->SetLineStyle(0);
    hdeltapt_data__10->SetMarkerStyle(20);
-   hdeltapt_data__10->GetXaxis()->SetTitle("#Delta p_{T} (e^{+}e^{-}) [GeV]");
+   hdeltapt_data__10->GetXaxis()->SetTitle("Dielectron #Delta p_{T} [GeV]");
    hdeltapt_data__10->GetXaxis()->SetMoreLogLabels();
    hdeltapt_data__10->GetXaxis()->SetNoExponent();
    hdeltapt_data__10->GetXaxis()->SetNdivisions(509);
@@ -77,7 +78,7 @@ void deltapt()
    hdeltapt_data__10->GetXaxis()->SetLabelSize(0);
    hdeltapt_data__10->GetXaxis()->SetTitleSize(0);
    hdeltapt_data__10->GetXaxis()->SetTitleFont(42);
-   hdeltapt_data__10->GetYaxis()->SetTitle("Entries");
+   hdeltapt_data__10->GetYaxis()->SetTitle("Entries / (1GeV)");
    hdeltapt_data__10->GetYaxis()->SetLabelFont(42);
    hdeltapt_data__10->GetYaxis()->SetLabelOffset(0.01);
    hdeltapt_data__10->GetYaxis()->SetLabelSize(0.06081081);
@@ -212,7 +213,7 @@ void deltapt()
    hdeltapt_data__13->SetFillColor(ci);
    hdeltapt_data__13->SetLineStyle(0);
    hdeltapt_data__13->SetMarkerStyle(20);
-   hdeltapt_data__13->GetXaxis()->SetTitle("#Delta p_{T} (e^{+}e^{-}) [GeV]");
+   hdeltapt_data__13->GetXaxis()->SetTitle("Dielectron #Delta p_{T} [GeV]");
    hdeltapt_data__13->GetXaxis()->SetMoreLogLabels();
    hdeltapt_data__13->GetXaxis()->SetNoExponent();
    hdeltapt_data__13->GetXaxis()->SetNdivisions(509);
@@ -221,7 +222,7 @@ void deltapt()
    hdeltapt_data__13->GetXaxis()->SetLabelSize(0);
    hdeltapt_data__13->GetXaxis()->SetTitleSize(0);
    hdeltapt_data__13->GetXaxis()->SetTitleFont(42);
-   hdeltapt_data__13->GetYaxis()->SetTitle("Entries");
+   hdeltapt_data__13->GetYaxis()->SetTitle("Entries / (1GeV)");
    hdeltapt_data__13->GetYaxis()->SetLabelFont(42);
    hdeltapt_data__13->GetYaxis()->SetLabelOffset(0.01);
    hdeltapt_data__13->GetYaxis()->SetLabelSize(0.06081081);
@@ -232,7 +233,7 @@ void deltapt()
    hdeltapt_data__13->GetZaxis()->SetTitleFont(42);
    hdeltapt_data__13->Draw("EPSAME");
    
-   TLegend *leg = new TLegend(0.5,0.68,0.8,0.85,NULL,"brNDC");
+   TLegend *leg = new TLegend(0.3,0.68,0.6,0.85,NULL,"brNDC");
    leg->SetBorderSize(0);
    leg->SetTextFont(62);
    leg->SetLineColor(1);
@@ -301,7 +302,7 @@ void deltapt()
    hdeltapt_data_copy__14->SetFillColor(ci);
    hdeltapt_data_copy__14->SetLineStyle(0);
    hdeltapt_data_copy__14->SetMarkerStyle(20);
-   hdeltapt_data_copy__14->GetXaxis()->SetTitle("#Delta p_{T} (e^{+}e^{-}) [GeV]");
+   hdeltapt_data_copy__14->GetXaxis()->SetTitle("Dielectron #Delta p_{T} [GeV]");
    hdeltapt_data_copy__14->GetXaxis()->SetMoreLogLabels();
    hdeltapt_data_copy__14->GetXaxis()->SetNoExponent();
    hdeltapt_data_copy__14->GetXaxis()->SetNdivisions(509);
@@ -310,7 +311,7 @@ void deltapt()
    hdeltapt_data_copy__14->GetXaxis()->SetLabelSize(0);
    hdeltapt_data_copy__14->GetXaxis()->SetTitleSize(0);
    hdeltapt_data_copy__14->GetXaxis()->SetTitleFont(42);
-   hdeltapt_data_copy__14->GetYaxis()->SetTitle("Entries");
+   hdeltapt_data_copy__14->GetYaxis()->SetTitle("Entries / (1GeV)");
    hdeltapt_data_copy__14->GetYaxis()->SetLabelFont(42);
    hdeltapt_data_copy__14->GetYaxis()->SetLabelOffset(0.01);
    hdeltapt_data_copy__14->GetYaxis()->SetLabelSize(0.06081081);
@@ -338,6 +339,13 @@ tex->SetNDC();
    tex->SetTextAlign(33);
    tex->SetTextFont(61);
    tex->SetTextSize(0.08108108);
+   tex->SetLineWidth(2);
+   tex->Draw();
+      tex = new TLatex(0.91247,0.7468919,"");
+tex->SetNDC();
+   tex->SetTextAlign(33);
+   tex->SetTextFont(52);
+   tex->SetTextSize(0.06162162);
    tex->SetLineWidth(2);
    tex->Draw();
    TopPad->Modified();
@@ -394,7 +402,7 @@ tex->SetNDC();
    h_ratio__15->SetFillColor(ci);
    h_ratio__15->SetLineStyle(0);
    h_ratio__15->SetMarkerStyle(20);
-   h_ratio__15->GetXaxis()->SetTitle("#Delta p_{T} (e^{+}e^{-}) [GeV]");
+   h_ratio__15->GetXaxis()->SetTitle("Dielectron #Delta p_{T} [GeV]");
    h_ratio__15->GetXaxis()->SetMoreLogLabels();
    h_ratio__15->GetXaxis()->SetNoExponent();
    h_ratio__15->GetXaxis()->SetNdivisions(509);
@@ -403,6 +411,7 @@ tex->SetNDC();
    h_ratio__15->GetXaxis()->SetLabelSize(0.15);
    h_ratio__15->GetXaxis()->SetTitleSize(0.1666667);
    h_ratio__15->GetXaxis()->SetTickLength(0.08571428);
+   h_ratio__15->GetXaxis()->SetTitleOffset(0.92);
    h_ratio__15->GetXaxis()->SetTitleFont(42);
    h_ratio__15->GetYaxis()->SetTitle("Data/MC");
    h_ratio__15->GetYaxis()->SetNdivisions(505);
@@ -520,7 +529,7 @@ tex->SetNDC();
    h_ratio__17->SetFillColor(ci);
    h_ratio__17->SetLineStyle(0);
    h_ratio__17->SetMarkerStyle(20);
-   h_ratio__17->GetXaxis()->SetTitle("#Delta p_{T} (e^{+}e^{-}) [GeV]");
+   h_ratio__17->GetXaxis()->SetTitle("Dielectron #Delta p_{T} [GeV]");
    h_ratio__17->GetXaxis()->SetMoreLogLabels();
    h_ratio__17->GetXaxis()->SetNoExponent();
    h_ratio__17->GetXaxis()->SetNdivisions(509);
@@ -529,6 +538,7 @@ tex->SetNDC();
    h_ratio__17->GetXaxis()->SetLabelSize(0.15);
    h_ratio__17->GetXaxis()->SetTitleSize(0.1666667);
    h_ratio__17->GetXaxis()->SetTickLength(0.08571428);
+   h_ratio__17->GetXaxis()->SetTitleOffset(0.92);
    h_ratio__17->GetXaxis()->SetTitleFont(42);
    h_ratio__17->GetYaxis()->SetTitle("Data/MC");
    h_ratio__17->GetYaxis()->SetNdivisions(505);
@@ -575,7 +585,7 @@ tex->SetNDC();
    h_ratio_copy__18->SetFillColor(ci);
    h_ratio_copy__18->SetLineStyle(0);
    h_ratio_copy__18->SetMarkerStyle(20);
-   h_ratio_copy__18->GetXaxis()->SetTitle("#Delta p_{T} (e^{+}e^{-}) [GeV]");
+   h_ratio_copy__18->GetXaxis()->SetTitle("Dielectron #Delta p_{T} [GeV]");
    h_ratio_copy__18->GetXaxis()->SetMoreLogLabels();
    h_ratio_copy__18->GetXaxis()->SetNoExponent();
    h_ratio_copy__18->GetXaxis()->SetNdivisions(509);
@@ -584,6 +594,7 @@ tex->SetNDC();
    h_ratio_copy__18->GetXaxis()->SetLabelSize(0.15);
    h_ratio_copy__18->GetXaxis()->SetTitleSize(0.1666667);
    h_ratio_copy__18->GetXaxis()->SetTickLength(0.08571428);
+   h_ratio_copy__18->GetXaxis()->SetTitleOffset(0.92);
    h_ratio_copy__18->GetXaxis()->SetTitleFont(42);
    h_ratio_copy__18->GetYaxis()->SetTitle("Data/MC");
    h_ratio_copy__18->GetYaxis()->SetNdivisions(505);

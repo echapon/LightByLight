@@ -1,7 +1,8 @@
 void acop()
 {
+   gROOT->SetStyle("Plain");
 //=========Macro generated from canvas: acop/
-//=========  (Wed May  9 17:29:25 2018) by ROOT version6.06/08
+//=========  (Mon Jun  4 17:20:17 2018) by ROOT version6.06/08
    TCanvas *acop = new TCanvas("acop", "",0,0,700,600);
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(0);
@@ -21,7 +22,7 @@ void acop()
    TPad *TopPad = new TPad("TopPad", "TopPad",0.01,0.26,1,1);
    TopPad->Draw();
    TopPad->cd();
-   TopPad->Range(-0.001510791,-1.319629,0.01047962,4.5935);
+   TopPad->Range(-0.001510791,0.06533885,0.01047962,4.425625);
    TopPad->SetFillColor(0);
    TopPad->SetBorderMode(0);
    TopPad->SetBorderSize(2);
@@ -77,7 +78,7 @@ void acop()
    hacop_data__37->SetBinError(18,4.690416);
    hacop_data__37->SetBinError(19,4.898979);
    hacop_data__37->SetBinError(20,4.898979);
-   hacop_data__37->SetMinimum(0.1);
+   hacop_data__37->SetMinimum(2);
    hacop_data__37->SetMaximum(9000);
    hacop_data__37->SetEntries(9570);
    hacop_data__37->SetStats(0);
@@ -89,7 +90,7 @@ void acop()
    hacop_data__37->SetFillColor(ci);
    hacop_data__37->SetLineStyle(0);
    hacop_data__37->SetMarkerStyle(20);
-   hacop_data__37->GetXaxis()->SetTitle("e^{+}e^{-} acoplanarity");
+   hacop_data__37->GetXaxis()->SetTitle("A_{#phi} (e^{+}e^{-})");
    hacop_data__37->GetXaxis()->SetMoreLogLabels();
    hacop_data__37->GetXaxis()->SetNoExponent();
    hacop_data__37->GetXaxis()->SetNdivisions(509);
@@ -283,7 +284,7 @@ void acop()
    hacop_data__40->SetBinError(18,4.690416);
    hacop_data__40->SetBinError(19,4.898979);
    hacop_data__40->SetBinError(20,4.898979);
-   hacop_data__40->SetMinimum(0.1);
+   hacop_data__40->SetMinimum(2);
    hacop_data__40->SetMaximum(9000);
    hacop_data__40->SetEntries(9570);
    hacop_data__40->SetStats(0);
@@ -293,7 +294,7 @@ void acop()
    hacop_data__40->SetFillColor(ci);
    hacop_data__40->SetLineStyle(0);
    hacop_data__40->SetMarkerStyle(20);
-   hacop_data__40->GetXaxis()->SetTitle("e^{+}e^{-} acoplanarity");
+   hacop_data__40->GetXaxis()->SetTitle("A_{#phi} (e^{+}e^{-})");
    hacop_data__40->GetXaxis()->SetMoreLogLabels();
    hacop_data__40->GetXaxis()->SetNoExponent();
    hacop_data__40->GetXaxis()->SetNdivisions(509);
@@ -313,7 +314,7 @@ void acop()
    hacop_data__40->GetZaxis()->SetTitleFont(42);
    hacop_data__40->Draw("EPSAME");
    
-   TLegend *leg = new TLegend(0.5,0.68,0.8,0.85,NULL,"brNDC");
+   TLegend *leg = new TLegend(0.3,0.68,0.6,0.85,NULL,"brNDC");
    leg->SetBorderSize(0);
    leg->SetTextFont(62);
    leg->SetLineColor(1);
@@ -391,7 +392,7 @@ void acop()
    hacop_data_copy__41->SetBinError(18,4.690416);
    hacop_data_copy__41->SetBinError(19,4.898979);
    hacop_data_copy__41->SetBinError(20,4.898979);
-   hacop_data_copy__41->SetMinimum(0.1);
+   hacop_data_copy__41->SetMinimum(2);
    hacop_data_copy__41->SetMaximum(9000);
    hacop_data_copy__41->SetEntries(9570);
    hacop_data_copy__41->SetDirectory(0);
@@ -402,7 +403,7 @@ void acop()
    hacop_data_copy__41->SetFillColor(ci);
    hacop_data_copy__41->SetLineStyle(0);
    hacop_data_copy__41->SetMarkerStyle(20);
-   hacop_data_copy__41->GetXaxis()->SetTitle("e^{+}e^{-} acoplanarity");
+   hacop_data_copy__41->GetXaxis()->SetTitle("A_{#phi} (e^{+}e^{-})");
    hacop_data_copy__41->GetXaxis()->SetMoreLogLabels();
    hacop_data_copy__41->GetXaxis()->SetNoExponent();
    hacop_data_copy__41->GetXaxis()->SetNdivisions(509);
@@ -439,6 +440,13 @@ tex->SetNDC();
    tex->SetTextAlign(33);
    tex->SetTextFont(61);
    tex->SetTextSize(0.08108108);
+   tex->SetLineWidth(2);
+   tex->Draw();
+      tex = new TLatex(0.91247,0.7468919,"");
+tex->SetNDC();
+   tex->SetTextAlign(33);
+   tex->SetTextFont(52);
+   tex->SetTextSize(0.06162162);
    tex->SetLineWidth(2);
    tex->Draw();
    TopPad->Modified();
@@ -515,7 +523,7 @@ tex->SetNDC();
    h_ratio__42->SetFillColor(ci);
    h_ratio__42->SetLineStyle(0);
    h_ratio__42->SetMarkerStyle(20);
-   h_ratio__42->GetXaxis()->SetTitle("e^{+}e^{-} acoplanarity");
+   h_ratio__42->GetXaxis()->SetTitle("A_{#phi} (e^{+}e^{-})");
    h_ratio__42->GetXaxis()->SetMoreLogLabels();
    h_ratio__42->GetXaxis()->SetNoExponent();
    h_ratio__42->GetXaxis()->SetNdivisions(509);
@@ -524,6 +532,7 @@ tex->SetNDC();
    h_ratio__42->GetXaxis()->SetLabelSize(0.15);
    h_ratio__42->GetXaxis()->SetTitleSize(0.1666667);
    h_ratio__42->GetXaxis()->SetTickLength(0.08571428);
+   h_ratio__42->GetXaxis()->SetTitleOffset(0.92);
    h_ratio__42->GetXaxis()->SetTitleFont(42);
    h_ratio__42->GetYaxis()->SetTitle("Data/MC");
    h_ratio__42->GetYaxis()->SetNdivisions(505);
@@ -681,7 +690,7 @@ tex->SetNDC();
    h_ratio__44->SetFillColor(ci);
    h_ratio__44->SetLineStyle(0);
    h_ratio__44->SetMarkerStyle(20);
-   h_ratio__44->GetXaxis()->SetTitle("e^{+}e^{-} acoplanarity");
+   h_ratio__44->GetXaxis()->SetTitle("A_{#phi} (e^{+}e^{-})");
    h_ratio__44->GetXaxis()->SetMoreLogLabels();
    h_ratio__44->GetXaxis()->SetNoExponent();
    h_ratio__44->GetXaxis()->SetNdivisions(509);
@@ -690,6 +699,7 @@ tex->SetNDC();
    h_ratio__44->GetXaxis()->SetLabelSize(0.15);
    h_ratio__44->GetXaxis()->SetTitleSize(0.1666667);
    h_ratio__44->GetXaxis()->SetTickLength(0.08571428);
+   h_ratio__44->GetXaxis()->SetTitleOffset(0.92);
    h_ratio__44->GetXaxis()->SetTitleFont(42);
    h_ratio__44->GetYaxis()->SetTitle("Data/MC");
    h_ratio__44->GetYaxis()->SetNdivisions(505);
@@ -756,7 +766,7 @@ tex->SetNDC();
    h_ratio_copy__45->SetFillColor(ci);
    h_ratio_copy__45->SetLineStyle(0);
    h_ratio_copy__45->SetMarkerStyle(20);
-   h_ratio_copy__45->GetXaxis()->SetTitle("e^{+}e^{-} acoplanarity");
+   h_ratio_copy__45->GetXaxis()->SetTitle("A_{#phi} (e^{+}e^{-})");
    h_ratio_copy__45->GetXaxis()->SetMoreLogLabels();
    h_ratio_copy__45->GetXaxis()->SetNoExponent();
    h_ratio_copy__45->GetXaxis()->SetNdivisions(509);
@@ -765,6 +775,7 @@ tex->SetNDC();
    h_ratio_copy__45->GetXaxis()->SetLabelSize(0.15);
    h_ratio_copy__45->GetXaxis()->SetTitleSize(0.1666667);
    h_ratio_copy__45->GetXaxis()->SetTickLength(0.08571428);
+   h_ratio_copy__45->GetXaxis()->SetTitleOffset(0.92);
    h_ratio_copy__45->GetXaxis()->SetTitleFont(42);
    h_ratio_copy__45->GetYaxis()->SetTitle("Data/MC");
    h_ratio_copy__45->GetYaxis()->SetNdivisions(505);

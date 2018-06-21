@@ -1,7 +1,8 @@
 void mass()
 {
 //=========Macro generated from canvas: mass/
-//=========  (Wed May  9 17:29:25 2018) by ROOT version6.06/08
+//=========  (Mon Jun  4 17:20:17 2018) by ROOT version6.06/08
+   gROOT->SetStyle("Plain");
    TCanvas *mass = new TCanvas("mass", "",0,0,700,600);
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(0);
@@ -117,7 +118,7 @@ void mass()
    hmass_data__1->SetFillColor(ci);
    hmass_data__1->SetLineStyle(0);
    hmass_data__1->SetMarkerStyle(20);
-   hmass_data__1->GetXaxis()->SetTitle("M (e^{+}e^{-}) [GeV]");
+   hmass_data__1->GetXaxis()->SetTitle("Dielectron Invariant Mass [GeV]");
    hmass_data__1->GetXaxis()->SetMoreLogLabels();
    hmass_data__1->GetXaxis()->SetNoExponent();
    hmass_data__1->GetXaxis()->SetNdivisions(509);
@@ -126,7 +127,7 @@ void mass()
    hmass_data__1->GetXaxis()->SetLabelSize(0);
    hmass_data__1->GetXaxis()->SetTitleSize(0);
    hmass_data__1->GetXaxis()->SetTitleFont(42);
-   hmass_data__1->GetYaxis()->SetTitle("Entries");
+   hmass_data__1->GetYaxis()->SetTitle("Entries / (2 GeV)");
    hmass_data__1->GetYaxis()->SetLabelFont(42);
    hmass_data__1->GetYaxis()->SetLabelOffset(0.01);
    hmass_data__1->GetYaxis()->SetLabelSize(0.06081081);
@@ -443,7 +444,7 @@ void mass()
    hmass_data__4->SetFillColor(ci);
    hmass_data__4->SetLineStyle(0);
    hmass_data__4->SetMarkerStyle(20);
-   hmass_data__4->GetXaxis()->SetTitle("M (e^{+}e^{-}) [GeV]");
+   hmass_data__4->GetXaxis()->SetTitle("Dielectron Invariant Mass [GeV]");
    hmass_data__4->GetXaxis()->SetMoreLogLabels();
    hmass_data__4->GetXaxis()->SetNoExponent();
    hmass_data__4->GetXaxis()->SetNdivisions(509);
@@ -452,7 +453,7 @@ void mass()
    hmass_data__4->GetXaxis()->SetLabelSize(0);
    hmass_data__4->GetXaxis()->SetTitleSize(0);
    hmass_data__4->GetXaxis()->SetTitleFont(42);
-   hmass_data__4->GetYaxis()->SetTitle("Entries");
+   hmass_data__4->GetYaxis()->SetTitle("Entries / (2 GeV)");
    hmass_data__4->GetYaxis()->SetLabelFont(42);
    hmass_data__4->GetYaxis()->SetLabelOffset(0.01);
    hmass_data__4->GetYaxis()->SetLabelSize(0.06081081);
@@ -463,7 +464,7 @@ void mass()
    hmass_data__4->GetZaxis()->SetTitleFont(42);
    hmass_data__4->Draw("EPSAME");
    
-   TLegend *leg = new TLegend(0.5,0.68,0.8,0.85,NULL,"brNDC");
+   TLegend *leg = new TLegend(0.3,0.68,0.6,0.85,NULL,"brNDC");
    leg->SetBorderSize(0);
    leg->SetTextFont(62);
    leg->SetLineColor(1);
@@ -580,7 +581,7 @@ void mass()
    hmass_data_copy__5->SetFillColor(ci);
    hmass_data_copy__5->SetLineStyle(0);
    hmass_data_copy__5->SetMarkerStyle(20);
-   hmass_data_copy__5->GetXaxis()->SetTitle("M (e^{+}e^{-}) [GeV]");
+   hmass_data_copy__5->GetXaxis()->SetTitle("Dielectron Invariant Mass [GeV]");
    hmass_data_copy__5->GetXaxis()->SetMoreLogLabels();
    hmass_data_copy__5->GetXaxis()->SetNoExponent();
    hmass_data_copy__5->GetXaxis()->SetNdivisions(509);
@@ -589,7 +590,7 @@ void mass()
    hmass_data_copy__5->GetXaxis()->SetLabelSize(0);
    hmass_data_copy__5->GetXaxis()->SetTitleSize(0);
    hmass_data_copy__5->GetXaxis()->SetTitleFont(42);
-   hmass_data_copy__5->GetYaxis()->SetTitle("Entries");
+   hmass_data_copy__5->GetYaxis()->SetTitle("Entries / (2 GeV)");
    hmass_data_copy__5->GetYaxis()->SetLabelFont(42);
    hmass_data_copy__5->GetYaxis()->SetLabelOffset(0.01);
    hmass_data_copy__5->GetYaxis()->SetLabelSize(0.06081081);
@@ -617,6 +618,13 @@ tex->SetNDC();
    tex->SetTextAlign(33);
    tex->SetTextFont(61);
    tex->SetTextSize(0.08108108);
+   tex->SetLineWidth(2);
+   tex->Draw();
+      tex = new TLatex(0.91247,0.7468919,"");
+tex->SetNDC();
+   tex->SetTextAlign(33);
+   tex->SetTextFont(52);
+   tex->SetTextSize(0.06162162);
    tex->SetLineWidth(2);
    tex->Draw();
    TopPad->Modified();
@@ -719,7 +727,7 @@ tex->SetNDC();
    h_ratio__6->SetFillColor(ci);
    h_ratio__6->SetLineStyle(0);
    h_ratio__6->SetMarkerStyle(20);
-   h_ratio__6->GetXaxis()->SetTitle("M (e^{+}e^{-}) [GeV]");
+   h_ratio__6->GetXaxis()->SetTitle("Dielectron Invariant Mass [GeV]");
    h_ratio__6->GetXaxis()->SetMoreLogLabels();
    h_ratio__6->GetXaxis()->SetNoExponent();
    h_ratio__6->GetXaxis()->SetNdivisions(509);
@@ -728,6 +736,7 @@ tex->SetNDC();
    h_ratio__6->GetXaxis()->SetLabelSize(0.15);
    h_ratio__6->GetXaxis()->SetTitleSize(0.1666667);
    h_ratio__6->GetXaxis()->SetTickLength(0.08571428);
+   h_ratio__6->GetXaxis()->SetTitleOffset(0.92);
    h_ratio__6->GetXaxis()->SetTitleFont(42);
    h_ratio__6->GetYaxis()->SetTitle("Data/MC");
    h_ratio__6->GetYaxis()->SetNdivisions(505);
@@ -958,7 +967,7 @@ tex->SetNDC();
    h_ratio__8->SetFillColor(ci);
    h_ratio__8->SetLineStyle(0);
    h_ratio__8->SetMarkerStyle(20);
-   h_ratio__8->GetXaxis()->SetTitle("M (e^{+}e^{-}) [GeV]");
+   h_ratio__8->GetXaxis()->SetTitle("Dielectron Invariant Mass [GeV]");
    h_ratio__8->GetXaxis()->SetMoreLogLabels();
    h_ratio__8->GetXaxis()->SetNoExponent();
    h_ratio__8->GetXaxis()->SetNdivisions(509);
@@ -967,6 +976,7 @@ tex->SetNDC();
    h_ratio__8->GetXaxis()->SetLabelSize(0.15);
    h_ratio__8->GetXaxis()->SetTitleSize(0.1666667);
    h_ratio__8->GetXaxis()->SetTickLength(0.08571428);
+   h_ratio__8->GetXaxis()->SetTitleOffset(0.92);
    h_ratio__8->GetXaxis()->SetTitleFont(42);
    h_ratio__8->GetYaxis()->SetTitle("Data/MC");
    h_ratio__8->GetYaxis()->SetNdivisions(505);
@@ -1059,7 +1069,7 @@ tex->SetNDC();
    h_ratio_copy__9->SetFillColor(ci);
    h_ratio_copy__9->SetLineStyle(0);
    h_ratio_copy__9->SetMarkerStyle(20);
-   h_ratio_copy__9->GetXaxis()->SetTitle("M (e^{+}e^{-}) [GeV]");
+   h_ratio_copy__9->GetXaxis()->SetTitle("Dielectron Invariant Mass [GeV]");
    h_ratio_copy__9->GetXaxis()->SetMoreLogLabels();
    h_ratio_copy__9->GetXaxis()->SetNoExponent();
    h_ratio_copy__9->GetXaxis()->SetNdivisions(509);
@@ -1068,6 +1078,7 @@ tex->SetNDC();
    h_ratio_copy__9->GetXaxis()->SetLabelSize(0.15);
    h_ratio_copy__9->GetXaxis()->SetTitleSize(0.1666667);
    h_ratio_copy__9->GetXaxis()->SetTickLength(0.08571428);
+   h_ratio_copy__9->GetXaxis()->SetTitleOffset(0.92);
    h_ratio_copy__9->GetXaxis()->SetTitleFont(42);
    h_ratio_copy__9->GetYaxis()->SetTitle("Data/MC");
    h_ratio_copy__9->GetYaxis()->SetNdivisions(505);

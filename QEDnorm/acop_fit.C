@@ -2,6 +2,7 @@ void acop_fit()
 {
 //=========Macro generated from canvas: c_aco/Acoplanarity
 //=========  (Wed May  9 16:32:27 2018) by ROOT version6.06/08
+   gROOT->SetStyle("Plain");
    TCanvas *c_aco = new TCanvas("c_aco", "Acoplanarity",0,0,700,600);
    gStyle->SetOptStat(0);
    gStyle->SetOptTitle(0);
@@ -119,7 +120,7 @@ void acop_fit()
    hacop_data__1->GetListOfFunctions()->Add(fexp1);
    hacop_data__1->SetLineStyle(0);
    hacop_data__1->SetMarkerStyle(20);
-   hacop_data__1->GetXaxis()->SetTitle("e^{+}e^{-} acoplanarity");
+   hacop_data__1->GetXaxis()->SetTitle("A_{#phi} (e^{+}e^{-})");
    hacop_data__1->GetXaxis()->SetLabelFont(42);
    hacop_data__1->GetXaxis()->SetLabelOffset(0.01);
    hacop_data__1->GetXaxis()->SetLabelSize(0.045);
@@ -403,7 +404,7 @@ void acop_fit()
    hacop_data__4->GetListOfFunctions()->Add(fexp2);
    hacop_data__4->SetLineStyle(0);
    hacop_data__4->SetMarkerStyle(20);
-   hacop_data__4->GetXaxis()->SetTitle("e^{+}e^{-} acoplanarity");
+   hacop_data__4->GetXaxis()->SetTitle("A_{#phi} (e^{+}e^{-})");
    hacop_data__4->GetXaxis()->SetLabelFont(42);
    hacop_data__4->GetXaxis()->SetLabelOffset(0.01);
    hacop_data__4->GetXaxis()->SetLabelSize(0.045);
@@ -553,7 +554,7 @@ void acop_fit()
    hacop_data_copy__5->GetListOfFunctions()->Add(fexp3);
    hacop_data_copy__5->SetLineStyle(0);
    hacop_data_copy__5->SetMarkerStyle(20);
-   hacop_data_copy__5->GetXaxis()->SetTitle("e^{+}e^{-} acoplanarity");
+   hacop_data_copy__5->GetXaxis()->SetTitle("A_{#phi} (e^{+}e^{-})");
    hacop_data_copy__5->GetXaxis()->SetLabelFont(42);
    hacop_data_copy__5->GetXaxis()->SetLabelOffset(0.01);
    hacop_data_copy__5->GetXaxis()->SetLabelSize(0.045);
