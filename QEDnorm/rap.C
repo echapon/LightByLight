@@ -353,7 +353,7 @@ void rap()
    hrap_data__22->GetZaxis()->SetTitleFont(42);
    hrap_data__22->Draw("EPSAME");
    
-   TLegend *leg = new TLegend(0.16,0.68,0.46,0.85,NULL,"brNDC");
+   TLegend *leg = new TLegend(0.16,0.68,0.56,0.85,NULL,"brNDC");
    leg->SetBorderSize(0);
    leg->SetTextFont(62);
    leg->SetLineColor(1);
@@ -373,14 +373,13 @@ void rap()
    entry->SetMarkerStyle(20);
    entry->SetMarkerSize(1);
    entry->SetTextFont(62);
-   entry=leg->AddEntry("hrap_MC","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","lpf");
+   entry=leg->AddEntry("hrap_MC","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","f");
 
    ci = TColor::GetColor("#ffff00");
    entry->SetFillColor(ci);
    entry->SetFillStyle(1001);
 
-   ci = TColor::GetColor("#ffff00");
-   entry->SetLineColor(ci);
+   entry->SetLineColor(1);
    entry->SetLineWidth(1);
 
    ci = TColor::GetColor("#ffff00");

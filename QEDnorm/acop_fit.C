@@ -422,7 +422,7 @@ void acop_fit()
    hacop_data__4->GetZaxis()->SetTitleFont(42);
    hacop_data__4->Draw("same");
    
-   TLegend *leg = new TLegend(-2.353437e-185,-2.353437e-185,-2.353437e-185,-2.353437e-185,NULL,"brNDC");
+   TLegend *leg = new TLegend(0.3,0.68,0.7,0.85,NULL,"brNDC");
    leg->SetBorderSize(0);
    leg->SetTextFont(62);
    leg->SetLineColor(1);
@@ -430,24 +430,24 @@ void acop_fit()
    leg->SetLineWidth(1);
    leg->SetFillColor(0);
    leg->SetFillStyle(1001);
-   TLegendEntry *entry=leg->AddEntry("hacop_data","Data","LP");
+   TLegendEntry *entry=leg->AddEntry("hacop_data__4","Data","LP");
    entry->SetLineColor(1);
    entry->SetLineStyle(1);
    entry->SetLineWidth(1);
    entry->SetMarkerColor(1);
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
-   entry=leg->AddEntry("hacop_mc","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","F");
+   entry=leg->AddEntry("hacop_mc__2","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","F");
    entry->SetLineColor(1);
    entry->SetLineStyle(1);
    entry->SetLineWidth(1);
    entry->SetMarkerColor(1);
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
-   entry=leg->AddEntry("fexp","Fit to data","L");
-   entry->SetLineColor(1);
+   entry=leg->AddEntry("fexp1","Fit to data","L");
+   entry->SetLineColor(2);
    entry->SetLineStyle(1);
-   entry->SetLineWidth(1);
+   entry->SetLineWidth(3);
    entry->SetMarkerColor(1);
    entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);

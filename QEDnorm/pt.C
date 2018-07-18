@@ -89,7 +89,7 @@ void pt()
    hpt_data__28->SetFillColor(ci);
    hpt_data__28->SetLineStyle(0);
    hpt_data__28->SetMarkerStyle(20);
-   hpt_data__28->GetXaxis()->SetTitle("Dielectron p_{T} [GeV]");
+   hpt_data__28->GetXaxis()->SetTitle("Dielectron p_{T} (GeV)");
    hpt_data__28->GetXaxis()->SetMoreLogLabels();
    hpt_data__28->GetXaxis()->SetNoExponent();
    hpt_data__28->GetXaxis()->SetNdivisions(509);
@@ -293,7 +293,7 @@ void pt()
    hpt_data__31->SetFillColor(ci);
    hpt_data__31->SetLineStyle(0);
    hpt_data__31->SetMarkerStyle(20);
-   hpt_data__31->GetXaxis()->SetTitle("Dielectron p_{T} [GeV]");
+   hpt_data__31->GetXaxis()->SetTitle("Dielectron p_{T} (GeV)");
    hpt_data__31->GetXaxis()->SetMoreLogLabels();
    hpt_data__31->GetXaxis()->SetNoExponent();
    hpt_data__31->GetXaxis()->SetNdivisions(509);
@@ -313,7 +313,7 @@ void pt()
    hpt_data__31->GetZaxis()->SetTitleFont(42);
    hpt_data__31->Draw("EPSAME");
    
-   TLegend *leg = new TLegend(0.3,0.68,0.6,0.85,NULL,"brNDC");
+   TLegend *leg = new TLegend(0.3,0.68,0.7,0.85,NULL,"brNDC");
    leg->SetBorderSize(0);
    leg->SetTextFont(62);
    leg->SetLineColor(1);
@@ -333,14 +333,13 @@ void pt()
    entry->SetMarkerStyle(20);
    entry->SetMarkerSize(1);
    entry->SetTextFont(62);
-   entry=leg->AddEntry("hpt_MC","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","lpf");
+   entry=leg->AddEntry("hpt_MC","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","f");
 
    ci = TColor::GetColor("#ffff00");
    entry->SetFillColor(ci);
    entry->SetFillStyle(1001);
 
-   ci = TColor::GetColor("#ffff00");
-   entry->SetLineColor(ci);
+   entry->SetLineColor(1);
    entry->SetLineWidth(1);
 
    ci = TColor::GetColor("#ffff00");
@@ -402,7 +401,7 @@ void pt()
    hpt_data_copy__32->SetFillColor(ci);
    hpt_data_copy__32->SetLineStyle(0);
    hpt_data_copy__32->SetMarkerStyle(20);
-   hpt_data_copy__32->GetXaxis()->SetTitle("Dielectron p_{T} [GeV]");
+   hpt_data_copy__32->GetXaxis()->SetTitle("Dielectron p_{T} (GeV)");
    hpt_data_copy__32->GetXaxis()->SetMoreLogLabels();
    hpt_data_copy__32->GetXaxis()->SetNoExponent();
    hpt_data_copy__32->GetXaxis()->SetNdivisions(509);
@@ -522,7 +521,7 @@ tex->SetNDC();
    h_ratio__33->SetFillColor(ci);
    h_ratio__33->SetLineStyle(0);
    h_ratio__33->SetMarkerStyle(20);
-   h_ratio__33->GetXaxis()->SetTitle("Dielectron p_{T} [GeV]");
+   h_ratio__33->GetXaxis()->SetTitle("Dielectron p_{T} (GeV)");
    h_ratio__33->GetXaxis()->SetMoreLogLabels();
    h_ratio__33->GetXaxis()->SetNoExponent();
    h_ratio__33->GetXaxis()->SetNdivisions(509);
@@ -689,7 +688,7 @@ tex->SetNDC();
    h_ratio__35->SetFillColor(ci);
    h_ratio__35->SetLineStyle(0);
    h_ratio__35->SetMarkerStyle(20);
-   h_ratio__35->GetXaxis()->SetTitle("Dielectron p_{T} [GeV]");
+   h_ratio__35->GetXaxis()->SetTitle("Dielectron p_{T} (GeV)");
    h_ratio__35->GetXaxis()->SetMoreLogLabels();
    h_ratio__35->GetXaxis()->SetNoExponent();
    h_ratio__35->GetXaxis()->SetNdivisions(509);
@@ -765,7 +764,7 @@ tex->SetNDC();
    h_ratio_copy__36->SetFillColor(ci);
    h_ratio_copy__36->SetLineStyle(0);
    h_ratio_copy__36->SetMarkerStyle(20);
-   h_ratio_copy__36->GetXaxis()->SetTitle("Dielectron p_{T} [GeV]");
+   h_ratio_copy__36->GetXaxis()->SetTitle("Dielectron p_{T} (GeV)");
    h_ratio_copy__36->GetXaxis()->SetMoreLogLabels();
    h_ratio_copy__36->GetXaxis()->SetNoExponent();
    h_ratio_copy__36->GetXaxis()->SetNdivisions(509);

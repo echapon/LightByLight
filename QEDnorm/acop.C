@@ -314,7 +314,7 @@ void acop()
    hacop_data__40->GetZaxis()->SetTitleFont(42);
    hacop_data__40->Draw("EPSAME");
    
-   TLegend *leg = new TLegend(0.3,0.68,0.6,0.85,NULL,"brNDC");
+   TLegend *leg = new TLegend(0.3,0.68,0.7,0.85,NULL,"brNDC");
    leg->SetBorderSize(0);
    leg->SetTextFont(62);
    leg->SetLineColor(1);
@@ -334,14 +334,13 @@ void acop()
    entry->SetMarkerStyle(20);
    entry->SetMarkerSize(1);
    entry->SetTextFont(62);
-   entry=leg->AddEntry("hacop_MC","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","lpf");
+   entry=leg->AddEntry("hacop_MC","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","f");
 
    ci = TColor::GetColor("#ffff00");
    entry->SetFillColor(ci);
    entry->SetFillStyle(1001);
 
-   ci = TColor::GetColor("#ffff00");
-   entry->SetLineColor(ci);
+   entry->SetLineColor(1);
    entry->SetLineWidth(1);
 
    ci = TColor::GetColor("#ffff00");
