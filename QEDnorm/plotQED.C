@@ -3,7 +3,7 @@
 
 const double xsec_3_53         = 1.086453e-01*20.6e3*4.82/4.73; // in mub
 const double sf                = 0.98*0.98;
-const int    ngen              = 2399759;//7929199;
+const int    ngen              = (int) (2399759.*(290214.+98326.)/98326.);// scale old number of events by the new+old number of reco events // was 7929199;
 const double glob_syst         = 2.*(0.02/0.98); // reco+ID
 
 TH1D* SFuncert(TTree *tr, const char* name, const char* var, const char* cut, int nbins, double binmin, double binmax, bool dorew=false);
@@ -12,14 +12,14 @@ void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=363.959
    TFile *fdata = TFile::Open("outputDataAll_noexcl.root");
    TTree *trdata = (TTree*) fdata->Get("tr" + algo);
    // TFile *fMC = TFile::Open("outputMCAll.root");
-   TFile *fMC = TFile::Open("outputMCAll_noexcl.root");
+   TFile *fMC = TFile::Open("outputMCAll_noexcl_OldAndNew.root");
    TTree *trMC = (TTree*) fMC->Get("tr" + algo);
 
-   TH1D *hmass_data = new TH1D("hmass_data",";M (e^{+}e^{-}) [GeV];Entries / (2 GeV)",50,0,100);
-   TH1D *hdeltapt_data = new TH1D("hdeltapt_data",";#Delta p_{T} (e^{+}e^{-}) [GeV];Entries / (1 GeV)",10,0,1);
+   TH1D *hmass_data = new TH1D("hmass_data",";M (e^{+}e^{-}) (GeV);Entries / (2 GeV)",50,0,100);
+   TH1D *hdeltapt_data = new TH1D("hdeltapt_data",";#Delta p_{T} (e^{+}e^{-}) (GeV);Entries / (1 GeV)",10,0,1);
    TH1D *hrap_data = new TH1D("hrap_data",";y (e^{+}e^{-});Entries / (0.2)",25,-2.5,2.5);
-   TH1D *hpt_data = new TH1D("hpt_data",";p_{T} (e^{+}e^{-}) [GeV];Entries / (0.5 GeV)",20,0,1);
-   TH1D *hacop_data = new TH1D("hacop_data",Form(";e^{+}e^{-} acoplanarity;Entries / (%.4f)",acop_cut/20.),20,0,acop_cut);
+   TH1D *hpt_data = new TH1D("hpt_data",";p_{T} (e^{+}e^{-}) (GeV);Entries / (0.5 GeV)",20,0,1);
+   TH1D *hacop_data = new TH1D("hacop_data",Form(";Dielectron acoplanarity A_{#phi};Entries / (%.4f)",acop_cut/20.),20,0,acop_cut);
 
    trdata->Project(hmass_data->GetName(),"mass",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
    trdata->Project(hdeltapt_data->GetName(),"deltapt",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
@@ -49,47 +49,47 @@ void plotQED(TString algo="GED", double acop_cut=0.01, double luminosity=363.959
    float R = 0.04;
 
 
-   MyCanvas mc1("mass","M (e^{+}e^{-}) [GeV]", "Entries", W, H);
+   MyCanvas mc1("mass","Dielectron Invariant Mass (GeV)", "Entries / (2 GeV)", W, H);
    mc1.SetLogy(false);
    mc1.SetYRange(0.1,9000);
    mc1.SetRatioRange(0.1,1.9);
-   mc1.SetLegendPosition(0.5,0.68,0.8,0.85);
-   mc1.CanvasWithHistogramsRatioPlot(hmass_data,hmass_MC,"Data","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
+   mc1.SetLegendPosition(0.3,0.68,0.7,0.85);
+   mc1.CanvasWithHistogramsRatioPlot(hmass_data,hmass_MC,"Data","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
    mc1.PrintCanvas();
    mc1.PrintCanvas_C();
 
-   MyCanvas mc2("deltapt","#Delta p_{T} (e^{+}e^{-}) [GeV]", "Entries", W, H);
+   MyCanvas mc2("deltapt","Dielectron #Delta p_{T} (GeV)", "Entries / (1GeV)", W, H);
    mc2.SetYRange(0.,4000);
    mc2.SetRatioRange(0.1,1.9);
-   mc2.SetLegendPosition(0.5,0.68,0.8,0.85);
-   mc2.CanvasWithHistogramsRatioPlot(hdeltapt_data,hdeltapt_MC,"Data","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
+   mc2.SetLegendPosition(0.3,0.68,0.6,0.85);
+   mc2.CanvasWithHistogramsRatioPlot(hdeltapt_data,hdeltapt_MC,"Data","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
    mc2.PrintCanvas();
    mc2.PrintCanvas_C();
 
-   MyCanvas mc3("rap","y (e^{+}e^{-})", "Entries / (0.2)", W, H);
+   MyCanvas mc3("rap","Dielectron y", "Entries / (0.2)", W, H);
    // mc3.SetLogy(false);
    mc3.SetYRange(0,1900);
    mc3.SetRatioRange(0.1,1.9);
-   mc3.SetLegendPosition(0.16,0.68,0.46,0.85);
-   mc3.CanvasWithHistogramsRatioPlot(hrap_data,hrap_MC,"Data","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
+   mc3.SetLegendPosition(0.16,0.68,0.56,0.85);
+   mc3.CanvasWithHistogramsRatioPlot(hrap_data,hrap_MC,"Data","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
    mc3.PrintCanvas();
    mc3.PrintCanvas_C();
 
-   MyCanvas mc4("pt","p_{T} (e^{+}e^{-}) [GeV]", "Entries / (0.5 GeV)", W, H);
+   MyCanvas mc4("pt","Dielectron p_{T} (GeV)", "Entries / (0.5 GeV)", W, H);
    // mc4.SetLogy(false);
    mc4.SetYRange(0.,2000);
    mc4.SetRatioRange(0.1,1.9);
-   mc4.SetLegendPosition(0.5,0.68,0.8,0.85);
-   mc4.CanvasWithHistogramsRatioPlot(hpt_data,hpt_MC,"Data","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
+   mc4.SetLegendPosition(0.3,0.68,0.7,0.85);
+   mc4.CanvasWithHistogramsRatioPlot(hpt_data,hpt_MC,"Data","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
    mc4.PrintCanvas();
    mc4.PrintCanvas_C();
 
-   MyCanvas mc5("acop","e^{+}e^{-} acoplanarity", Form("Entries / (%.4f)",acop_cut/20.), W, H);
+   MyCanvas mc5("acop","Dielectron  acoplanarity A_{#phi}", Form("Entries / (%.4f)",acop_cut/20.), W, H);
    mc5.SetLogy(false);
-   mc5.SetYRange(0.1,9000);
+   mc5.SetYRange(2,9000);
    mc5.SetRatioRange(0.1,1.9);
-   mc5.SetLegendPosition(0.5,0.68,0.8,0.85);
-   mc5.CanvasWithHistogramsRatioPlot(hacop_data,hacop_MC,"Data","#gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
+   mc5.SetLegendPosition(0.3,0.68,0.7,0.85);
+   mc5.CanvasWithHistogramsRatioPlot(hacop_data,hacop_MC,"Data","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","Data/MC",kBlack,kYellow,kFALSE,kTRUE,"EP","hist SAME");
    mc5.PrintCanvas();
    mc5.PrintCanvas_C();
 }
