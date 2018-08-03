@@ -1,7 +1,10 @@
 #pragma once
 
 #include <TLegend.h>
+#include <TLegendEntry.h>
 #include <TF1.h>
+#include <TFile.h>
+#include <TTree.h>
 #include <TStyle.h>
 #include <TPaletteAxis.h>
 #include <TGraphAsymmErrors.h>
@@ -15,6 +18,7 @@
 #include <TMath.h>
 
 #include <vector>
+#include <iostream>
 
 #include "tdrstyle.C"
 #include "CMS_lumi.C"
@@ -294,7 +298,8 @@ public:
 		legend->SetFillStyle(0);
 		legend->SetBorderSize(0);
 		legend->AddEntry(h1, Name1);
-		legend->AddEntry(h2, Name2);
+      h2->SetLineColor(1);
+		legend->AddEntry(h2, Name2, "f");
 		legend->Draw();
 
 
@@ -351,7 +356,7 @@ public:
 
 		// -- X-axis Setting -- //		
 		h_ratio->GetXaxis()->SetTitle( TitleX );
-		h_ratio->GetXaxis()->SetTitleOffset( 1. );
+		h_ratio->GetXaxis()->SetTitleOffset( 0.92 );
 		h_ratio->GetXaxis()->SetTitleSize( gTextSize1/0.3 );
 		h_ratio->GetXaxis()->SetLabelColor(1);
 		h_ratio->GetXaxis()->SetLabelFont(42);

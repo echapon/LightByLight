@@ -1,7 +1,7 @@
 void mass()
 {
 //=========Macro generated from canvas: mass/
-//=========  (Fri Aug  3 14:30:06 2018) by ROOT version6.06/08
+//=========  (Fri Aug  3 14:52:48 2018) by ROOT version6.06/08
    TCanvas *mass = new TCanvas("mass", "",0,0,700,600);
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(0);
@@ -235,9 +235,6 @@ void mass()
 
    ci = TColor::GetColor("#ffff00");
    hmass_MC__2->SetFillColor(ci);
-
-   ci = TColor::GetColor("#ffff00");
-   hmass_MC__2->SetLineColor(ci);
    hmass_MC__2->SetLineStyle(0);
 
    ci = TColor::GetColor("#ffff00");
@@ -498,14 +495,10 @@ void mass()
    ci = TColor::GetColor("#ffff00");
    entry->SetFillColor(ci);
    entry->SetFillStyle(1001);
-
-   ci = TColor::GetColor("#ffff00");
    entry->SetLineColor(1);
    entry->SetLineWidth(1);
-
-   ci = TColor::GetColor("#ffff00");
-   entry->SetMarkerColor(ci);
-   entry->SetMarkerStyle(20);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
    entry->SetTextFont(62);
    leg->Draw();
@@ -859,9 +852,6 @@ tex->SetNDC();
    hmass_MC__7->SetStats(0);
    hmass_MC__7->SetFillColor(1);
    hmass_MC__7->SetFillStyle(3005);
-
-   ci = TColor::GetColor("#ffff00");
-   hmass_MC__7->SetLineColor(ci);
    hmass_MC__7->SetLineStyle(0);
 
    ci = TColor::GetColor("#ffff00");

@@ -3,6 +3,10 @@
 
 #include "CMS_lumi.h"
 
+#include <iostream>
+
+using namespace std;
+
 void 
 CMS_lumi( TPad* pad, int iPeriod, int iPosX, TString label )
 {            

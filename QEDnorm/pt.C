@@ -1,7 +1,7 @@
 void pt()
 {
 //=========Macro generated from canvas: pt/
-//=========  (Fri Aug  3 14:30:06 2018) by ROOT version6.06/08
+//=========  (Fri Aug  3 14:52:49 2018) by ROOT version6.06/08
    TCanvas *pt = new TCanvas("pt", "",0,0,700,600);
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(0);
@@ -154,9 +154,6 @@ void pt()
 
    ci = TColor::GetColor("#ffff00");
    hpt_MC__29->SetFillColor(ci);
-
-   ci = TColor::GetColor("#ffff00");
-   hpt_MC__29->SetLineColor(ci);
    hpt_MC__29->SetLineStyle(0);
 
    ci = TColor::GetColor("#ffff00");
@@ -337,14 +334,10 @@ void pt()
    ci = TColor::GetColor("#ffff00");
    entry->SetFillColor(ci);
    entry->SetFillStyle(1001);
-
-   ci = TColor::GetColor("#ffff00");
    entry->SetLineColor(1);
    entry->SetLineWidth(1);
-
-   ci = TColor::GetColor("#ffff00");
-   entry->SetMarkerColor(ci);
-   entry->SetMarkerStyle(20);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
    entry->SetTextFont(62);
    leg->Draw();
@@ -590,9 +583,6 @@ tex->SetNDC();
    hpt_MC__34->SetStats(0);
    hpt_MC__34->SetFillColor(1);
    hpt_MC__34->SetFillStyle(3005);
-
-   ci = TColor::GetColor("#ffff00");
-   hpt_MC__34->SetLineColor(ci);
    hpt_MC__34->SetLineStyle(0);
 
    ci = TColor::GetColor("#ffff00");

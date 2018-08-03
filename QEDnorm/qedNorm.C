@@ -19,7 +19,7 @@ const double sf_hm_syst        = sqrt(pow(0.03,2)+pow(2*0.02,2));
 // const double sf_ged            = 0.989*0.989*0.931*0.928;
 const double sf_ged            = 0.98*0.98;//*0.931*0.928;//*1.09;
 const double sf_ged_syst       = sqrt(pow(0.03,2)+pow(2*0.02,2));//+pow(0.003/0.931,2)+pow(0.020/0.928,2))*sf_ged;
-const int    ngen              = 2399759;//7929199;
+const int    ngen              = (int) (2399759.*(290214.+98326.)/98326.);// scale old number of events by the new+old number of reco events // was 7929199;
 const double acop_cut          = 0.06;
 const double glob_syst         = 2.*(0.02/0.98); // reco+ID
 
@@ -28,7 +28,7 @@ TH1D* SFuncert(TTree *tr, const char* name, const char* var, const char* cut, in
 
 void qedNorm(const char* type = "GED", double mass_cut=5) {
    TFile *fdata = TFile::Open("outputDataAll_noexcl.root");
-   TFile *fmc = TFile::Open("outputMCAll_noexcl.root");
+   TFile *fmc = TFile::Open("outputMCAll_noexcl_OldAndNew.root");
    TTree *trdata = (TTree*) fdata->Get(Form("tr%s",type));
    TTree *trmc = (TTree*) fmc->Get(Form("tr%s",type));
 
@@ -42,7 +42,7 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    }
 
    // estimate the purity in data
-   TH1F *hacop_data = new TH1F("hacop_data",";e^{+}e^{-} acoplanarity;Entries / 0.002",30,0,acop_cut);
+   TH1F *hacop_data = new TH1F("hacop_data",";Dielectron A_{#phi};Entries / 0.002",30,0,acop_cut);
    // TH1F *hacop_mc = new TH1F("hacop_mc",";Acoplanarity;Entries / 0.002",30,0,acop_cut);
    trdata->Project(hacop_data->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
    // trmc->Project(hacop_mc->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
@@ -97,7 +97,7 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    hacop_data->Draw("same");
    TFitResultPtr r = hacop_data->Fit(fexp,"ILEMS");
 
-   TLegend *tleg = new TLegend(0.5,0.6,0.9,0.9);
+   TLegend *tleg = new TLegend(0.3,0.6,0.7,0.9);
    tleg->SetBorderSize(0);
    tleg->AddEntry(hacop_data,"Data","LP");
    tleg->AddEntry(hacop_mc,"QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","F");
@@ -106,9 +106,9 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
 
    c_aco->RedrawAxis();
    CMS_lumi( c_aco, 104, 33,lumi_PbPb2015 );
-   c_aco->SaveAs("acop_fit.C");
-   c_aco->SaveAs("acop_fit.pdf");
-   c_aco->SaveAs("acop_fit.root");
+   c_aco->SaveAs("acop_fit_prelim.C");
+   c_aco->SaveAs("acop_fit_prelim.pdf");
+   c_aco->SaveAs("acop_fit_prelim.root");
 
    const double *params = r->GetParams();
    // get the total

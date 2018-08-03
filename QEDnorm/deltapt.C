@@ -1,7 +1,7 @@
 void deltapt()
 {
 //=========Macro generated from canvas: deltapt/
-//=========  (Fri Aug  3 14:30:06 2018) by ROOT version6.06/08
+//=========  (Fri Aug  3 14:52:49 2018) by ROOT version6.06/08
    TCanvas *deltapt = new TCanvas("deltapt", "",0,0,700,600);
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(0);
@@ -114,9 +114,6 @@ void deltapt()
 
    ci = TColor::GetColor("#ffff00");
    hdeltapt_MC__11->SetFillColor(ci);
-
-   ci = TColor::GetColor("#ffff00");
-   hdeltapt_MC__11->SetLineColor(ci);
    hdeltapt_MC__11->SetLineStyle(0);
 
    ci = TColor::GetColor("#ffff00");
@@ -252,19 +249,15 @@ void deltapt()
    entry->SetMarkerStyle(20);
    entry->SetMarkerSize(1);
    entry->SetTextFont(62);
-   entry=leg->AddEntry("hdeltapt_MC","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","lpf");
+   entry=leg->AddEntry("hdeltapt_MC","QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","f");
 
    ci = TColor::GetColor("#ffff00");
    entry->SetFillColor(ci);
    entry->SetFillStyle(1001);
-
-   ci = TColor::GetColor("#ffff00");
-   entry->SetLineColor(ci);
+   entry->SetLineColor(1);
    entry->SetLineWidth(1);
-
-   ci = TColor::GetColor("#ffff00");
-   entry->SetMarkerColor(ci);
-   entry->SetMarkerStyle(20);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
    entry->SetTextFont(62);
    leg->Draw();
@@ -450,9 +443,6 @@ tex->SetNDC();
    hdeltapt_MC__16->SetStats(0);
    hdeltapt_MC__16->SetFillColor(1);
    hdeltapt_MC__16->SetFillStyle(3005);
-
-   ci = TColor::GetColor("#ffff00");
-   hdeltapt_MC__16->SetLineColor(ci);
    hdeltapt_MC__16->SetLineStyle(0);
 
    ci = TColor::GetColor("#ffff00");

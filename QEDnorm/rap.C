@@ -1,7 +1,7 @@
 void rap()
 {
 //=========Macro generated from canvas: rap/
-//=========  (Fri Aug  3 14:30:06 2018) by ROOT version6.06/08
+//=========  (Fri Aug  3 14:52:49 2018) by ROOT version6.06/08
    TCanvas *rap = new TCanvas("rap", "",0,0,700,600);
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(0);
@@ -174,9 +174,6 @@ void rap()
 
    ci = TColor::GetColor("#ffff00");
    hrap_MC__20->SetFillColor(ci);
-
-   ci = TColor::GetColor("#ffff00");
-   hrap_MC__20->SetLineColor(ci);
    hrap_MC__20->SetLineStyle(0);
 
    ci = TColor::GetColor("#ffff00");
@@ -377,14 +374,10 @@ void rap()
    ci = TColor::GetColor("#ffff00");
    entry->SetFillColor(ci);
    entry->SetFillStyle(1001);
-
-   ci = TColor::GetColor("#ffff00");
    entry->SetLineColor(1);
    entry->SetLineWidth(1);
-
-   ci = TColor::GetColor("#ffff00");
-   entry->SetMarkerColor(ci);
-   entry->SetMarkerStyle(20);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
    entry->SetTextFont(62);
    leg->Draw();
@@ -660,9 +653,6 @@ tex->SetNDC();
    hrap_MC__25->SetStats(0);
    hrap_MC__25->SetFillColor(1);
    hrap_MC__25->SetFillStyle(3005);
-
-   ci = TColor::GetColor("#ffff00");
-   hrap_MC__25->SetLineColor(ci);
    hrap_MC__25->SetLineStyle(0);
 
    ci = TColor::GetColor("#ffff00");

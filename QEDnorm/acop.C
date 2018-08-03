@@ -1,7 +1,7 @@
 void acop()
 {
 //=========Macro generated from canvas: acop/
-//=========  (Fri Aug  3 14:30:07 2018) by ROOT version6.06/08
+//=========  (Fri Aug  3 14:52:49 2018) by ROOT version6.06/08
    TCanvas *acop = new TCanvas("acop", "",0,0,700,600);
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(0);
@@ -155,9 +155,6 @@ void acop()
 
    ci = TColor::GetColor("#ffff00");
    hacop_MC__38->SetFillColor(ci);
-
-   ci = TColor::GetColor("#ffff00");
-   hacop_MC__38->SetLineColor(ci);
    hacop_MC__38->SetLineStyle(0);
 
    ci = TColor::GetColor("#ffff00");
@@ -338,14 +335,10 @@ void acop()
    ci = TColor::GetColor("#ffff00");
    entry->SetFillColor(ci);
    entry->SetFillStyle(1001);
-
-   ci = TColor::GetColor("#ffff00");
    entry->SetLineColor(1);
    entry->SetLineWidth(1);
-
-   ci = TColor::GetColor("#ffff00");
-   entry->SetMarkerColor(ci);
-   entry->SetMarkerStyle(20);
+   entry->SetMarkerColor(1);
+   entry->SetMarkerStyle(21);
    entry->SetMarkerSize(1);
    entry->SetTextFont(62);
    leg->Draw();
@@ -591,9 +584,6 @@ tex->SetNDC();
    hacop_MC__43->SetStats(0);
    hacop_MC__43->SetFillColor(1);
    hacop_MC__43->SetFillStyle(3005);
-
-   ci = TColor::GetColor("#ffff00");
-   hacop_MC__43->SetLineColor(ci);
    hacop_MC__43->SetLineStyle(0);
 
    ci = TColor::GetColor("#ffff00");
