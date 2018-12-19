@@ -42,7 +42,7 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    }
 
    // estimate the purity in data
-   TH1F *hacop_data = new TH1F("hacop_data",";Dielectron A_{#phi};Entries / 0.002",30,0,acop_cut);
+   TH1F *hacop_data = new TH1F("hacop_data",";Dielectron A_{#phi};Entries / (0.002)",30,0,acop_cut);
    // TH1F *hacop_mc = new TH1F("hacop_mc",";Acoplanarity;Entries / 0.002",30,0,acop_cut);
    trdata->Project(hacop_data->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
    // trmc->Project(hacop_mc->GetName(),"acop",Form("doubleEG2&&acop<%f&&mass>=%f&&pt<=1",acop_cut,mass_cut));
@@ -101,7 +101,7 @@ void qedNorm(const char* type = "GED", double mass_cut=5) {
    tleg->SetBorderSize(0);
    tleg->AddEntry(hacop_data,"Data","LP");
    tleg->AddEntry(hacop_mc,"QED #gamma#gamma #rightarrow e^{+}e^{-} (MC)","F");
-   tleg->AddEntry(fexp,"Fit to data","L");
+   tleg->AddEntry(fexp,"2-exponential fit to data","L");
    tleg->Draw();
 
    c_aco->RedrawAxis();

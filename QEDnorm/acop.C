@@ -1,7 +1,7 @@
 void acop()
 {
 //=========Macro generated from canvas: acop/
-//=========  (Fri Aug  3 14:52:49 2018) by ROOT version6.06/08
+//=========  (Mon Sep 17 22:39:36 2018) by ROOT version6.06/08
    TCanvas *acop = new TCanvas("acop", "",0,0,700,600);
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(0);
@@ -89,7 +89,7 @@ void acop()
    hacop_data__37->SetFillColor(ci);
    hacop_data__37->SetLineStyle(0);
    hacop_data__37->SetMarkerStyle(20);
-   hacop_data__37->GetXaxis()->SetTitle("Dielectron  acoplanarity A_{#phi}");
+   hacop_data__37->GetXaxis()->SetTitle("Dielectron A_{#phi}");
    hacop_data__37->GetXaxis()->SetMoreLogLabels();
    hacop_data__37->GetXaxis()->SetNoExponent();
    hacop_data__37->GetXaxis()->SetNdivisions(509);
@@ -290,7 +290,7 @@ void acop()
    hacop_data__40->SetFillColor(ci);
    hacop_data__40->SetLineStyle(0);
    hacop_data__40->SetMarkerStyle(20);
-   hacop_data__40->GetXaxis()->SetTitle("Dielectron  acoplanarity A_{#phi}");
+   hacop_data__40->GetXaxis()->SetTitle("Dielectron A_{#phi}");
    hacop_data__40->GetXaxis()->SetMoreLogLabels();
    hacop_data__40->GetXaxis()->SetNoExponent();
    hacop_data__40->GetXaxis()->SetNdivisions(509);
@@ -395,7 +395,7 @@ void acop()
    hacop_data_copy__41->SetFillColor(ci);
    hacop_data_copy__41->SetLineStyle(0);
    hacop_data_copy__41->SetMarkerStyle(20);
-   hacop_data_copy__41->GetXaxis()->SetTitle("Dielectron  acoplanarity A_{#phi}");
+   hacop_data_copy__41->GetXaxis()->SetTitle("Dielectron A_{#phi}");
    hacop_data_copy__41->GetXaxis()->SetMoreLogLabels();
    hacop_data_copy__41->GetXaxis()->SetNoExponent();
    hacop_data_copy__41->GetXaxis()->SetNdivisions(509);
@@ -515,7 +515,7 @@ tex->SetNDC();
    h_ratio__42->SetFillColor(ci);
    h_ratio__42->SetLineStyle(0);
    h_ratio__42->SetMarkerStyle(20);
-   h_ratio__42->GetXaxis()->SetTitle("Dielectron  acoplanarity A_{#phi}");
+   h_ratio__42->GetXaxis()->SetTitle("Dielectron A_{#phi}");
    h_ratio__42->GetXaxis()->SetMoreLogLabels();
    h_ratio__42->GetXaxis()->SetNoExponent();
    h_ratio__42->GetXaxis()->SetNdivisions(509);
@@ -679,7 +679,7 @@ tex->SetNDC();
    h_ratio__44->SetFillColor(ci);
    h_ratio__44->SetLineStyle(0);
    h_ratio__44->SetMarkerStyle(20);
-   h_ratio__44->GetXaxis()->SetTitle("Dielectron  acoplanarity A_{#phi}");
+   h_ratio__44->GetXaxis()->SetTitle("Dielectron A_{#phi}");
    h_ratio__44->GetXaxis()->SetMoreLogLabels();
    h_ratio__44->GetXaxis()->SetNoExponent();
    h_ratio__44->GetXaxis()->SetNdivisions(509);
@@ -755,7 +755,7 @@ tex->SetNDC();
    h_ratio_copy__45->SetFillColor(ci);
    h_ratio_copy__45->SetLineStyle(0);
    h_ratio_copy__45->SetMarkerStyle(20);
-   h_ratio_copy__45->GetXaxis()->SetTitle("Dielectron  acoplanarity A_{#phi}");
+   h_ratio_copy__45->GetXaxis()->SetTitle("Dielectron A_{#phi}");
    h_ratio_copy__45->GetXaxis()->SetMoreLogLabels();
    h_ratio_copy__45->GetXaxis()->SetNoExponent();
    h_ratio_copy__45->GetXaxis()->SetNdivisions(509);

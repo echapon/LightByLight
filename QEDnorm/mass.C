@@ -1,7 +1,7 @@
 void mass()
 {
 //=========Macro generated from canvas: mass/
-//=========  (Fri Aug  3 14:52:48 2018) by ROOT version6.06/08
+//=========  (Mon Sep 17 22:39:35 2018) by ROOT version6.06/08
    TCanvas *mass = new TCanvas("mass", "",0,0,700,600);
    gStyle->SetOptFit(1);
    gStyle->SetOptStat(0);
@@ -117,7 +117,7 @@ void mass()
    hmass_data__1->SetFillColor(ci);
    hmass_data__1->SetLineStyle(0);
    hmass_data__1->SetMarkerStyle(20);
-   hmass_data__1->GetXaxis()->SetTitle("Dielectron Invariant Mass (GeV)");
+   hmass_data__1->GetXaxis()->SetTitle("Dielectron invariant mass (GeV)");
    hmass_data__1->GetXaxis()->SetMoreLogLabels();
    hmass_data__1->GetXaxis()->SetNoExponent();
    hmass_data__1->GetXaxis()->SetNdivisions(509);
@@ -450,7 +450,7 @@ void mass()
    hmass_data__4->SetFillColor(ci);
    hmass_data__4->SetLineStyle(0);
    hmass_data__4->SetMarkerStyle(20);
-   hmass_data__4->GetXaxis()->SetTitle("Dielectron Invariant Mass (GeV)");
+   hmass_data__4->GetXaxis()->SetTitle("Dielectron invariant mass (GeV)");
    hmass_data__4->GetXaxis()->SetMoreLogLabels();
    hmass_data__4->GetXaxis()->SetNoExponent();
    hmass_data__4->GetXaxis()->SetNdivisions(509);
@@ -583,7 +583,7 @@ void mass()
    hmass_data_copy__5->SetFillColor(ci);
    hmass_data_copy__5->SetLineStyle(0);
    hmass_data_copy__5->SetMarkerStyle(20);
-   hmass_data_copy__5->GetXaxis()->SetTitle("Dielectron Invariant Mass (GeV)");
+   hmass_data_copy__5->GetXaxis()->SetTitle("Dielectron invariant mass (GeV)");
    hmass_data_copy__5->GetXaxis()->SetMoreLogLabels();
    hmass_data_copy__5->GetXaxis()->SetNoExponent();
    hmass_data_copy__5->GetXaxis()->SetNdivisions(509);
@@ -731,7 +731,7 @@ tex->SetNDC();
    h_ratio__6->SetFillColor(ci);
    h_ratio__6->SetLineStyle(0);
    h_ratio__6->SetMarkerStyle(20);
-   h_ratio__6->GetXaxis()->SetTitle("Dielectron Invariant Mass (GeV)");
+   h_ratio__6->GetXaxis()->SetTitle("Dielectron invariant mass (GeV)");
    h_ratio__6->GetXaxis()->SetMoreLogLabels();
    h_ratio__6->GetXaxis()->SetNoExponent();
    h_ratio__6->GetXaxis()->SetNdivisions(509);
@@ -975,7 +975,7 @@ tex->SetNDC();
    h_ratio__8->SetFillColor(ci);
    h_ratio__8->SetLineStyle(0);
    h_ratio__8->SetMarkerStyle(20);
-   h_ratio__8->GetXaxis()->SetTitle("Dielectron Invariant Mass (GeV)");
+   h_ratio__8->GetXaxis()->SetTitle("Dielectron invariant mass (GeV)");
    h_ratio__8->GetXaxis()->SetMoreLogLabels();
    h_ratio__8->GetXaxis()->SetNoExponent();
    h_ratio__8->GetXaxis()->SetNdivisions(509);
@@ -1079,7 +1079,7 @@ tex->SetNDC();
    h_ratio_copy__9->SetFillColor(ci);
    h_ratio_copy__9->SetLineStyle(0);
    h_ratio_copy__9->SetMarkerStyle(20);
-   h_ratio_copy__9->GetXaxis()->SetTitle("Dielectron Invariant Mass (GeV)");
+   h_ratio_copy__9->GetXaxis()->SetTitle("Dielectron invariant mass (GeV)");
    h_ratio_copy__9->GetXaxis()->SetMoreLogLabels();
    h_ratio_copy__9->GetXaxis()->SetNoExponent();
    h_ratio_copy__9->GetXaxis()->SetNdivisions(509);
